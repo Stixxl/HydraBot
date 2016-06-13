@@ -5,7 +5,9 @@
  */
 package com.corbi.robot.main;
 
-import com.corbi.robot.events.EventListener;
+import com.corbi.robot.events.AudioListener;
+import com.corbi.robot.events.CommandListener;
+import com.corbi.robot.events.CommandExecutionListener;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import sx.blah.discord.api.ClientBuilder;
@@ -24,6 +26,9 @@ public static IDiscordClient client;
     } catch (DiscordException ex) {
         Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
     }
-    client.getDispatcher().registerListener(new EventListener());
+    //register event listener
+    client.getDispatcher().registerListener(new CommandExecutionListener());
+    client.getDispatcher().registerListener(new CommandListener());
+    client.getDispatcher().registerListener(new AudioListener());
     }
 }

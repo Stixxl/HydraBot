@@ -6,6 +6,8 @@
 package com.corbi.robot.actions;
 
 import com.corbi.robot.main.Main;
+import java.util.Arrays;
+import java.util.Random;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.HTTP429Exception;
@@ -15,29 +17,43 @@ import sx.blah.discord.util.MissingPermissionsException;
 /**
  *
  * @author Stiglmair
+ * This class is designed to handle anything the bot wants to write in a TextChannel.
+ * Any write to chat command should be done with this class.
  */
 public class Chat {
+    /**
+     * 
+     * @param channel channel in which the message should be written
+     * @throws HTTP429Exception
+     * @throws DiscordException
+     * @throws MissingPermissionsException 
+     * This method's only reason for existence is to make Daniel's Life just a tiny bit harder.
+     */
  public static void insultDaniel(IChannel channel) throws HTTP429Exception, DiscordException, MissingPermissionsException
  {
-     new MessageBuilder(Main.client).withChannel(channel).withContent("Fact: Daniel hat es lediglich bis Platin 2 gebracht.").build();
+     String[] insults = {"Daniel ist sehr speziell in der Wahl der Musiklautstärke. Tätsächlich ist für ihn alles unangenehm laut.",
+     "Daniel kauft keine neuen Spiele, da er zu sehr an seiner einzigen Liebe hängt, der Kunst des Feedens."};
+     Random randInt = new Random(System.currentTimeMillis());
+     
+     int index = randInt.nextInt(insults.length);
+     sendMessage(channel, insults[index]);
  }
- public static void showUnsupportedFormatMessage(String[] wrongMessage,int errorAt, IChannel channel)
+ public static void showUnsupportedFormatMessage(String wrongCommand, IChannel channel) throws HTTP429Exception, MissingPermissionsException, DiscordException
  {
-     String errorInfo;
-     //wrongMessage[1] refers to the command, wrongMessage[i > 1] refers to any given parameters, wrongMessage[0] = !hydra
-     if(errorAt > 1)
-     {
-     errorInfo = "The HydraBot does not support the parameter " + wrongMessage[errorAt]
-             + " for the command " + wrongMessage[1] + ".";
-     }
-     else if(errorAt == 1)
-     {
-         errorInfo = "The HydraBot does not support the command " + wrongMessage[1] + ".";
-     }
-     else
-     {
-         errorInfo = "The HydraBot could not parse the input.";
-     }
-     new MessageBuilder(Main.client).withChannel(channel).withContent(errorInfo);
+     String errorInfo = "The HydraBot does not support the command *" + wrongCommand + "*.";
+
+     sendMessage(channel, errorInfo);
+ }
+ public static void showUnsupportedFormatMessage(String command,String [] wrongArgs, IChannel channel) throws HTTP429Exception, MissingPermissionsException, DiscordException
+ {
+
+    String errorInfo = "The HydraBot does not support the parameter *" + Arrays.toString(wrongArgs)
+             + "* for the command *" + command + "*.";
+    sendMessage(channel, errorInfo);
+     
+}
+ public static void sendMessage(IChannel channel, String content) throws HTTP429Exception, DiscordException, MissingPermissionsException
+ {
+     new MessageBuilder(Main.client).withChannel(channel).withContent(content).build();
  }
 }
