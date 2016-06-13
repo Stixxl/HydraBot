@@ -21,6 +21,10 @@ import sx.blah.discord.handle.impl.events.UserLeaveEvent;
 public class UserListener {
     
     public List<User> onlineUsers = new ArrayList<>();
+    /**
+     * A user will be created and added to the list onlineUsers
+     * @param event event that is fired when a user joins a server
+     */
     @EventSubscriber
     public void onUserJoin(UserJoinEvent event)
     {
@@ -29,7 +33,10 @@ public class UserListener {
         User user = new User(0, userID, serverID);
         onlineUsers.add(user);
     }
-    
+    /**
+     * The user's uptime will be updated and he will be removed from the list onlineUsers
+     * @param event event that is fired when a user leaves a server
+     */
     @EventSubscriber
     public void onUserLeave(UserLeaveEvent event)
     {
