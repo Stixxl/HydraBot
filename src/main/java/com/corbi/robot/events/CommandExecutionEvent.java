@@ -12,7 +12,7 @@ import sx.blah.discord.handle.obj.IUser;
 /**
  * 
  * @author PogChamp
- * Thid Event holds a parsed input.
+ * This Event holds a parsed input.
  * It should only be fired, whenever a new textcommand adressed at our bot is received
  */
 public class CommandExecutionEvent extends Event {

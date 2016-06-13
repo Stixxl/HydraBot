@@ -52,6 +52,14 @@ public class Chat {
     sendMessage(channel, errorInfo);
      
 }
+ /**
+  * The bot will send the specified message in the specified channel
+  * @param channel channel where the message is to be sent
+  * @param content the content of the intended message
+  * @throws HTTP429Exception
+  * @throws DiscordException
+  * @throws MissingPermissionsException 
+  */
  public static void sendMessage(IChannel channel, String content) throws HTTP429Exception, DiscordException, MissingPermissionsException
  {
      new MessageBuilder(Main.client).withChannel(channel).withContent(content).build();

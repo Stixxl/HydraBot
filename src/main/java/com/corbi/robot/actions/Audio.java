@@ -1,6 +1,7 @@
 package com.corbi.robot.actions;
 
 import com.corbi.robot.main.Main;
+import com.corbi.robot.utilities.UtilityMethods;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -48,15 +49,14 @@ public class Audio {
      * @throws MissingPermissionsException 
      */
     public static boolean handleSoundRequest(String key, Optional<IVoiceChannel> optionalChannel, IChannel textChannel) throws DiscordException, HTTP429Exception, MissingPermissionsException {
-        Sounds.put("rko", "/src/main/java/com/corbi/robot/actions/AudioFiles/RKO.mp3");//TODO find good way to map keys to paths; find out how to do relative paths
+        Sounds.put("rko", "/src/main/resources/AudioFiles/RKO.mp3");//TODO find good way to map keys to paths; find out how to do relative paths
         if (optionalChannel.isPresent()) { //true if user is in VoiceChannel, false otherwise
             IVoiceChannel voiceChannel = optionalChannel.get();
             String path = Sounds.get(key);
 
-            if (path != null) {
-                String currentDirPath = new File("").getAbsolutePath();
-                path = currentDirPath.concat(path);
-                playSound(path, voiceChannel);
+            if (path != null) {//true, if requested sound exists in database, false otherwise
+
+                playSound(UtilityMethods.generatePath(path), voiceChannel);
             } else {
                 return false;
             }
