@@ -49,7 +49,11 @@ private final long loginTime;
     public long getUptime() {
         return uptime;
     }
-
+    /**
+     * sets the uptime of the user
+     * also updates the database
+     * @param uptime new uptime
+     */
     public void setUptime(long uptime) {
         this.uptime = uptime;
     }

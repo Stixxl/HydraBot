@@ -29,8 +29,9 @@ public class UserListener {
     public void onUserJoin(UserJoinEvent event)
     {
         String userID = event.getUser().getID();
-        String serverID = event.getGuild().getID();
-        User user = new User(0, userID, serverID);
+        String guildID = event.getGuild().getID();
+        User user = new User(0, userID, guildID);
+        Main.dbService.createUser(userID, guildID);
         onlineUsers.add(user);
     }
     /**

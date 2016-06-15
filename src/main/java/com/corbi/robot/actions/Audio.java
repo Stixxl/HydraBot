@@ -16,45 +16,55 @@ import sx.blah.discord.util.MissingPermissionsException;
  */
 /**
  *
- * @author Stiglmair
- * This class is designed to handle anything the bot wants to say.
- * Any Audiocommand should use this class.
+ * @author Stiglmair This class is designed to handle anything the bot wants to
+ * say. Any Audiocommand should use this class.
  */
 public class Audio {
-
     private static HashMap<String, String> Sounds = new HashMap<>();
+    private static final String AUDIO_PATH = "/src/main/resources/AudioFiles/";
+
     /**
-     * 
-     * @param key the identifier for the audiofile
+     *
+     * @param args the arguments that were sent in addition to the command
      * @param optionalChannel the VoiceChannel, where the audio will be streamed
-     * @param textChannel the TextChannel, where a potential error message can be printed
-     * @return false, if the key does not exist; true if the method could sucessfully execute the audio 
+     * @param textChannel the TextChannel, where a potential error message can
+     * be printed
+     * @return false, if the key does not exist or to many arguments were
+     * received; true if the method could sucessfully execute the audio
      * @throws DiscordException
      * @throws HTTP429Exception
-     * @throws MissingPermissionsException 
+     * @throws MissingPermissionsException
      */
-    public static boolean handleSoundRequest(String key, Optional<IVoiceChannel> optionalChannel, IChannel textChannel) throws DiscordException, HTTP429Exception, MissingPermissionsException {
-        Sounds.put("rko", "/src/main/resources/AudioFiles/RKO.mp3");//TODO find good way to map keys to paths; find out how to do relative paths
-        if (optionalChannel.isPresent()) { //true if user is in VoiceChannel, false otherwise
-            IVoiceChannel voiceChannel = optionalChannel.get();
-            String path = Sounds.get(key);
+    public static boolean handleSoundRequest(String[] args, Optional<IVoiceChannel> optionalChannel, IChannel textChannel) throws DiscordException, HTTP429Exception, MissingPermissionsException {
+        Sounds.put("rko", AUDIO_PATH + "RKO.mp3");//TODO find good way to map keys to paths; find out how to do relative paths
+        Sounds.put("cena", AUDIO_PATH + "John_Cena.mp3");
+        Sounds.put("faker", AUDIO_PATH + "Faker_what_was_that.mp3");
+        if (args.length == 1) {
 
-            if (path != null) {//true, if requested sound exists in database, false otherwise
+            if (optionalChannel.isPresent()) { //true if user is in VoiceChannel, false otherwise
+                IVoiceChannel voiceChannel = optionalChannel.get();
+                String path = Sounds.get(args[0]);
 
-                playSound(UtilityMethods.generatePath(path), voiceChannel);
+                if (path != null) {//true, if requested sound exists in database, false otherwise
+
+                    playSound(UtilityMethods.generatePath(path), voiceChannel);
+                } else {
+                    return false;
+                }
             } else {
-                return false;
+                Chat.sendMessage(textChannel, "You dumbo.... You might wanna join a voice channel first.");
             }
-        } else {
-            Chat.sendMessage(textChannel, "You dumbo.... You might wanna join a voice channel first.");
+            return true;
         }
-        return true;
+        return false;
+
     }
+
     /**
-     * 
+     *
      * @param path absolute path to the audio file
      * @param voiceChannel channel, where the audio will be streamed
-     * @throws DiscordException 
+     * @throws DiscordException
      */
     private static void playSound(String path, IVoiceChannel voiceChannel) throws DiscordException {
         voiceChannel.join();

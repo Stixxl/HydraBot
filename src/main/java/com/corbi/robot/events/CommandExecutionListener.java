@@ -10,6 +10,7 @@ import com.corbi.robot.actions.Chat;
 import java.util.Optional;
 import sx.blah.discord.api.EventSubscriber;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
+import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.HTTP429Exception;
 import sx.blah.discord.util.MissingPermissionsException;
@@ -35,15 +36,22 @@ public class CommandExecutionListener {
     @EventSubscriber
     public void handle(CommandExecutionEvent event) throws HTTP429Exception, DiscordException, MissingPermissionsException {
         String command = event.getCommand();
+        IChannel textChannel = event.getMessage().getChannel();
         switch (command) {
+                //chat
             case "daniel":
-                Chat.insultDaniel(event.getMessage().getChannel());
+                Chat.insultDaniel(textChannel);
+                break;            
+            case "noah":
+                Chat.tellBinsenweisheit(textChannel);
                 break;
+                //sounds
             case "sounds":
-                if (!(Audio.handleSoundRequest(event.getArgs()[0], event.getMessage().getAuthor().getVoiceChannel(), event.getMessage().getChannel()))) {
+                if (!(Audio.handleSoundRequest(event.getArgs(), event.getMessage().getAuthor().getVoiceChannel(), textChannel))) {
                     Chat.showUnsupportedFormatMessage(command, event.getArgs(), event.getMessage().getChannel());
                 }
                 break;
+
             default:
                 Chat.showUnsupportedFormatMessage(command, event.getMessage().getChannel());// no suitable command found
         }

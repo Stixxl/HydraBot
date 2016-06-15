@@ -7,7 +7,6 @@ package com.corbi.robot.events;
 
 import com.corbi.robot.main.Main;
 import sx.blah.discord.api.EventSubscriber;
-import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IMessage;
 
@@ -25,8 +24,6 @@ public class CommandListener {
      */
     @EventSubscriber
     public void watchForCommands(MessageReceivedEvent event) {
-        try {
-
             IMessage _message = event.getMessage();
             String _content = _message.getContent().toLowerCase();
 
@@ -34,19 +31,17 @@ public class CommandListener {
                 return;
             }
             // a standard command looks like this: !hydra command param param...
-            String[] _args = null;
+            String[] _args = {""}; // equals no arguments
             String _command = _content.split(" ")[1];
             if (_content.contains(" ")) {
                 String temp = _content.substring(_content.indexOf(' ') + 1); //temp = command param param...
+                if(temp.contains(" "))// true if there are any arguments, false otherwise
                 _args = temp.substring(temp.indexOf(' ') + 1).split(" ");//args = param param
             }
 
             CommandExecutionEvent _event = new CommandExecutionEvent(_message, _command, _message.getAuthor(), _args);
             Main.client.getDispatcher().dispatch(_event);
 
-        } catch (Exception ex) {
-            // Handle how ever you please
-        }
     }
 
 }

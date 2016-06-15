@@ -5,6 +5,7 @@
  */
 package com.corbi.robot.main;
 
+import com.corbi.robot.actions.DBService;
 import com.corbi.robot.events.AudioListener;
 import com.corbi.robot.events.CommandListener;
 import com.corbi.robot.events.CommandExecutionListener;
@@ -31,6 +32,7 @@ public class Main {
 
     public static IDiscordClient client;
     private static String Token;
+    public static DBService dbService;
 
     public static void main(String[] args) {
         readConfig();
@@ -43,7 +45,9 @@ public class Main {
         client.getDispatcher().registerListener(new CommandExecutionListener());
         client.getDispatcher().registerListener(new CommandListener());
         client.getDispatcher().registerListener(new AudioListener());
-    }
+        
+    dbService.createTables();
+        }
     /**
      * a method for reading the config and mapping its values to suited variables and such
      */
@@ -51,7 +55,7 @@ public class Main {
         String path = "/src/main/resources/config.properties";
         path = UtilityMethods.generatePath(path);
         File f = new File(path);
-        if (f.exists() && !f.isDirectory()) {//checks wheter there is configurationdata to be read
+        if (f.exists() && !f.isDirectory()) {//true if there is configurationdata to be read, false otherwise
             Properties properties = new Properties();
             FileInputStream inStream = null;
             try {
@@ -63,6 +67,7 @@ public class Main {
             } catch (IOException e) {
             }
             Token = properties.getProperty("token");
+            dbService = new DBService(properties.getProperty("dbusername"), properties.getProperty("dbpassword"));
         }
     }
 }
