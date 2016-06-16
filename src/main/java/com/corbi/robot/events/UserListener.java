@@ -84,17 +84,6 @@ public class UserListener {
     public void onOnlineToOffline(PresenceUpdateEvent event) {
         long time = System.currentTimeMillis();
         for (User user : onlineUsers) {
-            if(user == null)
-            {
-                System.out.println("der Nutzer is ne null.");
-            }
-            if(event == null){
-                System.out.println("Die party war ein flop.");
-            }
-            if(event.getUser() == null)
-            {
-                System.out.println("does this even make sense?");
-            }
             if (user.getId().equals(event.getUser().getID()) && user.getGuildID().equals(event.getGuild().getID()))//user on same server and same user as specified in event
             {
                 user.setUptime(time - user.getLoginTime() + user.getUptime());//current time - time of login + overall time spent online

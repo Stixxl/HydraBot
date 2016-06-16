@@ -100,12 +100,14 @@ public class DBService {
         result.updateRow();
         statement.close();
     }
+
     /**
      * retrieves a user from the database and returns a user object
+     *
      * @param id part of primary key
      * @param guild_id part of primary key
      * @return a user object, that represents that saved in the database
-     * @throws SQLException 
+     * @throws SQLException
      */
     public User getUser(String id, String guild_id) throws SQLException {
         PreparedStatement statement = con.prepareStatement(
@@ -117,12 +119,26 @@ public class DBService {
         ResultSet result = statement.executeQuery();
         if (result.next()) {
             BigDecimal uptime = result.getBigDecimal("UPTIME");
-            return new User(uptime.toBigInteger().longValue(), id, guild_id);
+            return new User(uptime.longValue(), id, guild_id);
 
         } else {
             return null;
         }
 
+    }
+
+    public long getUptimeAll(String guildID) throws SQLException {
+        long uptimeAll = 0;
+        PreparedStatement statement = con.prepareStatement(
+                "SELECT * FROM " + DBNAME + ".USERS "
+                        + "WHERE GUILD_ID=?");
+        statement.setString(1, guildID);
+        ResultSet result = statement.executeQuery();
+        while(result.next())
+        {
+            uptimeAll += result.getBigDecimal("UPTIME").longValue();
+        }
+       return uptimeAll; 
     }
 
     /**

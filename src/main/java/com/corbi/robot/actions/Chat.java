@@ -6,6 +6,7 @@
 package com.corbi.robot.actions;
 
 import com.corbi.robot.main.Main;
+import com.corbi.robot.utilities.UtilityMethods;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Random;
@@ -87,6 +88,9 @@ public class Chat {
                 case "me":
                     showStatsUser(channel, user, guildID);
                     break;
+                case "all":
+                    showStatsAll(channel, guildID);
+                    break;
                 default:
                     return false;
             }
@@ -106,13 +110,24 @@ public class Chat {
         } catch (SQLException ex) {
             Logger.getLogger(Chat.class.getName()).log(Level.SEVERE, "user could not be retrieved.", ex);
         }
-        long second = (uptime / 1000) % 60;
-        long minute = (uptime / (1000 * 60)) % 60;
-        long hour = (uptime / (1000 * 60 * 60)) % 24;
-        long day = (uptime / (1000 * 60 * 60 * 24));
-        String time = String.format("%d Tage, %02d Stunden, %02d Minuten und %02d Sekunden", day, hour, minute, second);
-        String personalStats = "Du hast insgesamt *" + time + "* auf diesem Server verbracht.";
+        String personalStats = "Du hast insgesamt *" + UtilityMethods.formatTime(uptime) + "* auf diesem Server verschwendet.";
         sendMessage(channel, personalStats);
+    }
+    /**
+     * 
+     * @param channel @link #showStats(IChannel, IUser, String, String[]) channel
+     * @param guildID @link #showStats(IChannel, IUser, String, String[]) guildID
+     */
+    private static void showStatsAll(IChannel channel, String guildID)
+    {
+       long uptime = 0;
+        try {
+            uptime = Main.dbService.getUptimeAll(guildID);
+        } catch (SQLException ex) {
+            Logger.getLogger(Chat.class.getName()).log(Level.SEVERE, "could not retrieve data for all users", ex);
+        }
+        String statsAll = "Ihr habt insgesamt *" + UtilityMethods.formatTime(uptime) + "* auf diesem Server verschwendet.";
+        sendMessage(channel, statsAll);
     }
     /**
      * Sends a message that informs the user of the use of a wrong command
