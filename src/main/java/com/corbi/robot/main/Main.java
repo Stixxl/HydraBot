@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -36,6 +37,7 @@ public class Main {
 
     public static void main(String[] args) {
         readConfig();
+        dbService.createTables();
         try {
             client = new ClientBuilder().withToken(Token).login();
         } catch (DiscordException ex) {
@@ -45,11 +47,11 @@ public class Main {
         client.getDispatcher().registerListener(new CommandExecutionListener());
         client.getDispatcher().registerListener(new CommandListener());
         client.getDispatcher().registerListener(new AudioListener());
-        
-    dbService.createTables();
-        }
+    }
+
     /**
-     * a method for reading the config and mapping its values to suited variables and such
+     * a method for reading the config and mapping its values to suited
+     * variables and such
      */
     public static void readConfig() {
         String path = "/src/main/resources/config.properties";
