@@ -5,6 +5,7 @@
  */
 package com.corbi.robot.actions;
 
+import com.corbi.robot.objects.User;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -67,10 +68,12 @@ public class DBService {
      * @param guild_id the server_id, in which the user was created
      * @throws java.sql.SQLException
      */
-    public void createUser(String id, String guild_id) throws SQLException {
+    public User createUser(String id, String guild_id) throws SQLException {
         PreparedStatement statement = con.prepareStatement(
                 "insert into " + DBNAME + ".USERS "
                 + "values('" + id + "', '" + guild_id + "', 0)");
+        execute(statement);
+        return new User(0, id, guild_id);
 
     }
 
@@ -82,10 +85,9 @@ public class DBService {
      * @throws SQLException
      */
     public void updateUser(String id, String guild_id, long uptime) throws SQLException {
-        PreparedStatement statement = null;
-        statement = con.prepareStatement(
+        PreparedStatement statement = statement = con.prepareStatement(
                 "SELECT * FROM " + DBNAME + ".USERS "//selects user, i will always be one user or none since (id, guild_id) is primary key
-                + "WHERE ID=?"
+                + "WHERE ID=? "
                 + "AND GUILD_ID=?", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);//sets ResultSet to be able to update
         //sets parameter in above statement
         statement.setString(1, id);
@@ -97,6 +99,30 @@ public class DBService {
         result.updateBigDecimal("uptime", BigDecimal.valueOf(uptime));
         result.updateRow();
         statement.close();
+    }
+    /**
+     * retrieves a user from the database and returns a user object
+     * @param id part of primary key
+     * @param guild_id part of primary key
+     * @return a user object, that represents that saved in the database
+     * @throws SQLException 
+     */
+    public User getUser(String id, String guild_id) throws SQLException {
+        PreparedStatement statement = con.prepareStatement(
+                "SELECT * FROM " + DBNAME + ".USERS "
+                + "WHERE ID=? "
+                + "AND GUILD_ID=?");
+        statement.setString(1, id);
+        statement.setString(2, guild_id);
+        ResultSet result = statement.executeQuery();
+        if (result.next()) {
+            BigDecimal uptime = result.getBigDecimal("UPTIME");
+            return new User(uptime.toBigInteger().longValue(), id, guild_id);
+
+        } else {
+            return null;
+        }
+
     }
 
     /**

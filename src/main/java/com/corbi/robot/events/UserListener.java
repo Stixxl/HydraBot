@@ -5,6 +5,7 @@
  */
 package com.corbi.robot.events;
 
+import com.corbi.robot.actions.Chat;
 import com.corbi.robot.main.Main;
 import com.corbi.robot.objects.User;
 import java.sql.SQLException;
@@ -18,6 +19,9 @@ import sx.blah.discord.handle.impl.events.PresenceUpdateEvent;
 import sx.blah.discord.handle.impl.events.UserJoinEvent;
 import sx.blah.discord.handle.impl.events.UserLeaveEvent;
 import sx.blah.discord.handle.obj.Presences;
+import sx.blah.discord.util.DiscordException;
+import sx.blah.discord.util.HTTP429Exception;
+import sx.blah.discord.util.MissingPermissionsException;
 
 /**
  * This class listens to events concerning users
@@ -36,11 +40,11 @@ public class UserListener {
      */
     @EventSubscriber
     public void onPresenceUpdated(PresenceUpdateEvent event) {
-        if(event.getOldPresence().equals(Presences.OFFLINE) && event.getNewPresence().equals(Presences.ONLINE))
+        if(event.getOldPresence().equals(Presences.OFFLINE) && event.getNewPresence().equals(Presences.ONLINE)) //user goes online
         {
             onOfflineToOnline(event);
         }
-        else if(event.getOldPresence().equals(Presences.ONLINE) && event.getNewPresence().equals(Presences.OFFLINE))
+        else if(event.getNewPresence().equals(Presences.OFFLINE)) //user goes offline
         {
             onOnlineToOffline(event);
         }
@@ -53,9 +57,17 @@ public class UserListener {
     public void onOfflineToOnline(PresenceUpdateEvent event) {
         String userID = event.getUser().getID();
         String guildID = event.getGuild().getID();
-        User user = new User(0, userID, guildID);
+        User user = null;
         try {
-            Main.dbService.createUser(userID, guildID);
+            user = Main.dbService.getUser(userID, guildID);//looks if user exists
+        } catch (SQLException ex) {
+            Logger.getLogger(UserListener.class.getName()).log(Level.SEVERE, "user could not be retrieved.", ex);
+        }
+        try {
+            if(user == null)
+            {
+            user = Main.dbService.createUser(userID, guildID);//creates user if none exists
+            }
         } catch (SQLException ex) {
             Logger.getLogger(UserListener.class.getName()).log(Level.SEVERE, "user could not be created.", ex);
         }
@@ -72,7 +84,18 @@ public class UserListener {
     public void onOnlineToOffline(PresenceUpdateEvent event) {
         long time = System.currentTimeMillis();
         for (User user : onlineUsers) {
-            if (user.getIUser().equals(event.getUser()) && user.getGuildID().equals(event.getGuild().getID()))//user on same server and same user as specified in event
+            if(user == null)
+            {
+                System.out.println("der Nutzer is ne null.");
+            }
+            if(event == null){
+                System.out.println("Die party war ein flop.");
+            }
+            if(event.getUser() == null)
+            {
+                System.out.println("does this even make sense?");
+            }
+            if (user.getId().equals(event.getUser().getID()) && user.getGuildID().equals(event.getGuild().getID()))//user on same server and same user as specified in event
             {
                 user.setUptime(time - user.getLoginTime() + user.getUptime());//current time - time of login + overall time spent online
                 try {

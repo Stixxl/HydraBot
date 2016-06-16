@@ -9,6 +9,7 @@ import com.corbi.robot.actions.DBService;
 import com.corbi.robot.events.AudioListener;
 import com.corbi.robot.events.CommandListener;
 import com.corbi.robot.events.CommandExecutionListener;
+import com.corbi.robot.events.UserListener;
 import com.corbi.robot.objects.User;
 import com.corbi.robot.utilities.UtilityMethods;
 import java.io.File;
@@ -47,6 +48,7 @@ public class Main {
         client.getDispatcher().registerListener(new CommandExecutionListener());
         client.getDispatcher().registerListener(new CommandListener());
         client.getDispatcher().registerListener(new AudioListener());
+        client.getDispatcher().registerListener(new UserListener());
     }
 
     /**

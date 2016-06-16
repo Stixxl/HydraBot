@@ -10,20 +10,21 @@ import sx.blah.discord.handle.obj.IUser;
 
 /**
  * identifies a user that ever was or is currently on the server
+ *
  * @author PogChamp
  */
-public class User{
-private long uptime;
-private String id;
-private String guildID;
-private IUser iUser;
-private final long loginTime;
+public class User {
+
+    private long uptime;
+    private String id;
+    private String guildID;
+    private final long loginTime;
 
     public User(long uptime, String id, String guildID) {
         this.uptime = uptime;
         this.id = id;
-        this.iUser = Main.client.getUserByID(id);
         this.loginTime = System.currentTimeMillis();
+        this.guildID = guildID;
     }
 
     public long getLoginTime() {
@@ -36,14 +37,6 @@ private final long loginTime;
 
     public void setGuildID(String guildID) {
         this.guildID = guildID;
-    }
-
-    public IUser getiUser() {
-        return iUser;
-    }
-
-    public void setiUser(IUser iUser) {
-        this.iUser = iUser;
     }
 
     public long getUptime() {
@@ -61,13 +54,4 @@ private final long loginTime;
     public void setId(String id) {
         this.id = id;
     }
-
-    public IUser getIUser() {
-        return iUser;
-    }
-
-    public void setIUser(IUser iUser) {
-        this.iUser = iUser;
-    }
-
 }

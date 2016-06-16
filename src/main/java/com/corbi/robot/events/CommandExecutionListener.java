@@ -20,35 +20,41 @@ import sx.blah.discord.util.MissingPermissionsException;
  * @author Stiglmair
  */
 public class CommandExecutionListener {
+
     @EventSubscriber
-    public void onReady(ReadyEvent event)
-    {
+    public void onReady(ReadyEvent event) {
         Optional<String> game = Optional.of("mit der Mumu deiner Mama");
         event.getClient().updatePresence(false, game);
     }
+
     /**
      * @param event event thatis thrown when a new command is received
      * @throws HTTP429Exception
      * @throws DiscordException
-     * @throws MissingPermissionsException 
-     * This method maps a command received through the chat to a suited method
+     * @throws MissingPermissionsException This method maps a command received
+     * through the chat to a suited method
      */
     @EventSubscriber
     public void handle(CommandExecutionEvent event) throws HTTP429Exception, DiscordException, MissingPermissionsException {
         String command = event.getCommand();
+        String args[] = event.getArgs();
         IChannel textChannel = event.getMessage().getChannel();
         switch (command) {
-                //chat
+            //chat
             case "daniel":
                 Chat.insultDaniel(textChannel);
-                break;            
+                break;
             case "noah":
                 Chat.tellBinsenweisheit(textChannel);
                 break;
-                //sounds
+            //sounds
             case "sounds":
-                if (!(Audio.handleSoundRequest(event.getArgs(), event.getMessage().getAuthor().getVoiceChannel(), textChannel))) {
-                    Chat.showUnsupportedFormatMessage(command, event.getArgs(), event.getMessage().getChannel());
+                if (!(Audio.handleSoundRequest(args, event.getBy().getVoiceChannel(), textChannel))) {
+                    Chat.showUnsupportedFormatMessage(command, args, textChannel);
+                }
+            case "stats":
+                if (!(Chat.showStats(textChannel, event.getBy(), event.getMessage().getGuild().getID(), args))) {
+                    Chat.showUnsupportedFormatMessage(command, args, textChannel);
                 }
                 break;
 
