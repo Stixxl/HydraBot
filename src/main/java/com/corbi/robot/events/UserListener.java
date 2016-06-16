@@ -14,8 +14,10 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import sx.blah.discord.api.EventSubscriber;
+import sx.blah.discord.handle.impl.events.PresenceUpdateEvent;
 import sx.blah.discord.handle.impl.events.UserJoinEvent;
 import sx.blah.discord.handle.impl.events.UserLeaveEvent;
+import sx.blah.discord.handle.obj.Presences;
 
 /**
  * This class listens to events concerning users
@@ -27,12 +29,28 @@ public class UserListener {
     public List<User> onlineUsers = new ArrayList<>();
 
     /**
-     * A user will be created and added to the list onlineUsers
-     *
-     * @param event event that is fired when a user joins a server
+     * 
+     *This method receives events that include the change of a satus (such as offline to online)
+     * and calls a suited method.
+     * @param event event that is fired when a user changes his presence
      */
     @EventSubscriber
-    public void onUserJoin(UserJoinEvent event) {
+    public void onPresenceUpdated(PresenceUpdateEvent event) {
+        if(event.getOldPresence().equals(Presences.OFFLINE) && event.getNewPresence().equals(Presences.ONLINE))
+        {
+            onOfflineToOnline(event);
+        }
+        else if(event.getOldPresence().equals(Presences.ONLINE) && event.getNewPresence().equals(Presences.OFFLINE))
+        {
+            onOnlineToOffline(event);
+        }
+    }
+    /**
+     * if the user was never logged on to the server before an instance will be created on the database.
+     * Also an user object is created and added to the List onlineUsers.
+     * @param event event that is fired when a user status changes from offline to online
+     */
+    public void onOfflineToOnline(PresenceUpdateEvent event) {
         String userID = event.getUser().getID();
         String guildID = event.getGuild().getID();
         User user = new User(0, userID, guildID);
@@ -45,13 +63,13 @@ public class UserListener {
     }
 
     /**
-     * The user's uptime will be updated and he will be removed from the list
+     * The user's uptime will be updated on the database and he will be removed from the list.
      * onlineUsers
      *
-     * @param event event that is fired when a user leaves a server
+     * @param event event that is fired when a user goes offline on a server
      */
     @EventSubscriber
-    public void onUserLeave(UserLeaveEvent event) {
+    public void onOnlineToOffline(PresenceUpdateEvent event) {
         long time = System.currentTimeMillis();
         for (User user : onlineUsers) {
             if (user.getIUser().equals(event.getUser()) && user.getGuildID().equals(event.getGuild().getID()))//user on same server and same user as specified in event

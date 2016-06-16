@@ -26,7 +26,7 @@ public File(String key, String path, int amountPlayed)
  * plays the file that is specified within the path
  * @param channel channel, where the audio is supposed to be played
  */
-public void play(IChannel channel){
+public void use(IChannel channel){
     
 }
 
