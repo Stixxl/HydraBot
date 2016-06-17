@@ -5,24 +5,18 @@
  */
 package com.corbi.robot.events;
 
-import com.corbi.robot.actions.Chat;
 import com.corbi.robot.main.Main;
+import com.corbi.robot.objects.Game;
 import com.corbi.robot.objects.User;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import sx.blah.discord.api.EventSubscriber;
 import sx.blah.discord.handle.impl.events.GameChangeEvent;
 import sx.blah.discord.handle.impl.events.PresenceUpdateEvent;
-import sx.blah.discord.handle.impl.events.UserJoinEvent;
-import sx.blah.discord.handle.impl.events.UserLeaveEvent;
 import sx.blah.discord.handle.obj.Presences;
-import sx.blah.discord.util.DiscordException;
-import sx.blah.discord.util.HTTP429Exception;
-import sx.blah.discord.util.MissingPermissionsException;
 
 /**
  * This class listens to events concerning users
@@ -90,7 +84,7 @@ public class UserListener {
         for (User user : onlineUsers) {
             if (user.getId().equals(event.getUser().getID()) && user.getGuildID().equals(event.getGuild().getID()))//user on same server and same user as specified in event
             {
-                user.setUptime(time - user.getLoginTime() + user.getUptime());//current time - time of login + overall time spent online
+                user.setUptime(time - user.getLoginTime() + user.getUptime());//current time - time of login + overall time spent online overall
                 try {
                     Main.userService.updateUser(user.getId(), user.getGuildID(), user.getUptime());
                 } catch (SQLException ex) {
@@ -102,14 +96,42 @@ public class UserListener {
         }
     }
 
+    /**
+     *
+     * @param event event that is fired whenever a game changes
+     */
     @EventSubscriber
     public void onGameChanged(GameChangeEvent event) {
         long time = System.currentTimeMillis();
-        String game = event.getNewGame().orElse("None");
+        String title = event.getNewGame().orElse("idle");
+        Game game = null;
         for (User user : onlineUsers) {
             if (user.getId().equals(event.getUser().getID()) && user.getGuildID().equals(event.getGuild().getID()))//user on same server and same user as specified in event
             {
-                
+                if (!(title.equals("idle"))) { // true if the new game is a game, false if user is now idle
+                    try {
+                        game = Main.gameService.getGame(title, user.getId(), user.getGuildID()); //retrieves game data, throws exception if none is retrieved
+                    } catch (SQLException ex) {
+                        Logger.getLogger(UserListener.class.getName()).log(Level.SEVERE, "game could not be retrieved.", ex);
+                    }
+                    if (game == null) {
+                        try {
+                            game = Main.gameService.createGame(title, user.getId(), user.getGuildID()); // creates game, throws excepton if none could be created; either getGame or createGame should always work
+                        } catch (SQLException ex) {
+                            Logger.getLogger(UserListener.class.getName()).log(Level.SEVERE, "game could not be created.", ex);
+                        }
+                    }
+                }
+                try {
+                    if (user.getGame() != null) { //true if the user was playing a game
+                        //will update the game; increments the AmountPlayed and calculates new overall time as follows: current time - time of login + overall time spent online overall
+                        Main.gameService.updateGame(user.getGame().getTitle(), user.getId(), user.getGuildID(), user.getGame().getTimesPlayed() + 1, time - user.getGame().getStartTime() + user.getGame().getOverallTime());
+                    }
+                } catch (SQLException ex) {
+                    Logger.getLogger(UserListener.class.getName()).log(Level.SEVERE, "could not upodate game.", ex);
+                }
+                user.setGame(game); //informs the user object of new game
+                break;
             }
         }
     }

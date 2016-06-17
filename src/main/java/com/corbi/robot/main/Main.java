@@ -42,7 +42,6 @@ public class Main {
 
     public static void main(String[] args) {
         readConfig();
-        dbService.createTables();
         userService = dbService.getUserService();
         gameService = dbService.getGameService();
         

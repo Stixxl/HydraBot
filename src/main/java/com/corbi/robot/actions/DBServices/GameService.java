@@ -34,14 +34,12 @@ public class GameService {
      * @param guildID server that the user is online on
      * @return the newly created Game
      */
-    public Game createGame(String title, String id, String guildID) {
-        try {
+    public Game createGame(String title, String id, String guildID) throws SQLException {
+
             PreparedStatement statement = con.prepareStatement("INSERT INTO " + DBNAME
                     + " values('" + title + "', '" + id + "', '" + guildID + "', 0, 0");
             DBService.execute(statement);
-        } catch (SQLException ex) {
-            Logger.getLogger(DBService.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
         return new Game(title, 0, 0);
     }
     /**
@@ -51,10 +49,8 @@ public class GameService {
      * @param guildID server that the user is online on
      * @return the requested Game; null if game wasnt found
      */
-    public Game getGame(String title, String id, String guildID) {
-        PreparedStatement statement;
-        try {
-            statement = con.prepareStatement("Select * FROM " + DBNAME
+    public Game getGame(String title, String id, String guildID) throws SQLException {
+        PreparedStatement statement = con.prepareStatement("Select * FROM " + DBNAME
                     + " WHERE TITLE=? "
                     + "AND ID=? "
                     + "AND GUILD_ID=?");
@@ -67,9 +63,7 @@ public class GameService {
 
                 return new Game(title, result.getBigDecimal("TIME_PLAYED").longValue(), result.getInt("AMOUNT_PLAYED"));
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(DBService.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
         return null;
     }
     /**
@@ -81,8 +75,8 @@ public class GameService {
      * @param timePlayed the overall time that was spent on the game by the user
      * @return the updated Game; null if game wasnt found
      */
-    public Game updateGame(String title, String id, String guildID, int amountPlayed, long timePlayed) {
-        try {
+    public Game updateGame(String title, String id, String guildID, int amountPlayed, long timePlayed) throws SQLException {
+
             PreparedStatement statement = con.prepareStatement(
                     "SELECT * FROM" + DBNAME
                             + " WHERE TITLE =? "
@@ -98,9 +92,7 @@ public class GameService {
                 result.updateRow();
                 return new Game(title, timePlayed, amountPlayed);
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(GameService.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
         return null;
     }
 }
