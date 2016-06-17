@@ -5,7 +5,9 @@
  */
 package com.corbi.robot.main;
 
-import com.corbi.robot.actions.DBService;
+import com.corbi.robot.actions.DBServices.DBService;
+import com.corbi.robot.actions.DBServices.GameService;
+import com.corbi.robot.actions.DBServices.UserService;
 import com.corbi.robot.events.AudioListener;
 import com.corbi.robot.events.CommandListener;
 import com.corbi.robot.events.CommandExecutionListener;
@@ -35,10 +37,15 @@ public class Main {
     public static IDiscordClient client;
     private static String Token;
     public static DBService dbService;
+    public static UserService userService;
+    public static GameService gameService;
 
     public static void main(String[] args) {
         readConfig();
         dbService.createTables();
+        userService = dbService.getUserService();
+        gameService = dbService.getGameService();
+        
         try {
             client = new ClientBuilder().withToken(Token).login();
         } catch (DiscordException ex) {

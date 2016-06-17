@@ -19,6 +19,7 @@ public class User {
     private String id;
     private String guildID;
     private final long loginTime;
+    private Game game;
 
     public User(long uptime, String id, String guildID) {
         this.uptime = uptime;
@@ -53,5 +54,13 @@ public class User {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public Game getGame() {
+        return game;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
     }
 }

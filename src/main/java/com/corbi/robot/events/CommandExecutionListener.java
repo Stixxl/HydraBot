@@ -52,6 +52,8 @@ public class CommandExecutionListener {
                 if (!(Audio.handleSoundRequest(args, event.getBy().getVoiceChannel(), textChannel))) {
                     Chat.showUnsupportedFormatMessage(command, args, textChannel);
                 }
+                break;
+                //statistics
             case "stats":
                 if (!(Chat.showStats(textChannel, event.getBy(), event.getMessage().getGuild().getID(), args))) {
                     Chat.showUnsupportedFormatMessage(command, args, textChannel);

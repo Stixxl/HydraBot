@@ -106,7 +106,7 @@ public class Chat {
     private static void showStatsUser(IChannel channel, IUser user, String guildID) {
         long uptime = 0;
         try {
-            uptime = Main.dbService.getUser(user.getID(), guildID).getUptime();
+            uptime = Main.userService.getUser(user.getID(), guildID).getUptime();
         } catch (SQLException ex) {
             Logger.getLogger(Chat.class.getName()).log(Level.SEVERE, "user could not be retrieved.", ex);
         }
@@ -122,7 +122,7 @@ public class Chat {
     {
        long uptime = 0;
         try {
-            uptime = Main.dbService.getUptimeAll(guildID);
+            uptime = Main.userService.getUptimeAll(guildID);
         } catch (SQLException ex) {
             Logger.getLogger(Chat.class.getName()).log(Level.SEVERE, "could not retrieve data for all users", ex);
         }
