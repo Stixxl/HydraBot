@@ -6,9 +6,11 @@
 package com.corbi.robot.actions;
 
 import com.corbi.robot.main.Main;
+import com.corbi.robot.objects.Game;
 import com.corbi.robot.utilities.UtilityMethods;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -106,12 +108,28 @@ public class Chat {
      */
     private static void showStatsUser(IChannel channel, IUser user, String guildID) {
         long uptime = 0;
+        List<Game> games = null;
         try {
             uptime = Main.userService.getUser(user.getID(), guildID).getUptime();
         } catch (SQLException ex) {
             Logger.getLogger(Chat.class.getName()).log(Level.SEVERE, "user could not be retrieved.", ex);
         }
-        String personalStats = "Du hast insgesamt *" + UtilityMethods.formatTime(uptime) + "* auf diesem Server verschwendet.";
+        try {
+            games = Main.gameService.getGames(user.getID(), guildID);
+        } catch (SQLException ex) {
+            Logger.getLogger(Chat.class.getName()).log(Level.SEVERE, "games could not be retrieved.", ex);
+        }
+        StringBuilder sb = new StringBuilder();
+        if(games !=null)
+        {
+            sb.append("Deine verschwendete Zeit teilst du anscheinend wie folgt auf:");
+        }
+        for(int i = 0; i < games.size(); i++)
+        {
+            sb.append(System.lineSeparator()).append(String.valueOf(i)).append(games.get(i).toString());
+        }
+        String personalStats = "Du hast insgesamt *" + UtilityMethods.formatTime(uptime) + "* auf diesem Server verschwendet."
+                + System.lineSeparator() + sb.toString();
         sendMessage(channel, personalStats);
     }
     /**
@@ -121,11 +139,26 @@ public class Chat {
      */
     private static void showStatsAll(IChannel channel, String guildID)
     {
-       long uptime = 0;
+       long uptime = 0;     
+       List<Game> games = null;
         try {
             uptime = Main.userService.getUptimeAll(guildID);
         } catch (SQLException ex) {
             Logger.getLogger(Chat.class.getName()).log(Level.SEVERE, "could not retrieve data for all users", ex);
+        }
+        try {
+            games = Main.gameService.getGamesAll(guildID);
+        } catch (SQLException ex) {
+            Logger.getLogger(Chat.class.getName()).log(Level.SEVERE, "could not retrieve game data for all users.", ex);
+        }
+                StringBuilder sb = new StringBuilder();
+        if(games !=null)
+        {
+            sb.append("Eure verschwendete Zeit teilt ihr anscheinend wie folgt auf:");
+        }
+        for(int i = 0; i < games.size(); i++)
+        {
+            sb.append(System.lineSeparator()).append(String.valueOf(i)).append(games.get(i).toString());
         }
         String statsAll = "Ihr habt insgesamt *" + UtilityMethods.formatTime(uptime) + "* auf diesem Server verschwendet.";
         sendMessage(channel, statsAll);
