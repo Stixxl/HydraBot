@@ -5,6 +5,8 @@
  */
 package com.corbi.robot.objects;
 
+import com.corbi.robot.utilities.UtilityMethods;
+
 /**
  * represents a game that is being monitored by discord
  *
@@ -13,6 +15,7 @@ package com.corbi.robot.objects;
 public class Game {
 
     private String title;
+    private String tier;
     private long startTime;
     private long time_played;
     private int amount_played;
@@ -22,6 +25,7 @@ public class Game {
         this.time_played = overallTime;
         this.amount_played = timesPlayed;
         this.startTime = System.currentTimeMillis();
+        this.tier = calculateTier();
     }
 
     public String getTitle() {
@@ -55,5 +59,9 @@ public class Game {
     public void setAmount_played(int amount_played) {
         this.amount_played = amount_played;
     }
-
+    @Override
+    public String toString()
+{
+    return "*" + title + "* - Zeit gespielt: " + UtilityMethods.formatTime(time_played) + "; Anzahl Aufrufe: " + String.valueOf(amount_played);
+}
 }

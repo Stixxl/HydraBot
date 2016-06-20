@@ -18,6 +18,7 @@ public class User {
     private long uptime;
     private String id;
     private String guildID;
+    private String tier;
     private final long loginTime;
     private Game game;
 
@@ -26,6 +27,7 @@ public class User {
         this.id = id;
         this.loginTime = System.currentTimeMillis();
         this.guildID = guildID;
+        this.tier = calculateTier();
     }
 
     public long getLoginTime() {
