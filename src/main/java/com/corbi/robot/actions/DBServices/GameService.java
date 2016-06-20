@@ -11,24 +11,28 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  * Handles db requests for the table GAMES
+ *
  * @author PogChamp
  */
 public class GameService {
 
-    private final String DBNAME;
+    private final String TABLENAME;
     private final Connection con;
 
     protected GameService(String DBNAME, Connection con) {
-        this.DBNAME = DBNAME + ".GAMES";
+        this.TABLENAME = DBNAME + ".GAMES";
         this.con = con;
     }
+
     /**
-     * 
+     *
      * @param title title of the game that is being played
      * @param id id of the user
      * @param guildID server that the user is online on
@@ -36,38 +40,40 @@ public class GameService {
      */
     public Game createGame(String title, String id, String guildID) throws SQLException {
 
-            PreparedStatement statement = con.prepareStatement("INSERT INTO " + DBNAME
-                    + " values('" + title + "', '" + id + "', '" + guildID + "', 0, 0");
-            DBService.execute(statement);
+        PreparedStatement statement = con.prepareStatement("INSERT INTO " + TABLENAME
+                + " values('" + title + "', '" + id + "', '" + guildID + "', 0, 0");
+        DBService.execute(statement);
 
         return new Game(title, 0, 0);
     }
+
     /**
-     * 
+     *
      * @param title of the game that is requested
      * @param id id of the user
      * @param guildID server that the user is online on
      * @return the requested Game; null if game wasnt found
      */
     public Game getGame(String title, String id, String guildID) throws SQLException {
-        PreparedStatement statement = con.prepareStatement("Select * FROM " + DBNAME
-                    + " WHERE TITLE=? "
-                    + "AND ID=? "
-                    + "AND GUILD_ID=?");
+        PreparedStatement statement = con.prepareStatement("Select * FROM " + TABLENAME
+                + " WHERE title=? "
+                + "AND id=? "
+                + "AND guild_id=?");
 
-            statement.setString(1, title);
-            statement.setString(2, id);
-            statement.setString(3, guildID);
-            ResultSet result = statement.executeQuery();
-            if (result.next()) {
+        statement.setString(1, title);
+        statement.setString(2, id);
+        statement.setString(3, guildID);
+        ResultSet result = statement.executeQuery();
+        if (result.next()) {
 
-                return new Game(title, result.getBigDecimal("TIME_PLAYED").longValue(), result.getInt("AMOUNT_PLAYED"));
-            }
+            return new Game(title, result.getBigDecimal("time_played").longValue(), result.getInt("amount_played"));
+        }
 
         return null;
     }
+
     /**
-     * 
+     *
      * @param title the title of the game that will be updated
      * @param id id of the user
      * @param guildID server that the user is online on
@@ -77,22 +83,78 @@ public class GameService {
      */
     public Game updateGame(String title, String id, String guildID, int amountPlayed, long timePlayed) throws SQLException {
 
-            PreparedStatement statement = con.prepareStatement(
-                    "SELECT * FROM" + DBNAME
-                            + " WHERE TITLE =? "
-                            + "AND ID=?"
-                            + "AND GUILD_ID=?", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-            statement.setString(1, title);
-            statement.setString(2, id);
-            statement.setString(3, guildID);
-            ResultSet result = statement.executeQuery();
-            if(result.next()){
-                result.updateInt("AMOUNT_PLAYED", amountPlayed);
-                result.updateBigDecimal("TIME_PLAYED", BigDecimal.valueOf(timePlayed));
-                result.updateRow();
-                return new Game(title, timePlayed, amountPlayed);
-            }
+        PreparedStatement statement = con.prepareStatement("SELECT * FROM" + TABLENAME
+                + " WHERE title =? "
+                + "AND id=?"
+                + "AND guild_id=?", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+        statement.setString(1, title);
+        statement.setString(2, id);
+        statement.setString(3, guildID);
+        ResultSet result = statement.executeQuery();
+        if (result.next()) {
+            result.updateInt("amount_played", amountPlayed);
+            result.updateBigDecimal("time_played", BigDecimal.valueOf(timePlayed));
+            result.updateRow();
+            return new Game(title, timePlayed, amountPlayed);
+        }
 
         return null;
+    }
+
+    /**
+     * requests all games from the server for a given user
+     *
+     * @param id id of the user
+     * @param guildID server id from which the request is sent
+     * @return a list of games that are associated with the user; null if there
+     * are none
+     * @throws SQLException
+     */
+    public List<Game> getGames(String id, String guildID) throws SQLException {
+        List<Game> games = new ArrayList<>();
+        PreparedStatement statement = con.prepareStatement("SELECT * FROM " + TABLENAME
+                + " WHERE id=? "
+                + "AND guild_id=? "
+                + "ORDER BY time_played DESC");
+        statement.setString(1, id);
+        statement.setString(2, guildID);
+        ResultSet result = statement.executeQuery();
+        while (result.next()) {
+            int amount_played = result.getInt("amount_played");
+            long time_played = result.getBigDecimal("time_played").longValue();
+            String title = result.getString("title");
+            games.add(new Game(title, time_played, amount_played));
+        }
+        return games;
+    }
+
+    /**
+     * returns a list of games for all users
+     *
+     * @param guildID server id from which the request is sent
+     * @return a summarized list of games
+     * @throws SQLException
+     */
+    public List<Game> getGamesAll(String guildID) throws SQLException {
+        List<Game> games = new ArrayList<>();
+        PreparedStatement statement = con.prepareStatement("SELECT DISTINCT title, ua1.amount_played_all, ua2.time_played_all FROM "
+                + TABLENAME + ", "
+                + "(SELECT SUM(amount_played) AS amount_played_all, title t FROM " + TABLENAME
+                + "WHERE guild_id=? "
+                + "GROUP BY title) AS ua1, "
+                + "(SELECT SUM(time_played) AS time_played_all, title t FROM " + TABLENAME
+                + "WHERE guild_id=? "
+                + "GROUP BY title) as ua2 "
+                + "WHERE title=ua1.title "
+                + "and title=ua2.title");
+        statement.setString(1, guildID);
+        ResultSet result = statement.executeQuery();
+        while (result.next()) {
+            int amount_played = result.getInt("AMOUNT_PLAYED");
+            long time_played = result.getBigDecimal("TIME_PLAYED").longValue();
+            String title = result.getString("TITLE");
+            games.add(new Game(title, time_played, amount_played));
+        }
+        return games;
     }
 }

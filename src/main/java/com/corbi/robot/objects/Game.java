@@ -7,17 +7,20 @@ package com.corbi.robot.objects;
 
 /**
  * represents a game that is being monitored by discord
+ *
  * @author PogChamp
  */
 public class Game {
-     private String title;
+
+    private String title;
     private long startTime;
-    private long overallTime;
-    private int timesPlayed;
+    private long time_played;
+    private int amount_played;
+
     public Game(String name, long overallTime, int timesPlayed) {
         this.title = name;
-        this.overallTime = overallTime;
-        this.timesPlayed = timesPlayed;
+        this.time_played = overallTime;
+        this.amount_played = timesPlayed;
         this.startTime = System.currentTimeMillis();
     }
 
@@ -37,20 +40,20 @@ public class Game {
         this.startTime = startTime;
     }
 
-    public long getOverallTime() {
-        return overallTime;
+    public long getTime_played() {
+        return time_played;
     }
 
-    public void setOverallTime(long overallTime) {
-        this.overallTime = overallTime;
+    public void setTime_played(long time_played) {
+        this.time_played = time_played;
     }
 
-    public int getTimesPlayed() {
-        return timesPlayed;
+    public int getAmount_played() {
+        return amount_played;
     }
 
-    public void setTimesPlayed(int timesPlayed) {
-        this.timesPlayed = timesPlayed;
+    public void setAmount_played(int amount_played) {
+        this.amount_played = amount_played;
     }
 
 }

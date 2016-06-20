@@ -125,7 +125,7 @@ public class UserListener {
                 try {
                     if (user.getGame() != null) { //true if the user was playing a game
                         //will update the game; increments the AmountPlayed and calculates new overall time as follows: current time - time of login + overall time spent online overall
-                        Main.gameService.updateGame(user.getGame().getTitle(), user.getId(), user.getGuildID(), user.getGame().getTimesPlayed() + 1, time - user.getGame().getStartTime() + user.getGame().getOverallTime());
+                        Main.gameService.updateGame(user.getGame().getTitle(), user.getId(), user.getGuildID(), user.getGame().getAmount_played() + 1, time - user.getGame().getStartTime() + user.getGame().getTime_played());
                     }
                 } catch (SQLException ex) {
                     Logger.getLogger(UserListener.class.getName()).log(Level.SEVERE, "could not upodate game.", ex);

@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 public class DBService {
 
     Connection con;
-    private static final String DBNAME = "HydraBotDB";
+    private static final String TABLENAME = "HydraBotDB";
 
     public DBService(String username, String password) {
         try {
@@ -33,8 +33,7 @@ public class DBService {
             Logger.getLogger(DBService.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
-            con = DriverManager.getConnection(
-                    "jdbc:postgresql:" + DBNAME,
+            con = DriverManager.getConnection("jdbc:postgresql:" + TABLENAME,
                     username,
                     password);
             con.setAutoCommit(true);
@@ -44,11 +43,11 @@ public class DBService {
     }
     
 public UserService getUserService(){
-     return new UserService(DBNAME, con);
+     return new UserService(TABLENAME, con);
  }
 
 public GameService getGameService(){
-    return new GameService(DBNAME, con);
+    return new GameService(TABLENAME, con);
 }
     /**
      * This method sends a SQL-Statement to the database

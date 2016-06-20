@@ -54,7 +54,8 @@ public class Chat {
      * @throws MissingPermissionsException
      */
     public static void tellBinsenweisheit(IChannel channel) throws HTTP429Exception, DiscordException, MissingPermissionsException {
-        String[] binsenweisheiten = {"Kämpfe nie 1 gegen 3.", "Die ultimative Fähigkeit kann auch zum Fliehen eines aussichtlosen Kampfes genutzt werden."};
+        String[] binsenweisheiten = {"Ein Kampf, in dem die zahlenmäßige Unterlegenheit zwei oder mehr beträgt, ist kein Kampf, sondern eine Dummheit.",
+            "Die ultimative Fähigkeit kann auch zum Fliehen eines aussichtlosen Kampfes genutzt werden."};
         Random randInt = new Random(System.currentTimeMillis());
 
         int index = randInt.nextInt(binsenweisheiten.length);
