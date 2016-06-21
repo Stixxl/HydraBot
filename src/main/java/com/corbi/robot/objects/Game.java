@@ -15,7 +15,6 @@ import com.corbi.robot.utilities.UtilityMethods;
 public class Game {
 
     private String title;
-    private String tier;
     private long startTime;
     private long time_played;
     private int amount_played;
@@ -25,7 +24,6 @@ public class Game {
         this.time_played = overallTime;
         this.amount_played = timesPlayed;
         this.startTime = System.currentTimeMillis();
-        this.tier = calculateTier();
     }
 
     public String getTitle() {
