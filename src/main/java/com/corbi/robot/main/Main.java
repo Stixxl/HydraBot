@@ -42,8 +42,8 @@ public class Main {
 
     public static void main(String[] args) {
         readConfig();
-        userService = dbService.getUserService();
-        gameService = dbService.getGameService();
+        //userService = dbService.getUserService();
+        //gameService = dbService.getGameService();
         
         try {
             client = new ClientBuilder().withToken(Token).login();
@@ -62,10 +62,13 @@ public class Main {
      * variables and such
      */
     public static void readConfig() {
-        String path = "/src/main/resources/config.properties";
+        String path = "/config.properties";
         path = UtilityMethods.generatePath(path);
         File f = new File(path);
+        System.out.println(f.exists());
+        System.out.println(f.getPath());
         if (f.exists() && !f.isDirectory()) {//true if there is configurationdata to be read, false otherwise
+            
             Properties properties = new Properties();
             FileInputStream inStream = null;
             try {
