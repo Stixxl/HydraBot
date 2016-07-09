@@ -7,6 +7,7 @@ package com.corbi.robot.main;
 
 import com.corbi.robot.actions.DBServices.DBService;
 import com.corbi.robot.actions.DBServices.GameService;
+import com.corbi.robot.actions.DBServices.SoundService;
 import com.corbi.robot.actions.DBServices.UserService;
 import com.corbi.robot.events.AudioListener;
 import com.corbi.robot.events.CommandListener;
@@ -39,11 +40,13 @@ public class Main {
     public static DBService dbService;
     public static UserService userService;
     public static GameService gameService;
+    public static SoundService soundService;
 
     public static void main(String[] args) {
         readConfig();
-        //userService = dbService.getUserService();
-        //gameService = dbService.getGameService();
+        userService = dbService.getUserService();
+        gameService = dbService.getGameService();
+        soundService = dbService.getSoundService();
         
         try {
             client = new ClientBuilder().withToken(Token).login();
@@ -62,11 +65,9 @@ public class Main {
      * variables and such
      */
     public static void readConfig() {
-        String path = "/config.properties";
+        String path = "config.properties";
         path = UtilityMethods.generatePath(path);
         File f = new File(path);
-        System.out.println(f.exists());
-        System.out.println(f.getPath());
         if (f.exists() && !f.isDirectory()) {//true if there is configurationdata to be read, false otherwise
             
             Properties properties = new Properties();

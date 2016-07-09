@@ -19,7 +19,7 @@ public class UtilityMethods {
      */
     public static String generatePath(String relativePath)
     {
-        String currentDirPath = new File("").getAbsolutePath();
+        String currentDirPath = new File("").getAbsolutePath() + "/";
         return currentDirPath.concat(relativePath);
     }
     /**

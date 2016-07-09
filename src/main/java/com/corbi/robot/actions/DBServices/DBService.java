@@ -49,6 +49,9 @@ public UserService getUserService(){
 public GameService getGameService(){
     return new GameService(TABLENAME, con);
 }
+public SoundService getSoundService(){
+    return new SoundService(TABLENAME, con);
+}
     /**
      * This method sends a SQL-Statement to the database
      *

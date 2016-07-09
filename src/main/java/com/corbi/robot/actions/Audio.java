@@ -1,8 +1,12 @@
 package com.corbi.robot.actions;
 
+import com.corbi.robot.main.Main;
 import com.corbi.robot.utilities.UtilityMethods;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IVoiceChannel;
 import sx.blah.discord.util.DiscordException;
@@ -20,8 +24,6 @@ import sx.blah.discord.util.MissingPermissionsException;
  * say. Any Audiocommand should use this class.
  */
 public class Audio {
-    private static HashMap<String, String> Sounds = new HashMap<>();
-    private static final String AUDIO_PATH = "/src/main/resources/AudioFiles/";
 
     /**
      *
@@ -36,18 +38,20 @@ public class Audio {
      * @throws MissingPermissionsException
      */
     public static boolean handleSoundRequest(String[] args, Optional<IVoiceChannel> optionalChannel, IChannel textChannel) throws DiscordException, HTTP429Exception, MissingPermissionsException {
-        Sounds.put("rko", AUDIO_PATH + "RKO.mp3");//TODO find good way to map keys to paths; find out how to do relative paths
-        Sounds.put("cena", AUDIO_PATH + "John_Cena.mp3");
-        Sounds.put("faker", AUDIO_PATH + "Faker_what_was_that.mp3");
         if (args.length == 1) {
 
             if (optionalChannel.isPresent()) { //true if user is in VoiceChannel, false otherwise
                 IVoiceChannel voiceChannel = optionalChannel.get();
-                String path = Sounds.get(args[0]);
+                String path = null;
+                try {
+                    path = Main.soundService.getPath(args[0]);
+                } catch (SQLException ex) {
+                    Logger.getLogger(Audio.class.getName()).log(Level.SEVERE, null, ex);
+                }
 
                 if (path != null) {//true, if requested sound exists in database, false otherwise
-
-                    playSound(UtilityMethods.generatePath(path), voiceChannel);
+                    path = UtilityMethods.generatePath(path);
+                    playSound(path, voiceChannel);
                 } else {
                     return false;
                 }

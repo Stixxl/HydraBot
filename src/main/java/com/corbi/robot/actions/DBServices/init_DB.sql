@@ -15,3 +15,8 @@
                     FOREIGN KEY (ID, GUILD_ID) references  HydraBot.USERS ON DELETE CASCADE,
                     PRIMARY KEY(ID, GUILD_ID, TITLE))
 
+                    CREATE TABLE HydraBot.SOUNDS
+                    (name varchar(255) NOT NULL,
+                    path varchar(511) NOT NULL,
+                    PRIMARY KEY (name))
+                    
