@@ -46,7 +46,7 @@ public class Audio {
                 try {
                     path = Main.soundService.getPath(args[0]);
                 } catch (SQLException ex) {
-                    Logger.getLogger(Audio.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getGlobal().log(Level.SEVERE, null, ex);
                 }
 
                 if (path != null) {//true, if requested sound exists in database, false otherwise

@@ -18,8 +18,9 @@ import java.sql.SQLException;
  * @author PogChamp
  */
 public class UserService {
-private final String TABLENAME;
-private final Connection con;
+
+    private final String TABLENAME;
+    private final Connection con;
 
     protected UserService(String DBNAME, Connection con) {
         this.TABLENAME = DBNAME + ".USERS";
@@ -83,9 +84,13 @@ private final Connection con;
         ResultSet result = statement.executeQuery();
         if (result.next()) {
             BigDecimal uptime = result.getBigDecimal("uptime");
+
+            statement.close();
             return new User(uptime.longValue(), id, guild_id);
 
         } else {
+
+            statement.close();
             return null;
         }
 
@@ -94,7 +99,7 @@ private final Connection con;
     /**
      * gets the uptime of all users combined
      *
-     * @param guildID the server on which the overall uptime is requested
+     * @param guildID the server, on which the overall uptime is requested
      * @return the overall uptime
      * @throws SQLException
      */
@@ -107,6 +112,7 @@ private final Connection con;
         while (result.next()) {
             uptimeAll += result.getBigDecimal("uptime").longValue();
         }
+        statement.close();
         return uptimeAll;
     }
 }

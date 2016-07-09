@@ -41,9 +41,9 @@ public class GameService {
     public Game createGame(String title, String id, String guildID) throws SQLException {
 
         PreparedStatement statement = con.prepareStatement("INSERT INTO " + TABLENAME
-                + " values('" + title + "', '" + id + "', '" + guildID + "', 0, 0");
+                + " values('" + title + "', '" + id + "', '" + guildID + "', 0, 0)");
         DBService.execute(statement);
-
+        statement.close();
         return new Game(title, 0, 0);
     }
 
@@ -66,9 +66,11 @@ public class GameService {
         ResultSet result = statement.executeQuery();
         if (result.next()) {
 
+            statement.close();
             return new Game(title, result.getBigDecimal("time_played").longValue(), result.getInt("amount_played"));
         }
 
+        statement.close();
         return null;
     }
 
@@ -95,9 +97,12 @@ public class GameService {
             result.updateInt("amount_played", amountPlayed);
             result.updateBigDecimal("time_played", BigDecimal.valueOf(timePlayed));
             result.updateRow();
+
+            statement.close();
             return new Game(title, timePlayed, amountPlayed);
         }
 
+        statement.close();
         return null;
     }
 
@@ -125,6 +130,7 @@ public class GameService {
             String title = result.getString("title");
             games.add(new Game(title, time_played, amount_played));
         }
+        statement.close();
         return games;
     }
 
@@ -140,14 +146,15 @@ public class GameService {
         PreparedStatement statement = con.prepareStatement("SELECT DISTINCT title, ua1.amount_played_all, ua2.time_played_all FROM "
                 + TABLENAME + ", "
                 + "(SELECT SUM(amount_played) AS amount_played_all, title t FROM " + TABLENAME
-                + "WHERE guild_id=? "
+                + " WHERE guild_id=? "
                 + "GROUP BY title) AS ua1, "
                 + "(SELECT SUM(time_played) AS time_played_all, title t FROM " + TABLENAME
-                + "WHERE guild_id=? "
+                + " WHERE guild_id=? "
                 + "GROUP BY title) as ua2 "
                 + "WHERE title=ua1.title "
                 + "and title=ua2.title");
         statement.setString(1, guildID);
+        statement.setString(2, guildID);
         ResultSet result = statement.executeQuery();
         while (result.next()) {
             int amount_played = result.getInt("AMOUNT_PLAYED");
@@ -155,6 +162,7 @@ public class GameService {
             String title = result.getString("TITLE");
             games.add(new Game(title, time_played, amount_played));
         }
+        statement.close();
         return games;
     }
 }

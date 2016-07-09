@@ -57,7 +57,8 @@ public class Chat {
      */
     public static void tellBinsenweisheit(IChannel channel) throws HTTP429Exception, DiscordException, MissingPermissionsException {
         String[] binsenweisheiten = {"Ein Kampf, in dem die zahlenmäßige Unterlegenheit zwei oder mehr beträgt, ist kein Kampf, sondern eine Dummheit.",
-            "Die ultimative Fähigkeit kann auch zum Fliehen eines aussichtlosen Kampfes genutzt werden."};
+            "Die ultimative Fähigkeit kann auch zum Fliehen eines aussichtlosen Kampfes genutzt werden.", "Sollte eine Person angerufen werden, so bite diese darum, dir ihren Gesprächspartner mitzuteilen. "
+                + "Dies hat den Vorteil eines angenehmen Themas sollte es zu sogenanntem \"Smalltalk\" kommen."};
         Random randInt = new Random(System.currentTimeMillis());
 
         int index = randInt.nextInt(binsenweisheiten.length);
@@ -112,12 +113,12 @@ public class Chat {
         try {
             uptime = Main.userService.getUser(user.getID(), guildID).getUptime();
         } catch (SQLException ex) {
-            Logger.getLogger(Chat.class.getName()).log(Level.SEVERE, "user could not be retrieved.", ex);
+            Logger.getGlobal().log(Level.SEVERE, "user could not be retrieved.", ex);
         }
         try {
             games = Main.gameService.getGames(user.getID(), guildID);
         } catch (SQLException ex) {
-            Logger.getLogger(Chat.class.getName()).log(Level.SEVERE, "games could not be retrieved.", ex);
+            Logger.getGlobal().log(Level.SEVERE, "games could not be retrieved.", ex);
         }
         StringBuilder sb = new StringBuilder();
         if(games !=null)
@@ -144,12 +145,12 @@ public class Chat {
         try {
             uptime = Main.userService.getUptimeAll(guildID);
         } catch (SQLException ex) {
-            Logger.getLogger(Chat.class.getName()).log(Level.SEVERE, "could not retrieve data for all users", ex);
+            Logger.getGlobal().log(Level.SEVERE, "could not retrieve data for all users", ex);
         }
         try {
             games = Main.gameService.getGamesAll(guildID);
         } catch (SQLException ex) {
-            Logger.getLogger(Chat.class.getName()).log(Level.SEVERE, "could not retrieve game data for all users.", ex);
+            Logger.getGlobal().log(Level.SEVERE, "could not retrieve game data for all users.", ex);
         }
                 StringBuilder sb = new StringBuilder();
         if(games !=null)
@@ -198,7 +199,7 @@ public class Chat {
         try {
             new MessageBuilder(Main.client).withChannel(channel).withContent(content).build();
         } catch (HTTP429Exception | DiscordException | MissingPermissionsException ex) {
-            Logger.getLogger(Chat.class.getName()).log(Level.SEVERE, "message could not be sent.", ex);
+            Logger.getGlobal().log(Level.SEVERE, "message could not be sent.", ex);
         }
     }
 }

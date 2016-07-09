@@ -60,14 +60,14 @@ public class UserListener {
         try {
             user = Main.userService.getUser(userID, guildID);//looks if user exists
         } catch (SQLException ex) {
-            Logger.getLogger(UserListener.class.getName()).log(Level.SEVERE, "user could not be retrieved.", ex);
+            Logger.getGlobal().log(Level.SEVERE, "user could not be retrieved.", ex);
         }
         try {
             if (user == null) {
                 user = Main.userService.createUser(userID, guildID);//creates user if none exists
             }
         } catch (SQLException ex) {
-            Logger.getLogger(UserListener.class.getName()).log(Level.SEVERE, "user could not be created.", ex);
+            Logger.getGlobal().log(Level.SEVERE, "user could not be created.", ex);
         }
         onlineUsers.add(user);
     }
@@ -88,9 +88,10 @@ public class UserListener {
                 try {
                     Main.userService.updateUser(user.getId(), user.getGuildID(), user.getUptime());
                 } catch (SQLException ex) {
-                    Logger.getLogger(UserListener.class.getName()).log(Level.SEVERE, "User could not be updated. ID: " + user.getId()
+                    Logger.getGlobal().log(Level.SEVERE, "User could not be updated. ID: " + user.getId()
                             + ", Guild ID: " + user.getGuildID() + ", uptime: " + String.valueOf(user.getUptime()), ex);
                 }
+                onlineUsers.remove(user);
                 break;
             }
         }
@@ -112,13 +113,13 @@ public class UserListener {
                     try {
                         game = Main.gameService.getGame(title, user.getId(), user.getGuildID()); //retrieves game data, throws exception if none is retrieved
                     } catch (SQLException ex) {
-                        Logger.getLogger(UserListener.class.getName()).log(Level.SEVERE, "game could not be retrieved.", ex);
+                        Logger.getGlobal().log(Level.SEVERE, "game could not be retrieved.", ex);
                     }
                     if (game == null) {
                         try {
                             game = Main.gameService.createGame(title, user.getId(), user.getGuildID()); // creates game, throws excepton if none could be created; either getGame or createGame should always work
                         } catch (SQLException ex) {
-                            Logger.getLogger(UserListener.class.getName()).log(Level.SEVERE, "game could not be created.", ex);
+                            Logger.getGlobal().log(Level.SEVERE, "game could not be created.", ex);
                         }
                     }
                 }
@@ -128,7 +129,7 @@ public class UserListener {
                         Main.gameService.updateGame(user.getGame().getTitle(), user.getId(), user.getGuildID(), user.getGame().getAmount_played() + 1, time - user.getGame().getStartTime() + user.getGame().getTime_played());
                     }
                 } catch (SQLException ex) {
-                    Logger.getLogger(UserListener.class.getName()).log(Level.SEVERE, "could not upodate game.", ex);
+                    Logger.getGlobal().log(Level.SEVERE, "could not upodate game.", ex);
                 }
                 user.setGame(game); //informs the user object of new game
                 break;

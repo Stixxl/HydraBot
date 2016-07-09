@@ -13,18 +13,16 @@ import com.corbi.robot.events.AudioListener;
 import com.corbi.robot.events.CommandListener;
 import com.corbi.robot.events.CommandExecutionListener;
 import com.corbi.robot.events.UserListener;
-import com.corbi.robot.objects.User;
 import com.corbi.robot.utilities.UtilityMethods;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
+import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.util.DiscordException;
@@ -41,17 +39,30 @@ public class Main {
     public static UserService userService;
     public static GameService gameService;
     public static SoundService soundService;
+    private static FileHandler fh = null;
+    private static final int LOGGING_FILE_SIZE = 1024 * 1024;//1MB
 
     public static void main(String[] args) {
+
+        try {
+            fh = new FileHandler("temp.log", LOGGING_FILE_SIZE, 1);
+        } catch (SecurityException | IOException e) {
+            Logger.getGlobal().log(Level.SEVERE, "Failed to create FileHandler.");
+        }
+        Logger.getGlobal().addHandler(fh);
+        SimpleFormatter formatter = new SimpleFormatter();
+        fh.setFormatter(formatter);
+        Logger.getGlobal().setUseParentHandlers(false);
+        fh.setLevel(Level.INFO);
         readConfig();
         userService = dbService.getUserService();
         gameService = dbService.getGameService();
         soundService = dbService.getSoundService();
-        
+
         try {
             client = new ClientBuilder().withToken(Token).login();
         } catch (DiscordException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getGlobal().log(Level.SEVERE, null, ex);
         }
         //register event listener
         client.getDispatcher().registerListener(new CommandExecutionListener());
@@ -69,7 +80,7 @@ public class Main {
         path = UtilityMethods.generatePath(path);
         File f = new File(path);
         if (f.exists() && !f.isDirectory()) {//true if there is configurationdata to be read, false otherwise
-            
+
             Properties properties = new Properties();
             FileInputStream inStream = null;
             try {

@@ -36,7 +36,9 @@ public class SoundService {
         ResultSet result = statement.executeQuery();
         //returns path, if it exists; otherwise throws SQLException
         result.next();
-        return result.getString("path");
+        String path = result.getString("path");
+        statement.close();
+        return path;
         
     }
 
