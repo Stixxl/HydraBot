@@ -41,7 +41,7 @@ public class GameService {
     public Game createGame(String title, String id, String guildID) throws SQLException {
 
         PreparedStatement statement = con.prepareStatement("INSERT INTO " + TABLENAME
-                + " values('" + title + "', '" + id + "', '" + guildID + "', 0, 0)");
+                + " values('" + title + "', '" + id + "', '" + guildID + "', 0, 1)");
         DBService.execute(statement);
         statement.close();
         return new Game(title, 0, 0);
@@ -151,14 +151,14 @@ public class GameService {
                 + "(SELECT SUM(time_played) AS time_played_all, title t FROM " + TABLENAME
                 + " WHERE guild_id=? "
                 + "GROUP BY title) as ua2 "
-                + "WHERE title=ua1.title "
-                + "and title=ua2.title");
+                + "WHERE title=ua1.t "
+                + "AND title=ua2.t");
         statement.setString(1, guildID);
         statement.setString(2, guildID);
         ResultSet result = statement.executeQuery();
         while (result.next()) {
-            int amount_played = result.getInt("AMOUNT_PLAYED");
-            long time_played = result.getBigDecimal("TIME_PLAYED").longValue();
+            int amount_played = result.getInt("AMOUNT_PLAYED_ALL");
+            long time_played = result.getBigDecimal("TIME_PLAYED_ALL").longValue();
             String title = result.getString("TITLE");
             games.add(new Game(title, time_played, amount_played));
         }

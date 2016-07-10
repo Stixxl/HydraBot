@@ -20,7 +20,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.logging.FileHandler;
+import java.util.logging.Filter;
 import java.util.logging.Level;
+import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import sx.blah.discord.api.ClientBuilder;
@@ -39,21 +41,40 @@ public class Main {
     public static UserService userService;
     public static GameService gameService;
     public static SoundService soundService;
-    private static FileHandler fh = null;
+    private static FileHandler fh_severe = null;
+    private static FileHandler fh_info = null;
+    private static FileHandler fh_finer = null;
     private static final int LOGGING_FILE_SIZE = 1024 * 1024;//1MB
 
     public static void main(String[] args) {
 
         try {
-            fh = new FileHandler("temp.log", LOGGING_FILE_SIZE, 1);
+            //create filehandler
+            fh_severe = new FileHandler("severe.log", LOGGING_FILE_SIZE, 1);
+            fh_info = new FileHandler("info.log", LOGGING_FILE_SIZE, 1);
+            fh_finer = new FileHandler("finer.log", LOGGING_FILE_SIZE, 1);
         } catch (SecurityException | IOException e) {
             Logger.getGlobal().log(Level.SEVERE, "Failed to create FileHandler.");
         }
-        Logger.getGlobal().addHandler(fh);
+
+        FileHandler [] fileHandlers = {fh_severe, fh_info, fh_finer};
+        
         SimpleFormatter formatter = new SimpleFormatter();
-        fh.setFormatter(formatter);
+        for(FileHandler fh : fileHandlers)
+        {
+            Logger.getGlobal().addHandler(fh);
+            fh.setFormatter(formatter);
+        }
+
         Logger.getGlobal().setUseParentHandlers(false);
-        fh.setLevel(Level.INFO);
+        //set respective level for filehandlers
+        fh_severe.setLevel(Level.SEVERE);
+        fh_info.setLevel(Level.INFO);
+        fh_finer.setLevel(Level.FINER);
+        //this filehandlers will only receive input for their respective level
+        fh_severe.setFilter((LogRecord record) -> record.getLevel().equals(Level.SEVERE));
+        fh_info.setFilter((LogRecord record) -> record.getLevel().equals(Level.INFO));
+        fh_finer.setFilter((LogRecord record) -> record.getLevel().equals(Level.FINER));
         readConfig();
         userService = dbService.getUserService();
         gameService = dbService.getGameService();
