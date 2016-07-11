@@ -36,6 +36,7 @@ public class UserListener {
      */
     @EventSubscriber
     public void onPresenceUpdated(PresenceUpdateEvent event) {
+        Logger.getGlobal().log(Level.FINER, "{0}changed presence. Old presence: " + event.getOldPresence().toString() + "; New Presence:" + event.getNewPresence().toString(), event.getUser().getName());
         if (event.getOldPresence().equals(Presences.OFFLINE) && event.getNewPresence().equals(Presences.ONLINE)) //user goes online
         {
             onOfflineToOnline(event);
@@ -61,14 +62,14 @@ public class UserListener {
         try {
             user = Main.userService.getUser(userID, guildID);//looks if user exists
         } catch (SQLException ex) {
-            Logger.getGlobal().log(Level.SEVERE, "user could not be retrieved.", ex);
+            Logger.getGlobal().log(Level.SEVERE, "User could not be retrieved.", ex);
         }
         try {
             if (user == null) {
                 user = Main.userService.createUser(userID, guildID);//creates user if none exists
             }
         } catch (SQLException ex) {
-            Logger.getGlobal().log(Level.SEVERE, "user could not be created.", ex);
+            Logger.getGlobal().log(Level.SEVERE, "User could not be created.", ex);
         }
         onlineUsers.add(user);
     }
@@ -86,7 +87,7 @@ public class UserListener {
         for (User user : onlineUsers) {
             if (user.getId().equals(event.getUser().getID()) && user.getGuildID().equals(event.getGuild().getID()))//user on same server and same user as specified in event
             {
-                user.setUptime(time - user.getLoginTime() + user.getUptime());//current time - time of login + overall time spent online overall
+                user.setUptime(time - user.getLoginTime() + user.getUptime());//current time - time of login + overall time spent online
                 try {
                     Main.userService.updateUser(user.getId(), user.getGuildID(), user.getUptime());
                 } catch (SQLException ex) {
@@ -105,7 +106,6 @@ public class UserListener {
      */
     @EventSubscriber
     public void onGameChanged(GameChangeEvent event) {
-        Logger.getGlobal().log(Level.INFO, "Game changed.");
         long time = System.currentTimeMillis();
         String title = event.getNewGame().orElse("idle");
         Game game = null;
@@ -122,22 +122,21 @@ public class UserListener {
                     if (game == null) {
                         try {
                             game = Main.gameService.createGame(title, user.getId(), user.getGuildID()); // creates game, throws excepton if none could be created; either getGame or createGame should always work
-                            Logger.getGlobal().log(Level.INFO, "new game created.");
+                            Logger.getGlobal().log(Level.INFO, "New game created.");
                         } catch (SQLException ex) {
                             Logger.getGlobal().log(Level.SEVERE, "game could not be created.", ex);
                         }
                     }
-                }
-                try {
-                    if (user.getGame() != null) { //true if the user was playing a game
+                    user.setGame(game); //informs the user object of new game
+                } else if (user.getGame() != null) { //true if the user was playing a game
+                    try {
                         //will update the game; increments the AmountPlayed and calculates new overall time as follows: current time - time of login + overall time spent online overall
                         Main.gameService.updateGame(user.getGame().getTitle(), user.getId(), user.getGuildID(), user.getGame().getAmount_played() + 1, time - user.getGame().getStartTime() + user.getGame().getTime_played());
                         Logger.getGlobal().log(Level.INFO, "Game updated.");
+                    } catch (SQLException ex) {
+                        Logger.getGlobal().log(Level.SEVERE, "could not upodate game.", ex);
                     }
-                } catch (SQLException ex) {
-                    Logger.getGlobal().log(Level.SEVERE, "could not upodate game.", ex);
                 }
-                user.setGame(game); //informs the user object of new game
                 break;
             }
         }

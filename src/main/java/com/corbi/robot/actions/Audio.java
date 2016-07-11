@@ -46,7 +46,7 @@ public class Audio {
                 try {
                     path = Main.soundService.getPath(args[0]);
                 } catch (SQLException ex) {
-                    Logger.getGlobal().log(Level.SEVERE, null, ex);
+                    Logger.getGlobal().log(Level.SEVERE, "Sound data could not be retrieved.", ex);
                 }
 
                 if (path != null) {//true, if requested sound exists in database, false otherwise
@@ -72,6 +72,12 @@ public class Audio {
      */
     private static void playSound(String path, IVoiceChannel voiceChannel) throws DiscordException {
         voiceChannel.join();
+        while(!(voiceChannel.isConnected()))
+        {
+            
+        }
+        voiceChannel.getAudioChannel().setVolume(0.35f);
+        voiceChannel.getAudioChannel().clearQueue();
         voiceChannel.getAudioChannel().queueFile(path);
     }
 }

@@ -126,7 +126,7 @@ public class Chat {
             sb.append("Deine verschwendete Zeit teilst du anscheinend wie folgt auf:");
         for(int i = 0; i < games.size(); i++)
         {
-            sb.append(System.lineSeparator()).append(String.valueOf(i + 1)).append(games.get(i).toString());
+            sb.append(System.lineSeparator()).append(String.valueOf(i)).append(". ").append(games.get(i).toString());
         }
         }
         String personalStats = "Du hast insgesamt *" + UtilityMethods.formatTime(uptime) + "* auf diesem Server verschwendet."
@@ -159,7 +159,7 @@ public class Chat {
         }
         for(int i = 0; i < games.size(); i++)
         {
-            sb.append(System.lineSeparator()).append(String.valueOf(i)).append(" ").append(games.get(i).toString());
+            sb.append(System.lineSeparator()).append(String.valueOf(i)).append(". ").append(games.get(i).toString());
         }
         String statsAll = "Ihr habt insgesamt *" + UtilityMethods.formatTime(uptime) + "* auf diesem Server verschwendet.";
         sendMessage(channel, statsAll);
