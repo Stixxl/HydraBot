@@ -7,6 +7,7 @@ package com.corbi.robot.actions;
 
 import com.corbi.robot.main.Main;
 import com.corbi.robot.objects.Game;
+import com.corbi.robot.objects.User;
 import com.corbi.robot.utilities.UtilityMethods;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -90,7 +91,7 @@ public class Chat {
         } else {
             switch (args[0]) {
                 case "me":
-                    showStatsUser(channel, user, guildID);
+                    showStatsMe(channel, user, guildID);
                     break;
                 case "all":
                     showStatsAll(channel, guildID);
@@ -107,16 +108,16 @@ public class Chat {
      * @param user @link #showStats(IChannel, IUser, String, String[]) user
      * @param guildID @link #showStats(IChannel, IUser, String, String[]) guildID
      */
-    private static void showStatsUser(IChannel channel, IUser user, String guildID) {
-        long uptime = 0;
+    private static void showStatsMe(IChannel channel, IUser iUser, String guildID) {
+        User user = null;
         List<Game> games = null;
         try {
-            uptime = Main.userService.getUser(user.getID(), guildID).getUptime();
+            user = Main.userService.getUser(iUser.getID(), guildID);
         } catch (SQLException ex) {
             Logger.getGlobal().log(Level.SEVERE, "user could not be retrieved.", ex);
         }
         try {
-            games = Main.gameService.getGames(user.getID(), guildID);
+            games = Main.gameService.getGames(iUser.getID(), guildID);
         } catch (SQLException ex) {
             Logger.getGlobal().log(Level.SEVERE, "games could not be retrieved.", ex);
         }
@@ -129,8 +130,7 @@ public class Chat {
             sb.append(System.lineSeparator()).append(String.valueOf(i)).append(". ").append(games.get(i).toString());
         }
         }
-        String personalStats = "Du hast insgesamt *" + UtilityMethods.formatTime(uptime) + "* auf diesem Server verschwendet."
-                + System.lineSeparator() + sb.toString();
+        String personalStats = user.toString() + System.lineSeparator() + sb.toString();
         sendMessage(channel, personalStats);
     }
     /**

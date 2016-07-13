@@ -5,8 +5,9 @@
  */
 package com.corbi.robot.objects;
 
-import com.corbi.robot.main.Main;
-import sx.blah.discord.handle.obj.IUser;
+import com.corbi.robot.utilities.UtilityMethods;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * identifies a user that ever was or is currently on the server
@@ -14,7 +15,7 @@ import sx.blah.discord.handle.obj.IUser;
  * @author PogChamp
  */
 public class User {
-
+    private String name;
     private long uptime;
     private String id;
     private String guildID;
@@ -22,12 +23,21 @@ public class User {
     private final long loginTime;
     private Game game;
 
-    public User(long uptime, String id, String guildID) {
+    public User(long uptime, String id, String guildID, String name) {
         this.uptime = uptime;
         this.id = id;
         this.loginTime = System.currentTimeMillis();
         this.guildID = guildID;
         this.tier = calculateTier();
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public long getLoginTime() {
@@ -67,9 +77,16 @@ public class User {
     }
     private String calculateTier()
     {
-        String[] tiers = {"McShitsen", "Fan Grill", "BabyRageBoy", "Beach Boy","Kazoo Kid", "Average Joe",
-            "Quality Shit Poster", "Major Block Hustler", "Top Notch Memer", "Navy Seal", "Undercover agent working for bagool", "Bobby Ryan", "Person mit zuviel Zeit und zu wenig Privatleben"};
+        String[] tiers = {"McShitsen", "Dedelbaer", "Fan Grill", "BabyRageBoy", "Beach Boy","Kazoo Kid", "Average Joe",
+            "Quality Shit Poster", "Major Block Hustler", "Top Notch Memer", "Navy Seal", "Undercover agent working for bagool", "Bobby Ryan", "Person mit zuviel Zeit und zu wenig Privatleben", "Genji OTP"};
         long uptime_hours = uptime / 1000 / 60 / 60; //millseconds / 1000 = seconds / 60 = minutes / 60 = hours
         return tiers[0];
         }
+    @Override
+    public String toString()
+    {
+        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.SSS");
+        Date loginDate = new Date(loginTime);
+        return "Name: " + name + ", Uptime: *" + UtilityMethods.formatTime(uptime) + "*, Tier: **" + tier + "**";
+    }
     }

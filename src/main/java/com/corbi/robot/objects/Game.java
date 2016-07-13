@@ -60,6 +60,6 @@ public class Game {
     @Override
     public String toString()
 {
-    return "*" + title + "* - Zeit gespielt: " + UtilityMethods.formatTime(time_played) + "; Anzahl Aufrufe: " + String.valueOf(amount_played);
+    return "__" + title + "__ - Zeit gespielt: *" + UtilityMethods.formatTime(time_played) + "*; Anzahl Aufrufe: " + String.valueOf(amount_played);
 }
 }

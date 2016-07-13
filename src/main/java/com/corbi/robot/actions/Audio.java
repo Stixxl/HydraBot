@@ -46,7 +46,7 @@ public class Audio {
                 try {
                     path = Main.soundService.getPath(args[0]);
                 } catch (SQLException ex) {
-                    Logger.getGlobal().log(Level.SEVERE, "Sound data could not be retrieved.", ex);
+                    Logger.getGlobal().log(Level.SEVERE, "Sound path could not be retrieved.", ex);
                 }
 
                 if (path != null) {//true, if requested sound exists in database, false otherwise
@@ -70,14 +70,14 @@ public class Audio {
      * @param voiceChannel channel, where the audio will be streamed
      * @throws DiscordException
      */
-    private static void playSound(String path, IVoiceChannel voiceChannel) throws DiscordException {
+    private static void playSound(String path, IVoiceChannel voiceChannel) {
         voiceChannel.join();
-        while(!(voiceChannel.isConnected()))
-        {
-            
+        try {
+            voiceChannel.getAudioChannel().setVolume(0.35f);
+            voiceChannel.getAudioChannel().clearQueue();
+            voiceChannel.getAudioChannel().queueFile(path);
+        } catch (DiscordException ex) {
+            Logger.getGlobal().log(Level.SEVERE, "Could not play audio file, since bot wasnt in a Voice Channel.");
         }
-        voiceChannel.getAudioChannel().setVolume(0.35f);
-        voiceChannel.getAudioChannel().clearQueue();
-        voiceChannel.getAudioChannel().queueFile(path);
     }
 }

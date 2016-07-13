@@ -6,7 +6,6 @@
 package com.corbi.robot.actions.DBServices;
 
 import com.corbi.robot.objects.Game;
-import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -85,25 +84,20 @@ public class GameService {
      */
     public Game updateGame(String title, String id, String guildID, int amountPlayed, long timePlayed) throws SQLException {
 
-        PreparedStatement statement = con.prepareStatement("SELECT * FROM" + TABLENAME
+        PreparedStatement statement = con.prepareStatement("UPDATE "+ TABLENAME
+                + " SET amount_played=?, "
+                + "time_played=? "
                 + " WHERE title =? "
                 + "AND id=?"
-                + "AND guild_id=?", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-        statement.setString(1, title);
-        statement.setString(2, id);
-        statement.setString(3, guildID);
-        ResultSet result = statement.executeQuery();
-        if (result.next()) {
-            result.updateInt("amount_played", amountPlayed);
-            result.updateBigDecimal("time_played", BigDecimal.valueOf(timePlayed));
-            result.updateRow();
-
-            statement.close();
-            return new Game(title, timePlayed, amountPlayed);
-        }
-
+                + "AND guild_id=?");
+        statement.setInt(1, amountPlayed);
+        statement.setLong(2, timePlayed);
+        statement.setString(3, title);
+        statement.setString(4, id);
+        statement.setString(5, guildID);
+        statement.execute();
         statement.close();
-        return null;
+        return new Game(title, timePlayed, amountPlayed);
     }
 
     /**
@@ -143,7 +137,7 @@ public class GameService {
      */
     public List<Game> getGamesAll(String guildID) throws SQLException {
         List<Game> games = new ArrayList<>();
-        PreparedStatement statement = con.prepareStatement("SELECT DISTINCT title, ua1.amount_played_all, ua2.time_played_all FROM "
+        PreparedStatement statement = con.prepareStatement("SELECT DISTINCT title, ua1.amount_played_all amount_played_all, ua2.time_played_all time_played_all FROM "
                 + TABLENAME + ", "
                 + "(SELECT SUM(amount_played) AS amount_played_all, title t FROM " + TABLENAME
                 + " WHERE guild_id=? "
@@ -157,10 +151,12 @@ public class GameService {
         statement.setString(2, guildID);
         ResultSet result = statement.executeQuery();
         while (result.next()) {
-            int amount_played = result.getInt("AMOUNT_PLAYED_ALL");
-            long time_played = result.getBigDecimal("TIME_PLAYED_ALL").longValue();
-            String title = result.getString("TITLE");
-            games.add(new Game(title, time_played, amount_played));
+            int amount_played = result.getInt("amount_played_all");
+            long time_played = result.getBigDecimal("time_played_all").longValue();
+            String title = result.getString("title");
+            Game temp  = new Game(title, time_played, amount_played);
+            Logger.getGlobal().log(Level.FINER, "following game was retrieved using getGamesAll(): {0}", temp.toString());
+            games.add(temp);
         }
         statement.close();
         return games;

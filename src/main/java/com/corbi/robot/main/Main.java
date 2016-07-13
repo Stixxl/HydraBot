@@ -47,7 +47,7 @@ public class Main {
     private static final int LOGGING_FILE_SIZE = 1024 * 1024;//1MB
 
     public static void main(String[] args) {
-
+        Logger.getGlobal().setLevel(Level.FINER);
         try {
             //create filehandler
             fh_severe = new FileHandler("severe.log", LOGGING_FILE_SIZE, 1);
@@ -90,6 +90,7 @@ public class Main {
         client.getDispatcher().registerListener(new CommandListener());
         client.getDispatcher().registerListener(new AudioListener());
         client.getDispatcher().registerListener(new UserListener());
+        Logger.getGlobal().log(Level.FINER, "Server started.");
     }
 
     /**

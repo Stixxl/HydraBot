@@ -5,7 +5,6 @@
  */
 package com.corbi.robot.actions.DBServices;
 
-import static com.corbi.robot.actions.DBServices.DBService.execute;
 import com.corbi.robot.objects.User;
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -35,11 +34,11 @@ public class UserService {
      * @return the newly created user
      * @throws java.sql.SQLException
      */
-    public User createUser(String id, String guild_id) throws SQLException {
+    public User createUser(String id, String guild_id, String name) throws SQLException {
         PreparedStatement statement = con.prepareStatement("insert into " + TABLENAME
-                + " values('" + id + "', '" + guild_id + "', 0)");
+                + "(id, guild_id, uptime, name) values('" + id + "', '" + guild_id + "', 0, '" + name +"')");
         DBService.execute(statement);
-        return new User(0, id, guild_id);
+        return new User(0, id, guild_id, name);
 
     }
 
@@ -51,18 +50,15 @@ public class UserService {
      * @throws SQLException
      */
     public void updateUser(String id, String guild_id, long uptime) throws SQLException {
-        PreparedStatement statement = statement = con.prepareStatement("SELECT * FROM " + TABLENAME//selects user, i will always be one user or none since (id, guild_id) is primary key
-                + " WHERE id=? "
-                + "AND guild_id=?", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);//sets ResultSet to be able to update
+        PreparedStatement statement = statement = con.prepareStatement("UPDATE " + TABLENAME//selects user, it will always be one user or none since (id, guild_id) is primary key
+                + " SET uptime=?"
+                + " WHERE id=?"
+                + " AND guild_id=?");
         //sets parameter in above statement
-        statement.setString(1, id);
-        statement.setString(2, guild_id);
-        //gets user in result otherwise throws SQLException
-        ResultSet result = statement.executeQuery();
-        result.next();
-        //updates value of the user if he exists
-        result.updateBigDecimal("uptime", BigDecimal.valueOf(uptime));
-        result.updateRow();
+        statement.setLong(1, uptime);
+        statement.setString(2, id);
+        statement.setString(3, guild_id);
+        statement.execute();
         statement.close();
     }
 
@@ -84,9 +80,9 @@ public class UserService {
         ResultSet result = statement.executeQuery();
         if (result.next()) {
             BigDecimal uptime = result.getBigDecimal("uptime");
-
+            String name = result.getString("name");
             statement.close();
-            return new User(uptime.longValue(), id, guild_id);
+            return new User(uptime.longValue(), id, guild_id, name);
 
         } else {
 
