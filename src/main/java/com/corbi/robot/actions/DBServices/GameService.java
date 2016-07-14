@@ -40,7 +40,7 @@ public class GameService {
     public Game createGame(String title, String id, String guildID) throws SQLException {
 
         PreparedStatement statement = con.prepareStatement("INSERT INTO " + TABLENAME
-                + " values('" + title + "', '" + id + "', '" + guildID + "', 0, 1)");
+                + "(title, id, guild_id, time_played, amount_played) values('" + title + "', '" + id + "', '" + guildID + "', 0, 1)");
         DBService.execute(statement);
         statement.close();
         return new Game(title, 0, 0);

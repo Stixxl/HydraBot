@@ -77,7 +77,7 @@ public class User {
     }
     private String calculateTier()
     {
-        String[] tiers = {"McShitsen", "Dedelbaer", "Fan Grill", "BabyRageBoy", "Beach Boy","Kazoo Kid", "Average Joe",
+        String[] tiers = {"McShitsen", "Dödelbär", "Fan Grill", "BabyRageBoy", "Beach Boy","Kazoo Kid", "Average Joe",
             "Quality Shit Poster", "Major Block Hustler", "Top Notch Memer", "Navy Seal", "Undercover agent working for bagool", "Bobby Ryan", "Person mit zuviel Zeit und zu wenig Privatleben", "Genji OTP"};
         long uptime_hours = uptime / 1000 / 60 / 60; //millseconds / 1000 = seconds / 60 = minutes / 60 = hours
         return tiers[0];

@@ -11,6 +11,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -36,7 +38,7 @@ public class UserService {
      */
     public User createUser(String id, String guild_id, String name) throws SQLException {
         PreparedStatement statement = con.prepareStatement("insert into " + TABLENAME
-                + "(id, guild_id, uptime, name) values('" + id + "', '" + guild_id + "', 0, '" + name +"')");
+                + "(id, guild_id, uptime, name) values('" + id + "', '" + guild_id + "', 0, '" + name + "')");
         DBService.execute(statement);
         return new User(0, id, guild_id, name);
 
@@ -79,10 +81,10 @@ public class UserService {
         statement.setString(2, guild_id);
         ResultSet result = statement.executeQuery();
         if (result.next()) {
-            BigDecimal uptime = result.getBigDecimal("uptime");
+            Long uptime = result.getBigDecimal("uptime").longValue();
             String name = result.getString("name");
             statement.close();
-            return new User(uptime.longValue(), id, guild_id, name);
+            return new User(uptime, id, guild_id, name);
 
         } else {
 
@@ -90,6 +92,27 @@ public class UserService {
             return null;
         }
 
+    }
+    /**
+     * gets all users for a given name on a given server
+     * @param name name for which the table is to be queried
+     * @param guild_id id of the server from which the request was received
+     * @return a List of User Object which have the same name as the requested name
+     * @throws SQLException 
+     */
+    public List<User> getUserByName(String name, String guild_id) throws SQLException {
+        List<User> users = new ArrayList<>();
+        PreparedStatement statement = con.prepareStatement("SELECT * FROM " + TABLENAME
+                + " WHERE name=?"
+                + " AND guild_id=?");
+        ResultSet result = statement.executeQuery();
+        while (result.next()) {
+            Long uptime = result.getBigDecimal("uptime").longValue();
+            String id = result.getString("id");
+            users.add(new User(uptime, id, guild_id, name));
+        }
+        statement.close();
+        return users;
     }
 
     /**

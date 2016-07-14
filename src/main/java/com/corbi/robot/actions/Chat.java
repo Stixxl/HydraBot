@@ -10,6 +10,7 @@ import com.corbi.robot.objects.Game;
 import com.corbi.robot.objects.User;
 import com.corbi.robot.utilities.UtilityMethods;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -59,7 +60,7 @@ public class Chat {
     public static void tellBinsenweisheit(IChannel channel) throws HTTP429Exception, DiscordException, MissingPermissionsException {
         String[] binsenweisheiten = {"Ein Kampf, in dem die zahlenmäßige Unterlegenheit zwei oder mehr beträgt, ist kein Kampf, sondern eine Dummheit.",
             "Die ultimative Fähigkeit kann auch zum Fliehen eines aussichtlosen Kampfes genutzt werden.", "Sollte eine Person angerufen werden, so bite diese darum, dir ihren Gesprächspartner mitzuteilen. "
-                + "Dies hat den Vorteil eines angenehmen Themas sollte es zu sogenanntem \"Smalltalk\" kommen."};
+            + "Dies hat den Vorteil eines angenehmen Themas sollte es zu sogenanntem \"Smalltalk\" kommen."};
         Random randInt = new Random(System.currentTimeMillis());
 
         int index = randInt.nextInt(binsenweisheiten.length);
@@ -79,69 +80,95 @@ public class Chat {
     /**
      * shows stats such as overall uptime on servers, time spent playing etc.
      *
-     * @param channel @link #sendMessage(IChannel, String) channel 
+     * @param channel @link #sendMessage(IChannel, String) channel
      * @param args the arguments received with the command
      * @param user User who sent the command
      * @param guildID the id of the server
      * @return true if format of input was correct, false otherwise
      */
     public static boolean showStats(IChannel channel, IUser user, String guildID, String args[]) {
-        if (args.length > 1 || args.length == 0) {
+        String id = user.getID();
+        if (args.length > 2 || args.length == 0) {
             return false;
         } else {
             switch (args[0]) {
                 case "me":
-                    showStatsMe(channel, user, guildID);
+                    showStatsMe(channel, id, guildID);
                     break;
                 case "all":
                     showStatsAll(channel, guildID);
                     break;
+                case "name":
+                    if (args.length == 2) {
+                        showStatsByName(channel, args[1], guildID);
+                    } else {
+                        return false;
+                    }
                 default:
                     return false;
             }
         }
         return true;
     }
+
     /**
      * show stats about the user, specifically his overall uptime
-     * @param channel @link #showStats(IChannel, IUser, String, String[]) channel
-     * @param user @link #showStats(IChannel, IUser, String, String[]) user
-     * @param guildID @link #showStats(IChannel, IUser, String, String[]) guildID
+     *
+     * @param channel @link #showStats(IChannel, IUser, String, String[])
+     * channel
+     * @param id of the user that sent the request
+     * @param guildID @link #showStats(IChannel, IUser, String, String[])
+     * guildID
      */
-    private static void showStatsMe(IChannel channel, IUser iUser, String guildID) {
+    private static void showStatsMe(IChannel channel, String id, String guildID) {
         User user = null;
         List<Game> games = null;
         try {
-            user = Main.userService.getUser(iUser.getID(), guildID);
+            user = Main.userService.getUser(id, guildID);
         } catch (SQLException ex) {
             Logger.getGlobal().log(Level.SEVERE, "user could not be retrieved.", ex);
         }
-        try {
-            games = Main.gameService.getGames(iUser.getID(), guildID);
-        } catch (SQLException ex) {
-            Logger.getGlobal().log(Level.SEVERE, "games could not be retrieved.", ex);
-        }
-        StringBuilder sb = new StringBuilder();
-        if(games !=null)
-        {
-            sb.append("Deine verschwendete Zeit teilst du anscheinend wie folgt auf:");
-        for(int i = 0; i < games.size(); i++)
-        {
-            sb.append(System.lineSeparator()).append(String.valueOf(i)).append(". ").append(games.get(i).toString());
-        }
-        }
-        String personalStats = user.toString() + System.lineSeparator() + sb.toString();
+        String personalStats = user.toString() + System.lineSeparator() + getGamesMessage(id, guildID);
         sendMessage(channel, personalStats);
     }
     /**
-     * 
-     * @param channel @link #showStats(IChannel, IUser, String, String[]) channel
-     * @param guildID @link #showStats(IChannel, IUser, String, String[]) guildID
+     * returns Users which equal the specified name
+     * @param channel @link #showStats(IChannel, IUser, String, String[])
+     * @param name name, of which the stats are to be shown
+     * @param guildID @link #showStats(IChannel, IUser, String, String[])
+     * guildID
      */
-    private static void showStatsAll(IChannel channel, String guildID)
-    {
-       long uptime = 0;     
-       List<Game> games = null;
+    private static void showStatsByName(IChannel channel, String name, String guildID) {
+        List<User> users = new ArrayList<>();
+        try {
+            users = Main.userService.getUserByName(name, guildID);
+        } catch (SQLException ex) {
+            Logger.getLogger(Chat.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if(!(users.isEmpty()))
+        {
+        StringBuilder sb = new StringBuilder();
+        for (User user : users) {
+            sb.append(user.toString()).append(System.lineSeparator()).append(getGamesMessage(user.getId(), user.getGuildID()));
+        }
+        sendMessage(channel, sb.toString());
+        }
+        else
+        {
+            sendMessage(channel, "Die Person mit dem Namen *" + name + "* existiert genau so wenig wie deine Freundin.");
+        }
+    }
+
+    /**
+     *
+     * @param channel @link #showStats(IChannel, IUser, String, String[])
+     * channel
+     * @param guildID @link #showStats(IChannel, IUser, String, String[])
+     * guildID
+     */
+    private static void showStatsAll(IChannel channel, String guildID) {
+        long uptime = 0;
+        List<Game> games = null;
         try {
             uptime = Main.userService.getUptimeAll(guildID);
         } catch (SQLException ex) {
@@ -152,20 +179,20 @@ public class Chat {
         } catch (SQLException ex) {
             Logger.getGlobal().log(Level.SEVERE, "could not retrieve game data for all users.", ex);
         }
-                StringBuilder sb = new StringBuilder();
-        if(games !=null)
-        {
+        StringBuilder sb = new StringBuilder();
+        if (games != null) {
             sb.append("Eure verschwendete Zeit teilt ihr anscheinend wie folgt auf:");
         }
-        for(int i = 0; i < games.size(); i++)
-        {
+        for (int i = 0; i < games.size(); i++) {
             sb.append(System.lineSeparator()).append(String.valueOf(i)).append(". ").append(games.get(i).toString());
         }
         String statsAll = "Ihr habt insgesamt *" + UtilityMethods.formatTime(uptime) + "* auf diesem Server verschwendet.";
         sendMessage(channel, statsAll);
     }
+
     /**
      * Sends a message that informs the user of the use of a wrong command
+     *
      * @param wrongCommand a non-supported command
      * @param channel @link #sendMessage(IChannel, String) channel
      */
@@ -174,8 +201,11 @@ public class Chat {
 
         sendMessage(channel, errorInfo);
     }
+
     /**
-     * sends a message that informs the user of the non-supported arguments for a supported command
+     * sends a message that informs the user of the non-supported arguments for
+     * a supported command
+     *
      * @param command command that does not support the used arguments
      * @param wrongArgs non-supported arguments
      * @param channel @link #sendMessage(IChannel, String) channel
@@ -201,5 +231,22 @@ public class Chat {
         } catch (HTTP429Exception | DiscordException | MissingPermissionsException ex) {
             Logger.getGlobal().log(Level.SEVERE, "message could not be sent.", ex);
         }
+    }
+
+    private static String getGamesMessage(String id, String guildID) {
+        List<Game> games = null;
+        try {
+            games = Main.gameService.getGames(id, guildID);
+        } catch (SQLException ex) {
+            Logger.getGlobal().log(Level.SEVERE, "games could not be retrieved.", ex);
+        }
+        StringBuilder sb = new StringBuilder();
+        if (games != null) {
+            sb.append("Die verschwendete Zeit wird wie folgt aufgeteilt:");
+            for (int i = 0; i < games.size(); i++) {
+                sb.append(System.lineSeparator()).append(String.valueOf(i)).append(". ").append(games.get(i).toString());
+            }
+        }
+        return sb.toString();
     }
 }
