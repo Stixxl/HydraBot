@@ -67,4 +67,31 @@ public class UtilityMethods {
         }
         return true;
     }
+    /**
+     * Converts a String so that it will be displayed underlined in discord
+     * @param s String to be converted
+     * @return String s, which will be underlined in discord
+     */
+    public static String highlightStringUnderline(String s)
+    {
+        return "__" + s + "__";
+    }
+    /**
+     * Converts a String so that it will be displayed italic in discord
+     * @param s String to beconverted
+     * @return String s, which will be italic in discord
+     */
+    public static String highlightStringItalic(String s)
+    {
+        return "*" + s + "*";
+    }
+    /**
+     * Converts a String so that it will be displayed bold in discord
+     * @param s String to be converted
+     * @return String s, which will be bold in discord
+     */
+    public static String highlightStringBold(String s)
+    {
+        return "**" + s + "**";
+    }
 }

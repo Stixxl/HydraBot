@@ -136,8 +136,11 @@ public class Chat {
         } catch (SQLException ex) {
             Logger.getGlobal().log(Level.SEVERE, "User could not be retrieved.", ex);
         }
+        if(user != null)
+        {
         String personalStats = user.toString() + System.lineSeparator() + getGamesMessage(id, guildID);
         sendMessage(channel, personalStats);
+        }
     }
 
     /**
@@ -181,11 +184,18 @@ public class Chat {
         } catch (SQLException ex) {
             Logger.getGlobal().log(Level.SEVERE, "Users could not be retrieved by ranking.", ex);
         }
-        for(int i = 0; i < users.size(); i++)
+        if(!(users.isEmpty()))
+        {
+            for(int i = 0; i < users.size(); i++)
         {
             sb.append("**").append(String.valueOf(i+1)).append("**: ").append(users.get(i).toString()).append(System.lineSeparator());// bold rank number: user.toString() + linebreak
         }
         sendMessage(channel, sb.toString());
+        }
+        else
+        {
+            sendErrorMessage(channel);
+        }
     }
 
     /**
@@ -210,13 +220,14 @@ public class Chat {
         }
         StringBuilder sb = new StringBuilder();
         if (games != null) {
+            sb.append(System.lineSeparator());
             sb.append("Eure verschwendete Zeit teilt ihr anscheinend wie folgt auf:");
-        }
         for (int i = 0; i < games.size(); i++) {
             sb.append(System.lineSeparator()).append(String.valueOf(i)).append(". ").append(games.get(i).toString());
         }
-        String statsAll = "Ihr habt insgesamt *" + UtilityMethods.formatTime(uptime) + "* auf diesem Server verschwendet.";
+        String statsAll = "Ihr habt insgesamt *" + UtilityMethods.formatTime(uptime) + "* auf diesem Server verschwendet." + sb.toString();
         sendMessage(channel, statsAll);
+        }
     }
 
     /**
@@ -245,6 +256,10 @@ public class Chat {
                 + "* for the command *" + command + "*.";
         sendMessage(channel, errorInfo);
 
+    }
+    public static void showHelp(IChannel channel, String[] args)
+    {
+        
     }
 
     /**
@@ -282,5 +297,9 @@ public class Chat {
             }
         }
         return sb.toString();
+    }
+
+    private static void sendErrorMessage(IChannel channel) {
+        sendMessage(channel, "Ein Fehler ist aufgetreten. Bitte kontaktiere den nächstbesten Alpha.");
     }
 }

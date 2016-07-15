@@ -100,7 +100,7 @@ public class UserService {
      * gets all users for a given name on a given server
      *
      * @param name name for which the table is to be queried
-     * @param guild_id id of the server from which the request was received
+     * @param guildID
      * @return a List of User Object which have the same name as the requested
      * name
      * @throws SQLException

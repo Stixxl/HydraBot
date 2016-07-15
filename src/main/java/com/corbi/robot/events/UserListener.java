@@ -72,8 +72,13 @@ public class UserListener {
         } catch (SQLException ex) {
             Logger.getGlobal().log(Level.SEVERE, "User could not be created.", ex);
         }
-        Logger.getGlobal().log(Level.FINER, "following user went online: {0}", user.toString());
-        onlineUsers.add(user);
+        if (user != null) {
+
+            Logger.getGlobal().log(Level.FINER, "following user went online: {0}", user.toString());
+            onlineUsers.add(user);
+        } else {
+            Logger.getGlobal().log(Level.INFO, "No user could be created or retrieved.");
+        }
     }
 
     /**
@@ -129,7 +134,9 @@ public class UserListener {
                             Logger.getGlobal().log(Level.SEVERE, "game could not be created.", ex);
                         }
                     }
-                    user.setGame(game); //informs the user object of new game
+                    if (game != null) {
+                        user.setGame(game); //informs the user object of new game
+                    }
                 } else if (user.getGame() != null) { //true if the user was playing a game
                     try {
                         //will update the game; increments the AmountPlayed and calculates new overall time as follows: current time - time of login + overall time spent online overall

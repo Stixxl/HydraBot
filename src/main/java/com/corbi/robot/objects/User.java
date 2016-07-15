@@ -77,10 +77,11 @@ public class User {
     }
     private String calculateTier()
     {
-        String[] tiers = {"McShitsen", "Dödelbär", "Fan Grill", "BabyRageBoy", "Beach Boy","Kazoo Kid", "Average Joe",
-            "Quality Shit Poster", "Major Block Hustler", "Top Notch Memer", "Navy Seal", "Undercover agent working for bagool", "Bobby Ryan", "Person mit zuviel Zeit und zu wenig Privatleben", "Genji OTP"};
+        String[] tiers = {"McShitsen", "DansGame", "Dödelbär", "MrPoppyButthole", "Fan Grill", "BabyRageBoy", "Beach Boy","Kazoo Kid", "Average Joe",
+            "Quality Shit Poster", "Big City Kid", "Top Notch Memer", "Navy Seal", "Undercover agent working for bagool", "Bobby Ryan", "Korean", "PogChamp", "Person mit zuviel Zeit und zu wenig Privatleben", "Genji OTP"};
         long uptime_hours = uptime / 1000 / 60 / 60; //millseconds / 1000 = seconds / 60 = minutes / 60 = hours
-        return tiers[0];
+        long linear_scaling_factor = 365 * 6 / tiers.length; // 365 * 6 hours is the estimate of the uptime of a power user in a year (6 hours a day online)
+        return tiers[(int)Math.min(uptime /linear_scaling_factor, tiers.length - 1)]; //selects an according tier; if uptime_hours > 365 * 6 the highest availabe tier will be selected --> no ArrayOutOfBounds
         }
     @Override
     public String toString()

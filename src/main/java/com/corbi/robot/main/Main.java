@@ -20,7 +20,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.logging.FileHandler;
-import java.util.logging.Filter;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;

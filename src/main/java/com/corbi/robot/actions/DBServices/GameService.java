@@ -12,8 +12,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Handles db requests for the table GAMES
@@ -36,6 +34,7 @@ public class GameService {
      * @param id id of the user
      * @param guildID server that the user is online on
      * @return the newly created Game
+     * @throws java.sql.SQLException
      */
     public Game createGame(String title, String id, String guildID) throws SQLException {
 
@@ -52,6 +51,7 @@ public class GameService {
      * @param id id of the user
      * @param guildID server that the user is online on
      * @return the requested Game; null if game wasnt found
+     * @throws java.sql.SQLException
      */
     public Game getGame(String title, String id, String guildID) throws SQLException {
         PreparedStatement statement = con.prepareStatement("Select time_played, amount_played FROM " + TABLENAME
@@ -79,6 +79,7 @@ public class GameService {
      * @param amountPlayed the amount of times the game has been played
      * @param timePlayed the overall time that was spent on the game by the user
      * @return the updated Game; null if game wasnt found
+     * @throws java.sql.SQLException
      */
     public Game updateGame(String title, String id, String guildID, int amountPlayed, long timePlayed) throws SQLException {
 
