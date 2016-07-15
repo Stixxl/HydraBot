@@ -54,7 +54,7 @@ public class GameService {
      * @return the requested Game; null if game wasnt found
      */
     public Game getGame(String title, String id, String guildID) throws SQLException {
-        PreparedStatement statement = con.prepareStatement("Select * FROM " + TABLENAME
+        PreparedStatement statement = con.prepareStatement("Select time_played, amount_played FROM " + TABLENAME
                 + " WHERE title=? "
                 + "AND id=? "
                 + "AND guild_id=?");
@@ -64,8 +64,6 @@ public class GameService {
         statement.setString(3, guildID);
         ResultSet result = statement.executeQuery();
         if (result.next()) {
-
-            statement.close();
             return new Game(title, result.getBigDecimal("time_played").longValue(), result.getInt("amount_played"));
         }
 
@@ -84,7 +82,7 @@ public class GameService {
      */
     public Game updateGame(String title, String id, String guildID, int amountPlayed, long timePlayed) throws SQLException {
 
-        PreparedStatement statement = con.prepareStatement("UPDATE "+ TABLENAME
+        PreparedStatement statement = con.prepareStatement("UPDATE " + TABLENAME
                 + " SET amount_played=?, "
                 + "time_played=? "
                 + " WHERE title =? "
@@ -111,7 +109,7 @@ public class GameService {
      */
     public List<Game> getGames(String id, String guildID) throws SQLException {
         List<Game> games = new ArrayList<>();
-        PreparedStatement statement = con.prepareStatement("SELECT * FROM " + TABLENAME
+        PreparedStatement statement = con.prepareStatement("SELECT amount_played, time_played, title FROM " + TABLENAME
                 + " WHERE id=? "
                 + "AND guild_id=? "
                 + "ORDER BY time_played DESC");
@@ -154,8 +152,7 @@ public class GameService {
             int amount_played = result.getInt("amount_played_all");
             long time_played = result.getBigDecimal("time_played_all").longValue();
             String title = result.getString("title");
-            Game temp  = new Game(title, time_played, amount_played);
-            Logger.getGlobal().log(Level.FINER, "following game was retrieved using getGamesAll(): {0}", temp.toString());
+            Game temp = new Game(title, time_played, amount_played);
             games.add(temp);
         }
         statement.close();

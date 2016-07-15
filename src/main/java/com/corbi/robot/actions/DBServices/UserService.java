@@ -6,13 +6,14 @@
 package com.corbi.robot.actions.DBServices;
 
 import com.corbi.robot.objects.User;
-import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -33,6 +34,7 @@ public class UserService {
      *
      * @param id the id of the user
      * @param guild_id the server_id, in which the user was created
+     * @param name name of user as visible for users
      * @return the newly created user
      * @throws java.sql.SQLException
      */
@@ -74,7 +76,7 @@ public class UserService {
      * @throws SQLException
      */
     public User getUser(String id, String guild_id) throws SQLException {
-        PreparedStatement statement = con.prepareStatement("SELECT * FROM " + TABLENAME
+        PreparedStatement statement = con.prepareStatement("SELECT uptime, name FROM " + TABLENAME
                 + " WHERE id=? "
                 + "AND guild_id=?");
         statement.setString(1, id);
@@ -93,23 +95,28 @@ public class UserService {
         }
 
     }
+
     /**
      * gets all users for a given name on a given server
+     *
      * @param name name for which the table is to be queried
      * @param guild_id id of the server from which the request was received
-     * @return a List of User Object which have the same name as the requested name
-     * @throws SQLException 
+     * @return a List of User Object which have the same name as the requested
+     * name
+     * @throws SQLException
      */
-    public List<User> getUserByName(String name, String guild_id) throws SQLException {
+    public List<User> getUserByName(String name, String guildID) throws SQLException {
         List<User> users = new ArrayList<>();
-        PreparedStatement statement = con.prepareStatement("SELECT * FROM " + TABLENAME
+        PreparedStatement statement = con.prepareStatement("SELECT uptime, id FROM " + TABLENAME
                 + " WHERE name=?"
                 + " AND guild_id=?");
+        statement.setString(1, name);
+        statement.setString(2, guildID);
         ResultSet result = statement.executeQuery();
         while (result.next()) {
             Long uptime = result.getBigDecimal("uptime").longValue();
             String id = result.getString("id");
-            users.add(new User(uptime, id, guild_id, name));
+            users.add(new User(uptime, id, guildID, name));
         }
         statement.close();
         return users;
@@ -124,14 +131,38 @@ public class UserService {
      */
     public long getUptimeAll(String guildID) throws SQLException {
         long uptimeAll = 0;
-        PreparedStatement statement = con.prepareStatement("SELECT * FROM " + TABLENAME
+        PreparedStatement statement = con.prepareStatement("SELECT SUM(uptime) as uptime_all FROM " + TABLENAME
                 + " WHERE guild_id=?");
         statement.setString(1, guildID);
         ResultSet result = statement.executeQuery();
-        while (result.next()) {
-            uptimeAll += result.getBigDecimal("uptime").longValue();
+        if (result.next()) {
+            uptimeAll = result.getBigDecimal("uptime_all").longValue();
         }
         statement.close();
         return uptimeAll;
+    }
+    /**
+     * Selects the top n users by uptime
+     * @param guildID server from which the request was received
+     * @param limit limits the output to the top n users
+     * @return a list of the top n users
+     * @throws SQLException 
+     */
+    public List<User> getRankingByUptime(String guildID, int limit) throws SQLException {
+        List<User> users = new ArrayList();
+        PreparedStatement statement = con.prepareStatement("SELECT uptime, id, name FROM " + TABLENAME                
+                + " WHERE guild_id=?"
+                + " ORDER BY uptime DESC"
+                + " LIMIT ?::integer");   
+        statement.setString(1, guildID);
+        statement.setInt(2, limit);
+        ResultSet result = statement.executeQuery();
+        while (result.next()) {
+            User user = new User(result.getBigDecimal("uptime").longValue(), result.getString("id"), guildID, result.getString("name"));
+            Logger.getGlobal().log(Level.FINER, "Following user was retrieved by ranking: {0}", user.toString());
+            users.add(user);
+        }
+        statement.close();
+        return users;
     }
 }

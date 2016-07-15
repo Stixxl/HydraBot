@@ -45,52 +45,78 @@ public class Main {
     private static FileHandler fh_info = null;
     private static FileHandler fh_finer = null;
     private static final int LOGGING_FILE_SIZE = 1024 * 1024;//1MB
+    private static final String LOGFOLDER = "logs/";
 
     public static void main(String[] args) {
         Logger.getGlobal().setLevel(Level.FINER);
         try {
             //create filehandler
-            fh_severe = new FileHandler("severe.log", LOGGING_FILE_SIZE, 1);
-            fh_info = new FileHandler("info.log", LOGGING_FILE_SIZE, 1);
-            fh_finer = new FileHandler("finer.log", LOGGING_FILE_SIZE, 1);
+            fh_severe = new FileHandler(LOGFOLDER + "severe.log", LOGGING_FILE_SIZE, 1);
+            fh_info = new FileHandler(LOGFOLDER + "info.log", LOGGING_FILE_SIZE, 1);
+            fh_finer = new FileHandler(LOGFOLDER + "finer.log", LOGGING_FILE_SIZE, 1);
+
         } catch (SecurityException | IOException e) {
             Logger.getGlobal().log(Level.SEVERE, "Failed to create FileHandler.");
         }
 
-        FileHandler [] fileHandlers = {fh_severe, fh_info, fh_finer};
-        
+        FileHandler[] fileHandlers = {fh_severe, fh_info, fh_finer};
+
         SimpleFormatter formatter = new SimpleFormatter();
-        for(FileHandler fh : fileHandlers)
-        {
+        for (FileHandler fh : fileHandlers) {
             Logger.getGlobal().addHandler(fh);
             fh.setFormatter(formatter);
         }
 
         Logger.getGlobal().setUseParentHandlers(false);
+
         //set respective level for filehandlers
         fh_severe.setLevel(Level.SEVERE);
         fh_info.setLevel(Level.INFO);
         fh_finer.setLevel(Level.FINER);
+
         //this filehandlers will only receive input for their respective level
         fh_severe.setFilter((LogRecord record) -> record.getLevel().equals(Level.SEVERE));
         fh_info.setFilter((LogRecord record) -> record.getLevel().equals(Level.INFO));
         fh_finer.setFilter((LogRecord record) -> record.getLevel().equals(Level.FINER));
-        readConfig();
-        userService = dbService.getUserService();
-        gameService = dbService.getGameService();
-        soundService = dbService.getSoundService();
+        
+        //logs any uncaught exceptions to severe.log and will then exit the system
+        Thread.setDefaultUncaughtExceptionHandler((Thread thread, Throwable e) -> {
+            Logger.getGlobal().log(Level.SEVERE, "uncaught error!", e);
+            System.exit(1);
+        });
 
+    readConfig();
+    userService  = dbService.getUserService();
+    gameService  = dbService.getGameService();
+    soundService  = dbService.getSoundService();
+
+    
         try {
             client = new ClientBuilder().withToken(Token).login();
-        } catch (DiscordException ex) {
+    }
+    catch (DiscordException ex
+
+    
+        ) {
             Logger.getGlobal().log(Level.SEVERE, null, ex);
-        }
-        //register event listener
-        client.getDispatcher().registerListener(new CommandExecutionListener());
-        client.getDispatcher().registerListener(new CommandListener());
-        client.getDispatcher().registerListener(new AudioListener());
-        client.getDispatcher().registerListener(new UserListener());
-        Logger.getGlobal().log(Level.FINER, "Server started.");
+    }
+    //register event listener
+
+    client.getDispatcher ()
+
+    .registerListener(new CommandExecutionListener());
+    client.getDispatcher ()
+
+    .registerListener(new CommandListener());
+    client.getDispatcher ()
+
+    .registerListener(new AudioListener());
+    client.getDispatcher ()
+
+    .registerListener(new UserListener());
+    Logger.getGlobal ()
+
+.log(Level.FINER, "Server started.");
     }
 
     /**

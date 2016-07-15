@@ -38,7 +38,7 @@ public class CommandExecutionEvent extends Event {
     }
 
     public String getCommand() {
-        return command.toLowerCase();
+        return command;
     }
 
     public IUser getBy() {

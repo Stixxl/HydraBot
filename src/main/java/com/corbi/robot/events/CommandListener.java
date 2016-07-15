@@ -19,13 +19,13 @@ public class CommandListener {
     // This is the executor that we'll look for
     final static String KEY = "!hydra";
     /**
-     * 
+     * dispatches a CommandExecutionEvent whenever a message with !hydra is received, otherwise does nothing
      * @param event Event that is fired whenever a new message is sent
      */
     @EventSubscriber
     public void watchForCommands(MessageReceivedEvent event) {
             IMessage _message = event.getMessage();
-            String _content = _message.getContent().toLowerCase();
+            String _content = _message.getContent();
 
             if (!_content.startsWith(KEY)){ //this means the message was not meant for us 
                 return;

@@ -32,12 +32,11 @@ import sx.blah.discord.util.MissingPermissionsException;
 public class Chat {
 
     /**
-     *
+     * This method's only reason for existence is to make Daniel's Life just a tiny bit harder.
      * @param channel @link #sendMessage(IChannel, String) channel
      * @throws HTTP429Exception
      * @throws DiscordException
-     * @throws MissingPermissionsException This method's only reason for
-     * existence is to make Daniel's Life just a tiny bit harder.
+     * @throws MissingPermissionsException 
      */
     public static void insultDaniel(IChannel channel) throws HTTP429Exception, DiscordException, MissingPermissionsException {
         String[] insults = {"Daniel ist sehr speziell in der Wahl der Musiklautstärke. Tätsächlich ist für ihn alles unangenehm laut.",
@@ -49,7 +48,7 @@ public class Chat {
     }
 
     /**
-     * Writes a message, that is specifically aimed at improving noahs game be
+     * Writes a message, that is specifically aimed at improving anbodys game be
      * it in league or real life
      *
      * @param channel @link #sendMessage(IChannel, String) channel
@@ -99,9 +98,18 @@ public class Chat {
                     showStatsAll(channel, guildID);
                     break;
                 case "name":
-                    if (args.length == 2) {
+                    if (args.length == 2) {//showStatsByName needs a parameter
                         showStatsByName(channel, args[1], guildID);
+                        break;
                     } else {
+                        return false;
+                    }
+                case "ranking": 
+                    if(args.length == 2 && UtilityMethods.isInteger(args[1])) {//showStatsRanking needs second parameter
+                    showStatsRanking(channel,(int) Integer.parseInt(args[1]), guildID);//selects the top n users by uptime
+                    break;
+                    }
+                    else{
                         return false;
                     }
                 default:
@@ -126,14 +134,16 @@ public class Chat {
         try {
             user = Main.userService.getUser(id, guildID);
         } catch (SQLException ex) {
-            Logger.getGlobal().log(Level.SEVERE, "user could not be retrieved.", ex);
+            Logger.getGlobal().log(Level.SEVERE, "User could not be retrieved.", ex);
         }
         String personalStats = user.toString() + System.lineSeparator() + getGamesMessage(id, guildID);
         sendMessage(channel, personalStats);
     }
+
     /**
      * returns Users which equal the specified name
-     * @param channel @link #showStats(IChannel, IUser, String, String[])
+     *
+     * @param channel @link #showStats(IChannel, IUser, String, String[]) channel
      * @param name name, of which the stats are to be shown
      * @param guildID @link #showStats(IChannel, IUser, String, String[])
      * guildID
@@ -143,24 +153,43 @@ public class Chat {
         try {
             users = Main.userService.getUserByName(name, guildID);
         } catch (SQLException ex) {
-            Logger.getLogger(Chat.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getGlobal().log(Level.SEVERE, "User could not be retrieved by name.", ex);
         }
-        if(!(users.isEmpty()))
-        {
-        StringBuilder sb = new StringBuilder();
-        for (User user : users) {
-            sb.append(user.toString()).append(System.lineSeparator()).append(getGamesMessage(user.getId(), user.getGuildID()));
-        }
-        sendMessage(channel, sb.toString());
-        }
-        else
-        {
+        if (!(users.isEmpty())) {
+            StringBuilder sb = new StringBuilder();
+            for (User user : users) {
+                sb.append(user.toString()).append(System.lineSeparator()).append(getGamesMessage(user.getId(), user.getGuildID()));
+            }
+            sendMessage(channel, sb.toString());
+        } else {
             sendMessage(channel, "Die Person mit dem Namen *" + name + "* existiert genau so wenig wie deine Freundin.");
         }
     }
+    
+    /**
+     * shows the stats of the top n users
+     * @param channel @link #showStats(IChannel, IUser, String, String[]) channel
+     * @param limit {@link com.corbi.robot.actions.DBServices.UserService#getRankingByUptime(String, int} limit
+     * @param guildID @link #showStats(IChannel, IUser, String, String[]) guildID
+     */
+    private static void showStatsRanking(IChannel channel, int limit, String guildID)
+    {
+        List<User> users = new ArrayList<>();
+        StringBuilder sb = new StringBuilder();
+        try {
+            users = Main.userService.getRankingByUptime(guildID, limit);
+        } catch (SQLException ex) {
+            Logger.getGlobal().log(Level.SEVERE, "Users could not be retrieved by ranking.", ex);
+        }
+        for(int i = 0; i < users.size(); i++)
+        {
+            sb.append("**").append(String.valueOf(i+1)).append("**: ").append(users.get(i).toString()).append(System.lineSeparator());// bold rank number: user.toString() + linebreak
+        }
+        sendMessage(channel, sb.toString());
+    }
 
     /**
-     *
+     * shows the combined stats of all users
      * @param channel @link #showStats(IChannel, IUser, String, String[])
      * channel
      * @param guildID @link #showStats(IChannel, IUser, String, String[])
@@ -232,7 +261,12 @@ public class Chat {
             Logger.getGlobal().log(Level.SEVERE, "message could not be sent.", ex);
         }
     }
-
+    /**
+     * A utility method that will retrieve and format the games for a given user
+     * @param id unique id for an user
+     * @param guildID Server from which the request was sent
+     * @return a formatted String that contains all information for games from a single user
+     */
     private static String getGamesMessage(String id, String guildID) {
         List<Game> games = null;
         try {
