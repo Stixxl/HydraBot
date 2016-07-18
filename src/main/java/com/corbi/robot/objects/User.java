@@ -88,6 +88,6 @@ public class User {
     {
         SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.SSS");
         Date loginDate = new Date(loginTime);
-        return "Name: " + name + ", Uptime: *" + UtilityMethods.formatTime(uptime) + "*, Tier: **" + tier + "**";
+        return UtilityMethods.highlightStringBold(name) + ", Uptime: " + UtilityMethods.highlightStringItalic(UtilityMethods.formatTime(uptime)) + ", Tier: " + UtilityMethods.highlightStringBold(tier);
     }
     }

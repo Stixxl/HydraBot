@@ -33,11 +33,13 @@ import sx.blah.discord.util.MissingPermissionsException;
 public class Chat {
 
     /**
-     * This method's only reason for existence is to make Daniel's Life just a tiny bit harder.
+     * This method's only reason for existence is to make Daniel's Life just a
+     * tiny bit harder.
+     *
      * @param channel @link #sendMessage(IChannel, String) channel
      * @throws HTTP429Exception
      * @throws DiscordException
-     * @throws MissingPermissionsException 
+     * @throws MissingPermissionsException
      */
     public static void insultDaniel(IChannel channel) throws HTTP429Exception, DiscordException, MissingPermissionsException {
         String[] insults = {"Daniel ist sehr speziell in der Wahl der Musiklautstärke. Tätsächlich ist für ihn alles unangenehm laut.",
@@ -60,7 +62,7 @@ public class Chat {
     public static void tellBinsenweisheit(IChannel channel) throws HTTP429Exception, DiscordException, MissingPermissionsException {
         String[] binsenweisheiten = {"Ein Kampf, in dem die zahlenmäßige Unterlegenheit zwei oder mehr beträgt, ist kein Kampf, sondern eine Dummheit.",
             "Die ultimative Fähigkeit kann auch zum Fliehen eines aussichtlosen Kampfes genutzt werden.", "Sollte eine Person angerufen werden, so bite diese darum, dir ihren Gesprächspartner mitzuteilen. "
-            + "Dies hat den Vorteil eines angenehmen Themas sollte es zu sogenanntem \"Smalltalk\" kommen."};
+            + "Dies hat den Vorteil eines gemeinsamen Gesrpächsstoffes sollte es zu sogenanntem \"Smalltalk\" kommen."};
         Random randInt = new Random(System.currentTimeMillis());
 
         int index = randInt.nextInt(binsenweisheiten.length);
@@ -105,12 +107,11 @@ public class Chat {
                     } else {
                         return false;
                     }
-                case "ranking": 
-                    if(args.length == 2 && UtilityMethods.isInteger(args[1])) {//showStatsRanking needs second parameter
-                    showStatsRanking(channel,(int) Integer.parseInt(args[1]), guildID);//selects the top n users by uptime
-                    break;
-                    }
-                    else{
+                case "ranking":
+                    if (args.length == 2 && UtilityMethods.isInteger(args[1])) {//showStatsRanking needs second parameter
+                        showStatsRanking(channel, (int) Integer.parseInt(args[1]), guildID);//selects the top n users by uptime
+                        break;
+                    } else {
                         return false;
                     }
                 default:
@@ -137,17 +138,17 @@ public class Chat {
         } catch (SQLException ex) {
             Logger.getGlobal().log(Level.SEVERE, "User could not be retrieved.", ex);
         }
-        if(user != null)
-        {
-        String personalStats = user.toString() + System.lineSeparator() + getGamesMessage(id, guildID);
-        sendMessage(channel, personalStats);
+        if (user != null) {
+            String personalStats = user.toString() + System.lineSeparator() + getGamesMessage(id, guildID);
+            sendMessage(channel, personalStats);
         }
     }
 
     /**
      * returns Users which equal the specified name
      *
-     * @param channel @link #showStats(IChannel, IUser, String, String[]) channel
+     * @param channel @link #showStats(IChannel, IUser, String, String[])
+     * channel
      * @param name name, of which the stats are to be shown
      * @param guildID @link #showStats(IChannel, IUser, String, String[])
      * guildID
@@ -166,18 +167,22 @@ public class Chat {
             }
             sendMessage(channel, sb.toString());
         } else {
-            sendMessage(channel, "Die Person mit dem Namen *" + name + "* existiert genau so wenig wie deine Freundin.");
+            sendMessage(channel, "Die Person mit dem Namen " + UtilityMethods.highlightStringItalic(name) + " existiert genau so wenig wie deine Freundin.");
         }
     }
-    
+
     /**
      * shows the stats of the top n users
-     * @param channel @link #showStats(IChannel, IUser, String, String[]) channel
-     * @param limit {@link com.corbi.robot.actions.DBServices.UserService#getRankingByUptime(String, int} limit
-     * @param guildID @link #showStats(IChannel, IUser, String, String[]) guildID
+     *
+     * @param channel @link #showStats(IChannel, IUser, String, String[])
+     * channel
+     * @param limit
+     * {@link com.corbi.robot.actions.DBServices.UserService#getRankingByUptime(String, int}
+     * limit
+     * @param guildID @link #showStats(IChannel, IUser, String, String[])
+     * guildID
      */
-    private static void showStatsRanking(IChannel channel, int limit, String guildID)
-    {
+    private static void showStatsRanking(IChannel channel, int limit, String guildID) {
         List<User> users = new ArrayList<>();
         StringBuilder sb = new StringBuilder();
         try {
@@ -185,22 +190,19 @@ public class Chat {
         } catch (SQLException ex) {
             Logger.getGlobal().log(Level.SEVERE, "Users could not be retrieved by ranking.", ex);
         }
-        if(!(users.isEmpty()))
-        {
-            for(int i = 0; i < users.size(); i++)
-        {
-            sb.append("**").append(String.valueOf(i+1)).append("**: ").append(users.get(i).toString()).append(System.lineSeparator());// bold rank number: user.toString() + linebreak
-        }
-        sendMessage(channel, sb.toString());
-        }
-        else
-        {
+        if (!(users.isEmpty())) {
+            for (int i = 0; i < users.size(); i++) {
+                sb.append(UtilityMethods.highlightStringBold(String.valueOf(i + 1))).append(": ").append(users.get(i).toString()).append(System.lineSeparator());// bold rank number: user.toString() + linebreak
+            }
+            sendMessage(channel, sb.toString());
+        } else {
             sendErrorMessage(channel);
         }
     }
 
     /**
      * shows the combined stats of all users
+     *
      * @param channel @link #showStats(IChannel, IUser, String, String[])
      * channel
      * @param guildID @link #showStats(IChannel, IUser, String, String[])
@@ -223,11 +225,11 @@ public class Chat {
         if (games != null) {
             sb.append(System.lineSeparator());
             sb.append("Eure verschwendete Zeit teilt ihr anscheinend wie folgt auf:");
-        for (int i = 0; i < games.size(); i++) {
-            sb.append(System.lineSeparator()).append(String.valueOf(i)).append(". ").append(games.get(i).toString());
-        }
-        String statsAll = "Ihr habt insgesamt *" + UtilityMethods.formatTime(uptime) + "* auf diesem Server verschwendet." + sb.toString();
-        sendMessage(channel, statsAll);
+            for (int i = 0; i < games.size(); i++) {
+                sb.append(System.lineSeparator()).append(String.valueOf(i)).append(". ").append(games.get(i).toString());
+            }
+            String statsAll = "Ihr habt insgesamt " + UtilityMethods.highlightStringItalic(UtilityMethods.formatTime(uptime)) + " auf diesem Server verschwendet." + sb.toString();
+            sendMessage(channel, statsAll);
         }
     }
 
@@ -238,7 +240,7 @@ public class Chat {
      * @param channel @link #sendMessage(IChannel, String) channel
      */
     public static void showUnsupportedFormatMessage(String wrongCommand, IChannel channel) {
-        String errorInfo = "The HydraBot does not support the command *" + wrongCommand + "*.";
+        String errorInfo = "The HydraBot does not support the command " + UtilityMethods.highlightStringItalic(wrongCommand) + ".";
 
         sendMessage(channel, errorInfo);
     }
@@ -253,25 +255,24 @@ public class Chat {
      */
     public static void showUnsupportedFormatMessage(String command, String[] wrongArgs, IChannel channel) {
 
-        String errorInfo = "The HydraBot does not support the arguments *" + Arrays.toString(wrongArgs)
-                + "* for the command *" + command + "*.";
+        String errorInfo = "The HydraBot does not support the arguments " + UtilityMethods.highlightStringItalic(Arrays.toString(wrongArgs))
+                + " for the command " + UtilityMethods.highlightStringItalic(command) + ".";
         sendMessage(channel, errorInfo);
 
     }
+
     /**
-     * sends Information regarding a given command; if args is empty (=!hydra help) only top level commands will be shown
+     * sends Information regarding a given command; if args is empty (=!hydra
+     * help) only top level commands will be shown
+     *
      * @param channel channel, where message is sent
      * @param args args, containing possible command chain
      */
-    public static void showHelp(IChannel channel, String[] args)
-    {
+    public static void showHelp(IChannel channel, String[] args) {
         Help help = new Help();
-        if(args == null || args.length == 0)
-        {
-            sendMessage(channel,help.showHelp());
-        }
-        else
-        {
+        if (args == null || args.length == 0) {
+            sendMessage(channel, help.showHelp());
+        } else {
             sendMessage(channel, help.showHelp(args));
         }
     }
@@ -290,11 +291,14 @@ public class Chat {
             Logger.getGlobal().log(Level.SEVERE, "message could not be sent.", ex);
         }
     }
+
     /**
      * A utility method that will retrieve and format the games for a given user
+     *
      * @param id unique id for an user
      * @param guildID Server from which the request was sent
-     * @return a formatted String that contains all information for games from a single user
+     * @return a formatted String that contains all information for games from a
+     * single user
      */
     private static String getGamesMessage(String id, String guildID) {
         List<Game> games = null;
