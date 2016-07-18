@@ -37,7 +37,7 @@ public class CommandHelp {
             return description;
         }
 
-        return description + "; besitzt weitere Parameter.";
+        return description + "; besitzt weitere Unterbefehle.";
     }
 
     public CommandHelp[] getSubcommands() {

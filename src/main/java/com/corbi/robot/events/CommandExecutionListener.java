@@ -44,7 +44,7 @@ public class CommandExecutionListener {
             case "daniel":
                 Chat.insultDaniel(textChannel);
                 break;
-            case "noah":
+            case "binsenweisheit":
                 Chat.tellBinsenweisheit(textChannel);
                 break;
             //sounds
@@ -58,6 +58,9 @@ public class CommandExecutionListener {
                 if (!(Chat.showStats(textChannel, event.getBy(), event.getMessage().getGuild().getID(), args))) {
                     Chat.showUnsupportedFormatMessage(command, args, textChannel);
                 }
+                break;
+            case "help":
+                Chat.showHelp(textChannel, args);
                 break;
 
             default:

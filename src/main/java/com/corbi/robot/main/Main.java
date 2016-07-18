@@ -24,6 +24,7 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
+import sx.blah.discord.Discord4J;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.util.DiscordException;
@@ -47,6 +48,7 @@ public class Main {
     private static final String LOGFOLDER = "logs/";
 
     public static void main(String[] args) {
+        init();
         Logger.getGlobal().setLevel(Level.FINER);
         try {
             //create filehandler
@@ -77,45 +79,29 @@ public class Main {
         fh_severe.setFilter((LogRecord record) -> record.getLevel().equals(Level.SEVERE));
         fh_info.setFilter((LogRecord record) -> record.getLevel().equals(Level.INFO));
         fh_finer.setFilter((LogRecord record) -> record.getLevel().equals(Level.FINER));
-        
-        //logs any uncaught exceptions to severe.log and will then exit the system
-        Thread.setDefaultUncaughtExceptionHandler((Thread thread, Throwable e) -> {
-            Logger.getGlobal().log(Level.SEVERE, "uncaught error!", e);
-            System.exit(1);
-        });
 
-    readConfig();
-    userService  = dbService.getUserService();
-    gameService  = dbService.getGameService();
-    soundService  = dbService.getSoundService();
+        readConfig();
+        userService = dbService.getUserService();
+        gameService = dbService.getGameService();
+        soundService = dbService.getSoundService();
 
-    
         try {
             client = new ClientBuilder().withToken(Token).login();
-    }
-    catch (DiscordException ex
-
-    
-        ) {
+        } catch (DiscordException ex) {
             Logger.getGlobal().log(Level.SEVERE, null, ex);
-    }
-    //register event listener
+        }
+        //register event listener
 
-    client.getDispatcher ()
-
-    .registerListener(new CommandExecutionListener());
-    client.getDispatcher ()
-
-    .registerListener(new CommandListener());
-    client.getDispatcher ()
-
-    .registerListener(new AudioListener());
-    client.getDispatcher ()
-
-    .registerListener(new UserListener());
-    Logger.getGlobal ()
-
-.log(Level.FINER, "Server started.");
+        client.getDispatcher()
+                .registerListener(new CommandExecutionListener());
+        client.getDispatcher()
+                .registerListener(new CommandListener());
+        client.getDispatcher()
+                .registerListener(new AudioListener());
+        client.getDispatcher()
+                .registerListener(new UserListener());
+        Logger.getGlobal()
+                .log(Level.FINER, "Server started.");
     }
 
     /**
@@ -140,6 +126,25 @@ public class Main {
             }
             Token = properties.getProperty("token");
             dbService = new DBService(properties.getProperty("dbusername"), properties.getProperty("dbpassword"));
+        }
+    }
+
+    /**
+     * initializes the System; creates necessary folders;
+     */
+    public static void init() {
+        File f = new File(LOGFOLDER);
+        if (!(f.exists() && f.isDirectory())) {
+            f.mkdir();
+        } else {
+            //deletes the logging folder and creates a new one, thus swiping its content
+            try {
+                UtilityMethods.deleteFileOrFolder(f.toPath());
+
+                f.mkdir();
+            } catch (IOException ex) {
+                Logger.getGlobal().log(Level.SEVERE, "Error occured while trying to delete the logging folder.", ex);
+            }
         }
     }
 }

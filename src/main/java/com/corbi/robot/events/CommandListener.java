@@ -31,7 +31,7 @@ public class CommandListener {
                 return;
             }
             // a standard command looks like this: !hydra command param param...
-            String[] _args = {""}; // equals no arguments
+            String[] _args = {}; // equals no arguments
             String _command = _content.split(" ")[1];
             if (_content.contains(" ")) {
                 String temp = _content.substring(_content.indexOf(' ') + 1); //temp = command param param...

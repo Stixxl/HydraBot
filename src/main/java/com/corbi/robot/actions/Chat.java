@@ -9,6 +9,7 @@ import com.corbi.robot.main.Main;
 import com.corbi.robot.objects.Game;
 import com.corbi.robot.objects.User;
 import com.corbi.robot.utilities.UtilityMethods;
+import help.Help;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -257,9 +258,22 @@ public class Chat {
         sendMessage(channel, errorInfo);
 
     }
+    /**
+     * sends Information regarding a given command; if args is empty (=!hydra help) only top level commands will be shown
+     * @param channel channel, where message is sent
+     * @param args args, containing possible command chain
+     */
     public static void showHelp(IChannel channel, String[] args)
     {
-        
+        Help help = new Help();
+        if(args == null || args.length == 0)
+        {
+            sendMessage(channel,help.showHelp());
+        }
+        else
+        {
+            sendMessage(channel, help.showHelp(args));
+        }
     }
 
     /**

@@ -6,7 +6,17 @@
 package com.corbi.robot.utilities;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.FileVisitResult;
+import static java.nio.file.FileVisitResult.CONTINUE;
+import static java.nio.file.FileVisitResult.TERMINATE;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class provides Utility Methods that are required through all packages
@@ -40,6 +50,7 @@ public class UtilityMethods {
         long day = (time / (1000 * 60 * 60 * 24));
         return String.format("%d Tag(e), %02d Stunde(n), %02d Minute(n) und %02d Sekunde(n)", day, hour, minute, second);
     }
+
     /**
      * function to check whether a given String is an Integer taken from
      * http://stackoverflow.com/questions/5439529/determine-if-a-string-is-an-integer-in-java
@@ -67,31 +78,74 @@ public class UtilityMethods {
         }
         return true;
     }
+
     /**
      * Converts a String so that it will be displayed underlined in discord
+     *
      * @param s String to be converted
      * @return String s, which will be underlined in discord
      */
-    public static String highlightStringUnderline(String s)
-    {
+    public static String highlightStringUnderline(String s) {
         return "__" + s + "__";
     }
+
     /**
      * Converts a String so that it will be displayed italic in discord
+     *
      * @param s String to beconverted
      * @return String s, which will be italic in discord
      */
-    public static String highlightStringItalic(String s)
-    {
+    public static String highlightStringItalic(String s) {
         return "*" + s + "*";
     }
+
     /**
      * Converts a String so that it will be displayed bold in discord
+     *
      * @param s String to be converted
      * @return String s, which will be bold in discord
      */
-    public static String highlightStringBold(String s)
-    {
+    public static String highlightStringBold(String s) {
         return "**" + s + "**";
     }
+
+    /**
+     * deletes a file or folder taken from
+     * http://stackoverflow.com/questions/3775694/deleting-folder-from-java by
+     * user Sean Patrick Floyd
+     *
+     * @param path path to file or folder
+     * @throws IOException
+     */
+    public static void deleteFileOrFolder(final Path path) throws IOException {
+        Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
+            @Override
+            public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs)
+                    throws IOException {
+                Files.delete(file);
+                return CONTINUE;
+            }
+
+            @Override
+            public FileVisitResult visitFileFailed(final Path file, final IOException e) {
+                return handleException(e);
+            }
+
+            private FileVisitResult handleException(final IOException e) {
+                Logger.getGlobal().log(Level.SEVERE, "Error occured while trying to delete a file or folder.", e);
+                return TERMINATE;
+            }
+
+            @Override
+            public FileVisitResult postVisitDirectory(final Path dir, final IOException e)
+                    throws IOException {
+                if (e != null) {
+                    return handleException(e);
+                }
+                Files.delete(dir);
+                return CONTINUE;
+            }
+        });
+    }
+;
 }
