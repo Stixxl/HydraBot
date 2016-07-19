@@ -8,6 +8,7 @@ package com.corbi.robot.actions.DBServices;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -37,17 +38,27 @@ public class DBService {
             Logger.getLogger(DBService.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-public UserService getUserService(){
-     return new UserService(TABLENAME, con);
- }
 
-public GameService getGameService(){
-    return new GameService(TABLENAME, con);
-}
-public SoundService getSoundService(){
-    return new SoundService(TABLENAME, con);
-}
+    public UserService getUserService() {
+        return new UserService(TABLENAME, con);
+    }
+
+    public GameService getGameService() {
+        return new GameService(TABLENAME, con);
+    }
+
+    public SoundService getSoundService() {
+        return new SoundService(TABLENAME, con);
+    }
+
+    public BinsenweisheitenService getBinsenweisheitenService() {
+        return new BinsenweisheitenService(TABLENAME, con);
+    }
+
+    public FlameForDanielService getFlameForDanielService() {
+        return new FlameForDanielService(TABLENAME, con);
+    }
+
     /**
      * This method sends a SQL-Statement to the database
      *
@@ -57,5 +68,12 @@ public SoundService getSoundService(){
     protected static void execute(PreparedStatement statement) throws SQLException {
         statement.execute();
         statement.close();
+    }
+
+    protected static ResultSet selectRandom(String tablename, Connection con) throws SQLException {
+        PreparedStatement statement = con.prepareStatement("SELECT * FROM " + tablename
+                + " ORDER BY random()"
+                + " LIMIT 1");
+        return statement.executeQuery();
     }
 }

@@ -60,13 +60,12 @@ public class Chat {
      * @throws MissingPermissionsException
      */
     public static void tellBinsenweisheit(IChannel channel) throws HTTP429Exception, DiscordException, MissingPermissionsException {
-        String[] binsenweisheiten = {"Ein Kampf, in dem die zahlenmäßige Unterlegenheit zwei oder mehr beträgt, ist kein Kampf, sondern eine Dummheit.",
-            "Die ultimative Fähigkeit kann auch zum Fliehen eines aussichtlosen Kampfes genutzt werden.", "Sollte eine Person angerufen werden, so bite diese darum, dir ihren Gesprächspartner mitzuteilen. "
-            + "Dies hat den Vorteil eines gemeinsamen Gesrpächsstoffes sollte es zu sogenanntem \"Smalltalk\" kommen."};
-        Random randInt = new Random(System.currentTimeMillis());
-
-        int index = randInt.nextInt(binsenweisheiten.length);
-        String binsenweisheit = "Binsenweisheit " + String.valueOf(index + 1) + ": " + binsenweisheiten[index];
+        String binsenweisheit = null;
+        try {
+            binsenweisheit = Main.dbService.getBinsenweisheitenService().selectSentenceRandom();
+        } catch (SQLException ex) {
+            Logger.getGlobal().log(Level.SEVERE, "Could not retrieve Binsenweisheit.", ex);
+        }
         sendMessage(channel, binsenweisheit);
     }
 
@@ -311,7 +310,7 @@ public class Chat {
         if (games != null) {
             sb.append("Die verschwendete Zeit wird wie folgt aufgeteilt:");
             for (int i = 0; i < games.size(); i++) {
-                sb.append(System.lineSeparator()).append(String.valueOf(i)).append(". ").append(games.get(i).toString());
+                sb.append(System.lineSeparator()).append(String.valueOf(i + 1)).append(". ").append(games.get(i).toString());
             }
         }
         return sb.toString();

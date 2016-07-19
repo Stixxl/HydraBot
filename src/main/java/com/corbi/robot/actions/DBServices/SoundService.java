@@ -45,4 +45,18 @@ public class SoundService {
 
     }
 
+    /**
+     * increments the total amount of requests for a soundfile
+     *
+     * @param name identifier for a soundfile
+     * @throws SQLException
+     */
+    public void incrementRequestAmount(String name) throws SQLException {
+        PreparedStatement statement = con.prepareStatement("UPDATE " + TABLENAME
+                + " SET amount_requests = amount_requests + 1"
+                + "WHERE name=?");
+        statement.setString(1, name);
+        DBService.execute(statement);
+    }
+
 }
