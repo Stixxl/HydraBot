@@ -45,6 +45,7 @@ public class Audio {
                 String path = null;
                 try {
                     path = Main.soundService.getPath(args[0]);
+                    Main.soundService.incrementRequestAmount(args[0]);
                 } catch (SQLException ex) {
                     Logger.getGlobal().log(Level.SEVERE, "Sound path could not be retrieved.", ex);
                 }
