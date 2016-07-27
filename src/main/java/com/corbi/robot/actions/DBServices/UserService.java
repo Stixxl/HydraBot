@@ -62,8 +62,7 @@ public class UserService {
         statement.setLong(1, uptime);
         statement.setString(2, id);
         statement.setString(3, guild_id);
-        statement.execute();
-        statement.close();
+        DBService.execute(statement);
     }
 
     /**
@@ -76,6 +75,7 @@ public class UserService {
      * @throws SQLException
      */
     public User getUser(String id, String guild_id) throws SQLException {
+        User user = null;
         PreparedStatement statement = con.prepareStatement("SELECT uptime, name FROM " + TABLENAME
                 + " WHERE id=? "
                 + "AND guild_id=?");
@@ -85,15 +85,11 @@ public class UserService {
         if (result.next()) {
             Long uptime = result.getBigDecimal("uptime").longValue();
             String name = result.getString("name");
+            user = new User(uptime, id, guild_id, name);
             statement.close();
-            return new User(uptime, id, guild_id, name);
-
-        } else {
-
-            statement.close();
-            return null;
         }
 
+        return user;
     }
 
     /**
@@ -141,19 +137,21 @@ public class UserService {
         statement.close();
         return uptimeAll;
     }
+
     /**
      * Selects the top n users by uptime
+     *
      * @param guildID server from which the request was received
      * @param limit limits the output to the top n users
      * @return a list of the top n users
-     * @throws SQLException 
+     * @throws SQLException
      */
     public List<User> getRankingByUptime(String guildID, int limit) throws SQLException {
         List<User> users = new ArrayList();
-        PreparedStatement statement = con.prepareStatement("SELECT uptime, id, name FROM " + TABLENAME                
+        PreparedStatement statement = con.prepareStatement("SELECT uptime, id, name FROM " + TABLENAME
                 + " WHERE guild_id=?"
                 + " ORDER BY uptime DESC"
-                + " LIMIT ?::integer");   
+                + " LIMIT ?::integer");
         statement.setString(1, guildID);
         statement.setInt(2, limit);
         ResultSet result = statement.executeQuery();

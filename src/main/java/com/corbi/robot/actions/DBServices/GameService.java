@@ -54,6 +54,7 @@ public class GameService {
      * @throws java.sql.SQLException
      */
     public Game getGame(String title, String id, String guildID) throws SQLException {
+        Game game = null;
         PreparedStatement statement = con.prepareStatement("Select time_played, amount_played FROM " + TABLENAME
                 + " WHERE title=? "
                 + "AND id=? "
@@ -64,11 +65,10 @@ public class GameService {
         statement.setString(3, guildID);
         ResultSet result = statement.executeQuery();
         if (result.next()) {
-            return new Game(title, result.getBigDecimal("time_played").longValue(), result.getInt("amount_played"));
+            game = new Game(title, result.getBigDecimal("time_played").longValue(), result.getInt("amount_played"));
         }
-
         statement.close();
-        return null;
+        return game;
     }
 
     /**
@@ -145,7 +145,8 @@ public class GameService {
                 + " WHERE guild_id=? "
                 + "GROUP BY title) as ua2 "
                 + "WHERE title=ua1.t "
-                + "AND title=ua2.t");
+                + "AND title=ua2.t "
+                + "ORDER BY ua2.time_played_all DESC");
         statement.setString(1, guildID);
         statement.setString(2, guildID);
         ResultSet result = statement.executeQuery();
