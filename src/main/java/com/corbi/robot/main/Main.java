@@ -46,6 +46,7 @@ public class Main {
     private static FileHandler fh_finer = null;
     private static final int LOGGING_FILE_SIZE = 1024 * 1024;//1MB
     private static final String LOGFOLDER = "logs/";
+    public static UserListener userListener;
 
     public static void main(String[] args) {
         init();
@@ -91,7 +92,7 @@ public class Main {
             Logger.getGlobal().log(Level.SEVERE, null, ex);
         }
         //register event listener
-
+        userListener = new UserListener();
         client.getDispatcher()
                 .registerListener(new CommandExecutionListener());
         client.getDispatcher()
@@ -99,7 +100,7 @@ public class Main {
         client.getDispatcher()
                 .registerListener(new AudioListener());
         client.getDispatcher()
-                .registerListener(new UserListener());
+                .registerListener(userListener);
         Logger.getGlobal()
                 .log(Level.FINER, "Server started.");
     }

@@ -7,6 +7,8 @@ package com.corbi.robot.events;
 
 import com.corbi.robot.actions.Audio;
 import com.corbi.robot.actions.Chat;
+import com.corbi.robot.main.Main;
+import com.corbi.robot.objects.User;
 import java.util.Optional;
 import sx.blah.discord.api.EventSubscriber;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
@@ -53,10 +55,16 @@ public class CommandExecutionListener {
                     Chat.showUnsupportedFormatMessage(command, args, textChannel);
                 }
                 break;
-                //statistics
+            //statistics
             case "stats":
-                if (!(Chat.showStats(textChannel, event.getBy(), event.getMessage().getGuild().getID(), args))) {
-                    Chat.showUnsupportedFormatMessage(command, args, textChannel);
+                for (User user : Main.userListener.onlineUsers) {
+                    if (user.getId().equals(event.getBy().getID())) {
+                        if (!(Chat.showStats(textChannel, user, args))) {
+                            Chat.showUnsupportedFormatMessage(command, args, textChannel);
+                        }
+                        break;
+                    }
+
                 }
                 break;
             case "help":

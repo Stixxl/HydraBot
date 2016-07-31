@@ -5,9 +5,14 @@
  */
 package com.corbi.robot.objects;
 
+import com.corbi.robot.main.Main;
 import com.corbi.robot.utilities.UtilityMethods;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * identifies a user that ever was or is currently on the server
@@ -52,6 +57,20 @@ public class User {
         this.guildID = guildID;
     }
 
+    public void updateUptime()
+    {
+        try {
+            uptime = Main.userService.getUser(id, guildID).getUptime(); // value from db + currentTime - time of login
+        } catch (SQLException ex) {
+            Logger.getGlobal().log(Level.SEVERE, "Could not retrieve User.", ex);
+        }
+        try {
+            Main.userService.updateUser(id, guildID, uptime);
+        } catch (SQLException ex) {
+            Logger.getGlobal().log(Level.SEVERE, "Could not update User", ex);
+        }
+        uptime += System.currentTimeMillis() - loginTime;
+    }
     public long getUptime() {
         return uptime;
     }
@@ -89,5 +108,17 @@ public class User {
         SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.SSS");
         Date loginDate = new Date(loginTime);
         return UtilityMethods.highlightStringBold(name) + ", Uptime: " + UtilityMethods.highlightStringItalic(UtilityMethods.formatTime(uptime)) + ", Tier: " + UtilityMethods.highlightStringBold(tier);
+    }
+    
+    /**
+     * Updates the uptime of all users within the list
+     * @param users list of users to be updated
+     */
+    public static void updateUsers(List<User> users)
+    {
+        for(User user: users)
+        {
+            user.updateUptime();
+        }
     }
     }

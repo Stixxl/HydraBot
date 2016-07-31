@@ -87,14 +87,15 @@ public class Chat {
      * @param guildID the id of the server
      * @return true if format of input was correct, false otherwise
      */
-    public static boolean showStats(IChannel channel, IUser user, String guildID, String args[]) {
-        String id = user.getID();
+    public static boolean showStats(IChannel channel, User user, String args[]) {
+        String id = user.getId();
+        String guildID = user.getGuildID();
         if (args.length > 2 || args.length == 0) {
             return false;
         } else {
             switch (args[0]) {
                 case "me":
-                    showStatsMe(channel, id, guildID);
+                    showStatsMe(channel, user);
                     break;
                 case "all":
                     showStatsAll(channel, guildID);
@@ -129,18 +130,10 @@ public class Chat {
      * @param guildID @link #showStats(IChannel, IUser, String, String[])
      * guildID
      */
-    private static void showStatsMe(IChannel channel, String id, String guildID) {
-        User user = null;
-        List<Game> games = null;
-        try {
-            user = Main.userService.getUser(id, guildID);
-        } catch (SQLException ex) {
-            Logger.getGlobal().log(Level.SEVERE, "User could not be retrieved.", ex);
-        }
-        if (user != null) {
-            String personalStats = user.toString() + System.lineSeparator() + getGamesMessage(id, guildID);
-            sendMessage(channel, personalStats);
-        }
+    private static void showStatsMe(IChannel channel, User user) {
+        user.updateUptime();
+        String personalStats = user.toString() + System.lineSeparator() + getGamesMessage(user.getId(), user.getGuildID());
+        sendMessage(channel, personalStats);
     }
 
     /**
@@ -154,6 +147,7 @@ public class Chat {
      */
     private static void showStatsByName(IChannel channel, String name, String guildID) {
         List<User> users = new ArrayList<>();
+        User.updateUsers(Main.userListener.onlineUsers);
         try {
             users = Main.userService.getUserByName(name, guildID);
         } catch (SQLException ex) {
@@ -184,6 +178,7 @@ public class Chat {
     private static void showStatsRanking(IChannel channel, int limit, String guildID) {
         List<User> users = new ArrayList<>();
         StringBuilder sb = new StringBuilder();
+        User.updateUsers(Main.userListener.onlineUsers);
         try {
             users = Main.userService.getRankingByUptime(guildID, limit);
         } catch (SQLException ex) {
@@ -210,6 +205,7 @@ public class Chat {
     private static void showStatsAll(IChannel channel, String guildID) {
         long uptime = 0;
         List<Game> games = null;
+        User.updateUsers(Main.userListener.onlineUsers);
         try {
             uptime = Main.userService.getUptimeAll(guildID);
         } catch (SQLException ex) {
