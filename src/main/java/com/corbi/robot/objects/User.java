@@ -20,12 +20,14 @@ import java.util.logging.Logger;
  * @author PogChamp
  */
 public class User {
+
     private String name;
     private long uptime;
     private String id;
     private String guildID;
     private String tier;
     private final long loginTime;
+    private long lastUpdate;
     private Game game;
 
     public User(long uptime, String id, String guildID, String name) {
@@ -35,6 +37,7 @@ public class User {
         this.guildID = guildID;
         this.tier = calculateTier();
         this.name = name;
+        lastUpdate = loginTime;
     }
 
     public String getName() {
@@ -57,20 +60,17 @@ public class User {
         this.guildID = guildID;
     }
 
-    public void updateUptime()
-    {
+    public void updateUptime() {
+        uptime = System.currentTimeMillis() - loginTime;
         try {
-            uptime = Main.userService.getUser(id, guildID).getUptime(); // value from db + currentTime - time of login
+            uptime = Main.userService.getUser(id, guildID).getUptime() + System.currentTimeMillis() - lastUpdate; // value from db + currentTime - time of last update (=loginTime if there was no update)
+            Main.userService.updateUser(id, guildID, uptime);
         } catch (SQLException ex) {
             Logger.getGlobal().log(Level.SEVERE, "Could not retrieve User.", ex);
         }
-        try {
-            Main.userService.updateUser(id, guildID, uptime);
-        } catch (SQLException ex) {
-            Logger.getGlobal().log(Level.SEVERE, "Could not update User", ex);
-        }
-        uptime += System.currentTimeMillis() - loginTime;
+        lastUpdate = System.currentTimeMillis();
     }
+
     public long getUptime() {
         return uptime;
     }
@@ -94,31 +94,30 @@ public class User {
     public void setGame(Game game) {
         this.game = game;
     }
-    private String calculateTier()
-    {
-        String[] tiers = {"McShitsen", "DansGame", "Dödelbär", "MrPoppyButthole", "Fan Grill", "BabyRageBoy", "Beach Boy","Kazoo Kid", "Average Joe",
+
+    private String calculateTier() {
+        String[] tiers = {"McShitsen", "DansGame", "Dödelbär", "MrPoppyButthole", "Fan Grill", "BabyRageBoy", "Beach Boy", "Kazoo Kid", "Average Joe",
             "Quality Shit Poster", "Big City Kid", "Top Notch Memer", "Navy Seal", "Undercover agent working for bagool", "Bobby Ryan", "Korean", "PogChamp", "Person mit zuviel Zeit und zu wenig Privatleben", "Genji OTP"};
         long uptime_hours = uptime / 1000 / 60 / 60; //millseconds / 1000 = seconds / 60 = minutes / 60 = hours
         long linear_scaling_factor = 365 * 6 / tiers.length; // 365 * 6 hours is the estimate of the uptime of a power user in a year (6 hours a day online)
-        return tiers[(int)Math.min(uptime_hours /linear_scaling_factor, tiers.length - 1)]; //selects an according tier; if uptime_hours > 365 * 6 the highest availabe tier will be selected --> no ArrayOutOfBounds
-        }
+        return tiers[(int) Math.min(uptime_hours / linear_scaling_factor, tiers.length - 1)]; //selects an according tier; if uptime_hours > 365 * 6 the highest availabe tier will be selected --> no ArrayOutOfBounds
+    }
+
     @Override
-    public String toString()
-    {
+    public String toString() {
         SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.SSS");
         Date loginDate = new Date(loginTime);
         return UtilityMethods.highlightStringBold(name) + ", Uptime: " + UtilityMethods.highlightStringItalic(UtilityMethods.formatTime(uptime)) + ", Tier: " + UtilityMethods.highlightStringBold(tier);
     }
-    
+
     /**
      * Updates the uptime of all users within the list
+     *
      * @param users list of users to be updated
      */
-    public static void updateUsers(List<User> users)
-    {
-        for(User user: users)
-        {
+    public static void updateUsers(List<User> users) {
+        for (User user : users) {
             user.updateUptime();
         }
     }
-    }
+}

@@ -93,13 +93,7 @@ public class UserListener {
         for (User user : onlineUsers) {
             if (user.getId().equals(event.getUser().getID()) && user.getGuildID().equals(event.getGuild().getID()))//user on same server and same user as specified in event
             {
-                user.setUptime(time - user.getLoginTime() + user.getUptime());//current time - time of login + overall time spent online
-                try {
-                    Main.userService.updateUser(user.getId(), user.getGuildID(), user.getUptime());
-                } catch (SQLException ex) {
-                    Logger.getGlobal().log(Level.SEVERE, "User could not be updated. ID: " + user.getId()
-                            + ", Guild ID: " + user.getGuildID() + ", uptime: " + String.valueOf(user.getUptime()), ex);
-                }
+                user.updateUptime();
                 Logger.getGlobal().log(Level.FINER, "Following user went offline: {0}", user.toString());
                 onlineUsers.remove(user);
                 break;
