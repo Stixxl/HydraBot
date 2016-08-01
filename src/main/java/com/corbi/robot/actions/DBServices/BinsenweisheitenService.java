@@ -6,10 +6,11 @@
 package com.corbi.robot.actions.DBServices;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- *
+ * A class that handles requests for the binsenweisheiten table
  * @author Stiglmair
  */
 public class BinsenweisheitenService {
@@ -20,7 +21,15 @@ public class BinsenweisheitenService {
         this.TABLENAME = DBNAME + ".binsenweisheiten";
         this.con = con;
     }
+    
+    /**
+     * selects a random sentence from all binsenweisheiten
+     * @return a random binsenweisheit
+     * @throws SQLException 
+     */
     public String selectSentenceRandom() throws SQLException {
-        return DBService.selectRandom(TABLENAME, con).getString("content");
+        ResultSet result =  DBService.selectRandom(TABLENAME, con);
+        result.next();
+        return result.getString("content");
     }
 }

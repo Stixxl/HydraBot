@@ -84,7 +84,6 @@ public class Chat {
      * @param channel @link #sendMessage(IChannel, String) channel
      * @param args the arguments received with the command
      * @param user User who sent the command
-     * @param guildID the id of the server
      * @return true if format of input was correct, false otherwise
      */
     public static boolean showStats(IChannel channel, User user, String args[]) {
@@ -114,6 +113,9 @@ public class Chat {
                     } else {
                         return false;
                     }
+                case "save":
+                    user.updateUptime();
+                    break;
                 default:
                     return false;
             }
@@ -315,4 +317,5 @@ public class Chat {
     private static void sendErrorMessage(IChannel channel) {
         sendMessage(channel, "Ein Fehler ist aufgetreten. Bitte kontaktiere den nächstbesten Alpha.");
     }
+
 }

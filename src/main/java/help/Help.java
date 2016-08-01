@@ -18,7 +18,8 @@ public class Help {
         new CommandHelp("me", "Gibt deine eigenen Stats aus."),
         new CommandHelp("ranking", "Wählt die besten der besten aus. Gib eine Zahl an um die besten n Personen auszuwählen, etwa so: " + UtilityMethods.highlightStringItalic("!hydra stats ranking 3")),
         new CommandHelp("name", "Wählt eine Person nach Namen aus, etwa so: " + UtilityMethods.highlightStringItalic("!hydra stats name Mr. Poopy Butthole")),
-        new CommandHelp("all", "FUSION! GENKIDAMA; Kombiniert eure Kraft. Gibt die kombinierten Stats von euch an.")});
+        new CommandHelp("all", "FUSION! GENKIDAMA; Kombiniert eure Kraft. Gibt die kombinierten Stats von euch an."),
+        new CommandHelp("save", "Speichert eure Daten, falls der Bot wieder mal abstürzt. FeelsBadMan")});
 //command sounds
     CommandHelp sounds = new CommandHelp("sounds", "Spielt danke Memes ab.", new CommandHelp[]{
         new CommandHelp("rko", "WATCH OUT WATCH OUT WATCH OUT!"),
