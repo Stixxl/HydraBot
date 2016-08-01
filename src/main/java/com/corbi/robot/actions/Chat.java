@@ -51,8 +51,8 @@ public class Chat {
     }
 
     /**
-     * Writes a message, that is specifically aimed at improving anbodys game be
-     * it in league or real life
+     * Writes a message, that is specifically aimed at improving anbodys game,
+     * be it in league or real life
      *
      * @param channel @link #sendMessage(IChannel, String) channel
      * @throws HTTP429Exception
@@ -66,7 +66,11 @@ public class Chat {
         } catch (SQLException ex) {
             Logger.getGlobal().log(Level.SEVERE, "Could not retrieve Binsenweisheit.", ex);
         }
-        sendMessage(channel, binsenweisheit);
+        if (binsenweisheit != null) {
+            sendMessage(channel, binsenweisheit);
+        } else {
+            sendErrorMessage(channel);
+        }
     }
 
     /**
@@ -225,9 +229,9 @@ public class Chat {
             for (int i = 0; i < games.size(); i++) {
                 sb.append(System.lineSeparator()).append(String.valueOf(i)).append(". ").append(games.get(i).toString());
             }
-            String statsAll = "Ihr habt insgesamt " + UtilityMethods.highlightStringItalic(UtilityMethods.formatTime(uptime)) + " auf diesem Server verschwendet." + sb.toString();
-            sendMessage(channel, statsAll);
         }
+        String statsAll = "Ihr habt insgesamt " + UtilityMethods.highlightStringItalic(UtilityMethods.formatTime(uptime)) + " auf diesem Server verschwendet." + sb.toString();
+        sendMessage(channel, statsAll);
     }
 
     /**
