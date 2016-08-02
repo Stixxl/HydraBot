@@ -13,6 +13,8 @@ import java.util.Optional;
 import sx.blah.discord.api.EventSubscriber;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
 import sx.blah.discord.handle.obj.IChannel;
+import sx.blah.discord.handle.obj.IGuild;
+import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.HTTP429Exception;
 import sx.blah.discord.util.MissingPermissionsException;
@@ -27,6 +29,13 @@ public class CommandExecutionListener {
     public void onReady(ReadyEvent event) {
         Optional<String> game = Optional.of("mit der Mumu deiner Mama");
         event.getClient().updatePresence(false, game);
+        for(IGuild guild: event.getClient().getGuilds())
+        {
+            for(IUser user: guild.getUsers())
+            {
+                Main.userListener.addOnlineUser(user.getID(), guild.getID(), user.getName());//adds every user that is online when the bot started to the onlineUser list
+            }
+        }
     }
 
     /**
