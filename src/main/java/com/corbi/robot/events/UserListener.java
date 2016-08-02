@@ -56,29 +56,7 @@ public class UserListener {
      * to online
      */
     public void onOfflineToOnline(PresenceUpdateEvent event) {
-        String userID = event.getUser().getID();
-        String guildID = event.getGuild().getID();
-        String name = event.getUser().getName();
-        User user = null;
-        try {
-            user = Main.userService.getUser(userID, guildID);//looks if user exists
-        } catch (SQLException ex) {
-            Logger.getGlobal().log(Level.SEVERE, "User could not be retrieved.", ex);
-        }
-        try {
-            if (user == null) {
-                user = Main.userService.createUser(userID, guildID, name);//creates user if none exists
-            }
-        } catch (SQLException ex) {
-            Logger.getGlobal().log(Level.SEVERE, "User could not be created.", ex);
-        }
-        if (user != null) {
-
-            Logger.getGlobal().log(Level.FINER, "following user went online: {0}", user.toString());
-            onlineUsers.add(user);
-        } else {
-            Logger.getGlobal().log(Level.INFO, "No user could be created or retrieved.");
-        }
+        addOnlineUser(event.getUser().getID(), event.getGuild().getID(), event.getUser().getName());
     }
 
     /**
@@ -143,5 +121,39 @@ public class UserListener {
                 break;
             }
         }
+    }
+
+    /**
+     * creates a user object and adds it to the onlineUsers
+     *
+     * @param userID id of user
+     * @param guildID id of guild
+     * @param name name of user
+     * @return the newly created user object
+     */
+    public User addOnlineUser(String userID, String guildID, String name) {
+        User user = null;
+
+        try {
+            user = Main.userService.getUser(userID, guildID);//looks if user exists
+        } catch (SQLException ex) {
+            Logger.getGlobal().log(Level.SEVERE, "User could not be retrieved.", ex);
+        }
+
+        try {
+            if (user == null) {
+                user = Main.userService.createUser(userID, guildID, name);//creates user if none exists
+            }
+        } catch (SQLException ex) {
+            Logger.getGlobal().log(Level.SEVERE, "User could not be created.", ex);
+        }
+
+        if (user != null) {
+            onlineUsers.add(user);
+            Logger.getGlobal().log(Level.FINER, "Following user was added to online users: {0}", user.toString());
+        } else {
+            Logger.getGlobal().log(Level.SEVERE, "User could not be added to onlineUsers since he was not created nor retrieved.");
+        }
+        return user;
     }
 }

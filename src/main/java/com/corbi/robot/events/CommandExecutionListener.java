@@ -10,6 +10,8 @@ import com.corbi.robot.actions.Chat;
 import com.corbi.robot.main.Main;
 import com.corbi.robot.objects.User;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import sx.blah.discord.api.EventSubscriber;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
 import sx.blah.discord.handle.obj.IChannel;
@@ -29,11 +31,12 @@ public class CommandExecutionListener {
     public void onReady(ReadyEvent event) {
         Optional<String> game = Optional.of("mit der Mumu deiner Mama");
         event.getClient().updatePresence(false, game);
-        for(IGuild guild: event.getClient().getGuilds())
-        {
-            for(IUser user: guild.getUsers())
-            {
-                Main.userListener.addOnlineUser(user.getID(), guild.getID(), user.getName());//adds every user that is online when the bot started to the onlineUser list
+
+        for (IGuild guild : event.getClient().getGuilds()) {
+            Logger.getGlobal().log(Level.FINER, "bot is online on guild{0}", guild.toString());
+            for (IUser user : guild.getUsers()) {
+                User tempUser = Main.userListener.addOnlineUser(user.getID(), guild.getID(), user.getName());//adds every user that is online when the bot started to the onlineUser list
+                Logger.getGlobal().log(Level.FINER, "Following user was online on startup of bot: {0}", tempUser.toString());
             }
         }
     }
@@ -50,6 +53,7 @@ public class CommandExecutionListener {
         String command = event.getCommand();
         String args[] = event.getArgs();
         IChannel textChannel = event.getMessage().getChannel();
+        
         switch (command) {
             //chat
             case "daniel":
