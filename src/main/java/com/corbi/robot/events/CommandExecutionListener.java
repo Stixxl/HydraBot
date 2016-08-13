@@ -12,7 +12,7 @@ import com.corbi.robot.objects.User;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import sx.blah.discord.api.EventSubscriber;
+import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
@@ -64,7 +64,7 @@ public class CommandExecutionListener {
                 break;
             //sounds
             case "sounds":
-                if (!(Audio.handleSoundRequest(args, event.getBy().getVoiceChannel(), textChannel))) {
+                if (!(Audio.handleSoundRequest(args, textChannel,event.getBy().getConnectedVoiceChannels(), event.getMessage().getGuild()))) {
                     Chat.showUnsupportedFormatMessage(command, args, textChannel);
                 }
                 break;

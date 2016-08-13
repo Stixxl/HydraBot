@@ -2,16 +2,25 @@ package com.corbi.robot.actions;
 
 import com.corbi.robot.main.Main;
 import com.corbi.robot.utilities.UtilityMethods;
+import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.sound.sampled.UnsupportedAudioFileException;
+import sx.blah.discord.handle.audio.IAudioManager;
+import sx.blah.discord.handle.impl.obj.VoiceChannel;
 import sx.blah.discord.handle.obj.IChannel;
+import sx.blah.discord.handle.obj.IGuild;
+import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IVoiceChannel;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.HTTP429Exception;
 import sx.blah.discord.util.MissingPermissionsException;
+import sx.blah.discord.util.RateLimitException;
+import sx.blah.discord.util.audio.AudioPlayer;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -26,22 +35,21 @@ import sx.blah.discord.util.MissingPermissionsException;
 public class Audio {
 
     /**
+     * retrieves path to soundfile
      *
      * @param args the arguments that were sent in addition to the command
-     * @param optionalChannel the VoiceChannel, where the audio will be streamed
      * @param textChannel the TextChannel, where a potential error message can
      * be printed
+     * @param voiceChannels channel in which the user is, only the first will be
+     * used
+     * @param guild guild, in which the request was received
      * @return false, if the key does not exist or to many arguments were
-     * received; true if the method could sucessfully execute the audio
-     * @throws DiscordException
-     * @throws HTTP429Exception
-     * @throws MissingPermissionsException
+     * received; true if the method could sucessfully execute the audio request
      */
-    public static boolean handleSoundRequest(String[] args, Optional<IVoiceChannel> optionalChannel, IChannel textChannel) throws DiscordException, HTTP429Exception, MissingPermissionsException {
+    public static boolean handleSoundRequest(String[] args, IChannel textChannel, List<IVoiceChannel> voiceChannels, IGuild guild) throws DiscordException, HTTP429Exception, MissingPermissionsException {
         if (args.length == 1) {
+            if ((!voiceChannels.isEmpty())) {
 
-            if (optionalChannel.isPresent()) { //true if user is in VoiceChannel, false otherwise
-                IVoiceChannel voiceChannel = optionalChannel.get();
                 String path = null;
                 try {
                     path = Main.soundService.getPath(args[0]);
@@ -49,10 +57,11 @@ public class Audio {
                 } catch (SQLException ex) {
                     Logger.getGlobal().log(Level.SEVERE, "Sound path could not be retrieved.", ex);
                 }
+                Logger.getGlobal().log(Level.FINER, "The retrieved audio path was: {0}", path);
 
                 if (path != null) {//true, if requested sound exists in database, false otherwise
                     path = UtilityMethods.generatePath(path);
-                    playSound(path, voiceChannel);
+                    playSound(path, voiceChannels.get(0), guild);
                 } else {
                     return false;
                 }
@@ -62,23 +71,24 @@ public class Audio {
             return true;
         }
         return false;
-
     }
 
     /**
+     * plays a soundfile
      *
      * @param path absolute path to the audio file
      * @param voiceChannel channel, where the audio will be streamed
-     * @throws DiscordException
      */
-    private static void playSound(String path, IVoiceChannel voiceChannel) {
+    private static void playSound(String path, IVoiceChannel voiceChannel, IGuild guild) throws MissingPermissionsException {
+        AudioPlayer audioPlayer = AudioPlayer.getAudioPlayerForGuild(guild);
+        File file = new File(path);
         voiceChannel.join();
         try {
-            voiceChannel.getAudioChannel().setVolume(0.35f);
-            voiceChannel.getAudioChannel().clearQueue();
-            voiceChannel.getAudioChannel().queueFile(path);
-        } catch (DiscordException ex) {
-            Logger.getGlobal().log(Level.SEVERE, "Could not play audio file, since bot wasnt in a Voice Channel.");
+            audioPlayer.setVolume(0.35f);
+            audioPlayer.queue(file);
+        } catch (IOException | UnsupportedAudioFileException ex) {
+            Logger.getLogger(Audio.class.getName()).log(Level.SEVERE, "Error while trying to play audio.", ex);
+            voiceChannel.leave();
         }
     }
 }

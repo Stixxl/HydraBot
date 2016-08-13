@@ -6,7 +6,7 @@
 package com.corbi.robot.events;
 
 import com.corbi.robot.main.Main;
-import sx.blah.discord.api.EventSubscriber;
+import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IMessage;
 

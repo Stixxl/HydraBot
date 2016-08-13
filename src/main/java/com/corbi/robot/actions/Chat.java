@@ -18,7 +18,6 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.HTTP429Exception;
 import sx.blah.discord.util.MessageBuilder;
