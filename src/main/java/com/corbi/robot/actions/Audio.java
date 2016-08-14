@@ -89,7 +89,7 @@ public class Audio {
         voiceChannel.join();
         try {
             audioPlayer.setLoop(false);
-            audioPlayer.setVolume(0.35f);
+            audioPlayer.setVolume(0.5f);
             audioPlayer.queue(file);
         } catch (IOException | UnsupportedAudioFileException ex) {
             Logger.getGlobal().log(Level.SEVERE, "Error while trying to play audio.", ex);

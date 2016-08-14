@@ -25,7 +25,8 @@ public class Help {
         new CommandHelp("rko", "WATCH OUT WATCH OUT WATCH OUT!"),
         new CommandHelp("cena", "What's his name?"),
         new CommandHelp("faker", "Reaction to Corbi's daily plays."),
-        new CommandHelp("money", "When you hit the stripclub...")
+        new CommandHelp("money", "When you hit the stripclub..."),
+        new CommandHelp("power", "Energizes your brain within seconds.")
     });
     CommandHelp binsenweissheiten = new CommandHelp("binsenweisheit", "Gibt Tipps und Tricks fürs Leben.");
     CommandHelp daniel = new CommandHelp("daniel", "Flamt Daniel.");
