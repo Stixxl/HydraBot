@@ -24,11 +24,12 @@ public class Help {
     CommandHelp sounds = new CommandHelp("sounds", "Spielt danke Memes ab.", new CommandHelp[]{
         new CommandHelp("rko", "WATCH OUT WATCH OUT WATCH OUT!"),
         new CommandHelp("cena", "What's his name?"),
-        new CommandHelp("faker", "reaction to Corbi's daily plays.")
+        new CommandHelp("faker", "Reaction to Corbi's daily plays."),
+        new CommandHelp("money", "When you hit the stripclub...")
     });
     CommandHelp binsenweissheiten = new CommandHelp("binsenweisheit", "Gibt Tipps und Tricks fürs Leben.");
     CommandHelp daniel = new CommandHelp("daniel", "Flamt Daniel.");
-    CommandHelp[] commandMans = new CommandHelp[]{stats, sounds, binsenweissheiten, daniel};
+    CommandHelp[] commandMans = {stats, sounds, binsenweissheiten, daniel};
 
     /**
      *
