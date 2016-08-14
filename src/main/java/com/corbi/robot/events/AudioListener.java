@@ -6,7 +6,7 @@
 package com.corbi.robot.events;
 
 import sx.blah.discord.api.events.EventSubscriber;
-import sx.blah.discord.util.audio.events.AudioPlayerEvent;
+import sx.blah.discord.util.audio.events.TrackFinishEvent;
 
 /**
  *
@@ -15,6 +15,6 @@ import sx.blah.discord.util.audio.events.AudioPlayerEvent;
 public class AudioListener {
 
     @EventSubscriber
-    public void onAudioPlayed(AudioPlayerEvent event) {
+    public void onAudioPlayed(TrackFinishEvent event) {
     }
 }

@@ -47,30 +47,34 @@ public class Audio {
      * received; true if the method could sucessfully execute the audio request
      */
     public static boolean handleSoundRequest(String[] args, IChannel textChannel, List<IVoiceChannel> voiceChannels, IGuild guild) throws DiscordException, HTTP429Exception, MissingPermissionsException {
-        if (args.length == 1) {
-            if ((!voiceChannels.isEmpty())) {
-
-                String path = null;
-                try {
-                    path = Main.soundService.getPath(args[0]);
-                    Main.soundService.incrementRequestAmount(args[0]);
-                } catch (SQLException ex) {
-                    Logger.getGlobal().log(Level.SEVERE, "Sound path could not be retrieved.", ex);
+        if ((args.length == 1 && !voiceChannels.isEmpty())) {
+            String path = null;
+            IVoiceChannel voiceChannel = null;
+            for (IVoiceChannel channel : voiceChannels) {
+                if (channel.getGuild().equals(guild))//true if channel is in the same guild as origin of request, false otherwise
+                {
+                    Logger.getGlobal().log(Level.FINER, "VoiceChannel on correct server found.");
+                    voiceChannel = channel;
                 }
-                Logger.getGlobal().log(Level.FINER, "The retrieved audio path was: {0}", path);
-
-                if (path != null) {//true, if requested sound exists in database, false otherwise
-                    path = UtilityMethods.generatePath(path);
-                    playSound(path, voiceChannels.get(0), guild);
-                } else {
-                    return false;
-                }
-            } else {
-                Chat.sendMessage(textChannel, "You dumbo.... You might wanna join a voice channel first.");
             }
-            return true;
+            try {
+                path = Main.soundService.getPath(args[0]);//retrieves path for requested file and increments the overall call counter
+                Main.soundService.incrementRequestAmount(args[0]);
+            } catch (SQLException ex) {
+                Logger.getGlobal().log(Level.SEVERE, "Sound path could not be retrieved.", ex);
+            }
+            Logger.getGlobal().log(Level.FINER, "The retrieved audio path was: {0}", path);
+
+            if (path != null && voiceChannel != null) {//true, if requested sound exists in database AND voiceChannel of user could be detected, false otherwise
+                path = UtilityMethods.generatePath(path);
+                playSound(path, voiceChannel, guild);
+            } else {
+                return false;
+            }
+        } else {
+            return false;
         }
-        return false;
+        return true;
     }
 
     /**
@@ -84,10 +88,11 @@ public class Audio {
         File file = new File(path);
         voiceChannel.join();
         try {
+            audioPlayer.setLoop(false);
             audioPlayer.setVolume(0.35f);
             audioPlayer.queue(file);
         } catch (IOException | UnsupportedAudioFileException ex) {
-            Logger.getLogger(Audio.class.getName()).log(Level.SEVERE, "Error while trying to play audio.", ex);
+            Logger.getGlobal().log(Level.SEVERE, "Error while trying to play audio.", ex);
             voiceChannel.leave();
         }
     }

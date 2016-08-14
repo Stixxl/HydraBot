@@ -34,9 +34,8 @@ public class CommandExecutionListener {
 
         for (IGuild guild : event.getClient().getGuilds()) {
             Logger.getGlobal().log(Level.FINER, "bot is online on guild{0}", guild.toString());
-            for (IUser user : guild.getUsers()) {
-                User tempUser = Main.userListener.addOnlineUser(user.getID(), guild.getID(), user.getName());//adds every user that is online when the bot started to the onlineUser list
-                Logger.getGlobal().log(Level.FINER, "Following user was online on startup of bot: {0}", tempUser.toString());
+            for (IUser user : User.getOnlineUsers(guild.getUsers())) {
+                Main.userListener.addOnlineUser(user.getID(), guild.getID(), user.getName());//adds every user that is online when the bot started to the onlineUser list
             }
         }
     }
@@ -53,7 +52,7 @@ public class CommandExecutionListener {
         String command = event.getCommand();
         String args[] = event.getArgs();
         IChannel textChannel = event.getMessage().getChannel();
-        
+
         switch (command) {
             //chat
             case "daniel":
@@ -64,7 +63,7 @@ public class CommandExecutionListener {
                 break;
             //sounds
             case "sounds":
-                if (!(Audio.handleSoundRequest(args, textChannel,event.getBy().getConnectedVoiceChannels(), event.getMessage().getGuild()))) {
+                if (!(Audio.handleSoundRequest(args, textChannel, event.getBy().getConnectedVoiceChannels(), event.getMessage().getGuild()))) {
                     Chat.showUnsupportedFormatMessage(command, args, textChannel);
                 }
                 break;

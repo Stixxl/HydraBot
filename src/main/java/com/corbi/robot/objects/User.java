@@ -9,10 +9,13 @@ import com.corbi.robot.main.Main;
 import com.corbi.robot.utilities.UtilityMethods;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.handle.obj.Presences;
 
 /**
  * identifies a user that ever was or is currently on the server
@@ -119,5 +122,21 @@ public class User {
         for (User user : users) {
             user.updateUptime();
         }
+    }
+
+    /**
+     * retrieves all currently online users
+     *
+     * @param users a list of users
+     * @return a list with online, non-bot users
+     */
+    public static List<IUser> getOnlineUsers(List<IUser> users) {
+        List<IUser> onlineUsers = new ArrayList<>();
+        for (IUser user : users) {
+            if (!(user.isBot()) && user.getPresence().equals(Presences.ONLINE)) {//true if user is online and not a bot (in any guild?), false otherwise
+                onlineUsers.add(user);
+            }
+        }
+        return onlineUsers;
     }
 }
