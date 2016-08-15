@@ -1,0 +1,37 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'application'
+apply plugin: 'eclipse'
+
+mainClassName='com.corbi.robot.main.Main'
+group = 'com.mycompany'
+version = '1.0-SNAPSHOT'
+
+description = """"""
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+//create a single Jar with all dependencies
+task fatJar(type: Jar) {
+	manifest {
+        	attributes 'Implementation-Title': 'Gradle Jar File Example',
+        	'Implementation-Version': version,
+        	'Main-Class': 'com.mkyong.DateUtils'
+    }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+repositories {
+        
+     maven { url "http://jcenter.bintray.com" }
+     maven { url "https://jitpack.io" }
+     maven { url "http://repo.maven.apache.org/maven2" }
+}
+dependencies {
+    compile group: 'com.github.austinv11', name: 'Discord4j', version:'2.5.3'
+    compile group: 'ch.qos.logback', name: 'logback-classic', version:'1.1.7'
+    compile group: 'org.postgresql', name: 'postgresql', version:'9.2-1002-jdbc4'
+}
