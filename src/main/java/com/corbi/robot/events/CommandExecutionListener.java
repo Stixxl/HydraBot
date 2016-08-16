@@ -9,7 +9,6 @@ import com.corbi.robot.actions.Audio;
 import com.corbi.robot.actions.Chat;
 import com.corbi.robot.main.Main;
 import com.corbi.robot.objects.User;
-import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import sx.blah.discord.api.events.EventSubscriber;
@@ -17,9 +16,11 @@ import sx.blah.discord.handle.impl.events.ReadyEvent;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.handle.obj.Status;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.HTTP429Exception;
 import sx.blah.discord.util.MissingPermissionsException;
+import sx.blah.discord.util.RateLimitException;
 
 /**
  *
@@ -29,8 +30,12 @@ public class CommandExecutionListener {
 
     @EventSubscriber
     public void onReady(ReadyEvent event) {
-        Optional<String> game = Optional.of("mit der Mumu deiner Mama");
-        event.getClient().updatePresence(false, game);
+        try {
+            event.getClient().changeUsername("Süßwasserpolyp");
+        } catch (DiscordException | RateLimitException ex) {
+            Logger.getGlobal().log(Level.SEVERE, "Error while setting bot's username.", ex);
+        }
+        event.getClient().changeStatus(Status.game("mit der Mumu deiner Mama")); //sets the game of the bot
 
         for (IGuild guild : event.getClient().getGuilds()) {
             Logger.getGlobal().log(Level.FINER, "bot is online on guild{0}", guild.toString());
