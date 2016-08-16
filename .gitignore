@@ -50,3 +50,10 @@ local.properties
 # Maven target
 
 target/
+
+# Gradle
+.gradle
+/build/
+gradle-app.setting
+!gradle-wrapper-jar
+.gradletasknamecache
