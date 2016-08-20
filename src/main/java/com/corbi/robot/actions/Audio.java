@@ -6,15 +6,11 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.sound.sampled.UnsupportedAudioFileException;
-import sx.blah.discord.handle.audio.IAudioManager;
-import sx.blah.discord.handle.impl.obj.VoiceChannel;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
-import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IVoiceChannel;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.HTTP429Exception;
@@ -45,8 +41,11 @@ public class Audio {
      * @param guild guild, in which the request was received
      * @return false, if the key does not exist or to many arguments were
      * received; true if the method could sucessfully execute the audio request
+     * @throws sx.blah.discord.util.DiscordException
+     * @throws sx.blah.discord.util.RateLimitException
+     * @throws sx.blah.discord.util.MissingPermissionsException
      */
-    public static boolean handleSoundRequest(String[] args, IChannel textChannel, List<IVoiceChannel> voiceChannels, IGuild guild) throws DiscordException, HTTP429Exception, MissingPermissionsException {
+    public static boolean handleSoundRequest(String[] args, IChannel textChannel, List<IVoiceChannel> voiceChannels, IGuild guild) throws DiscordException, RateLimitException, MissingPermissionsException {
         if ((args.length == 1 && !voiceChannels.isEmpty())) {
             String path = null;
             IVoiceChannel voiceChannel = null;

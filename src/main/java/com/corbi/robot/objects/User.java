@@ -115,6 +115,7 @@ public class User {
      */
     public void save() {
         updateUptime();
+        calculateTier();//update tier after uptime was adjusted
     }
 
     @Override

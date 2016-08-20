@@ -19,7 +19,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.util.DiscordException;
-import sx.blah.discord.util.HTTP429Exception;
 import sx.blah.discord.util.MessageBuilder;
 import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.RateLimitException;
@@ -36,12 +35,12 @@ public class Chat {
      * This method's only reason for existence is to make Daniel's Life just a
      * tiny bit harder.
      *
-     * @param channel @link #sendMessage(IChannel, String) channel
-     * @throws HTTP429Exception
+     * @param channel
+     * @throws sx.blah.discord.util.RateLimitException @link #sendMessage(IChannel, String) channel
      * @throws DiscordException
      * @throws MissingPermissionsException
      */
-    public static void insultDaniel(IChannel channel) throws HTTP429Exception, DiscordException, MissingPermissionsException {
+    public static void insultDaniel(IChannel channel) throws RateLimitException, DiscordException, MissingPermissionsException {
         String[] insults = {"Daniel ist sehr speziell in der Wahl der Musiklautstärke. Tätsächlich ist für ihn alles unangenehm laut.",
             "Daniel kauft keine neuen Spiele, da er zu sehr an seiner einzigen Liebe hängt, der Kunst des Feedens."};
         Random randInt = new Random(System.currentTimeMillis());
@@ -54,12 +53,12 @@ public class Chat {
      * Writes a message, that is specifically aimed at improving anbodys game,
      * be it in league or real life
      *
-     * @param channel @link #sendMessage(IChannel, String) channel
-     * @throws HTTP429Exception
+     * @param channel
+     * @throws sx.blah.discord.util.RateLimitException @link #sendMessage(IChannel, String) channel
      * @throws DiscordException
      * @throws MissingPermissionsException
      */
-    public static void tellBinsenweisheit(IChannel channel) throws HTTP429Exception, DiscordException, MissingPermissionsException {
+    public static void tellBinsenweisheit(IChannel channel) throws RateLimitException, DiscordException, MissingPermissionsException {
         String binsenweisheit = null;
         try {
             binsenweisheit = Main.dbService.getBinsenweisheitenService().selectSentenceRandom();

@@ -18,7 +18,6 @@ import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.handle.obj.Status;
 import sx.blah.discord.util.DiscordException;
-import sx.blah.discord.util.HTTP429Exception;
 import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.RateLimitException;
 
@@ -47,13 +46,13 @@ public class CommandExecutionListener {
 
     /**
      * @param event event thatis thrown when a new command is received
-     * @throws HTTP429Exception
+     * @throws sx.blah.discord.util.RateLimitException
      * @throws DiscordException
      * @throws MissingPermissionsException This method maps a command received
      * through the chat to a suited method
      */
     @EventSubscriber
-    public void handle(CommandExecutionEvent event) throws HTTP429Exception, DiscordException, MissingPermissionsException {
+    public void handle(CommandExecutionEvent event) throws RateLimitException, DiscordException, MissingPermissionsException {
         String command = event.getCommand();
         String args[] = event.getArgs();
         IChannel textChannel = event.getMessage().getChannel();
