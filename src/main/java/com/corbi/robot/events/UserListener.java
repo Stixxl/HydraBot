@@ -71,7 +71,7 @@ public class UserListener {
         for (User user : onlineUsers) {
             if (user.getId().equals(event.getUser().getID()) && user.getGuildID().equals(event.getGuild().getID()))//user on same server and same user as specified in event
             {
-                user.updateUptime();
+                user.save();
                 Logger.getGlobal().log(Level.FINER, "Following user went offline: {0}", user.toString());
                 onlineUsers.remove(user);
                 break;

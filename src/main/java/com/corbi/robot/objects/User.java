@@ -63,7 +63,11 @@ public class User {
         this.guildID = guildID;
     }
 
-    public void updateUptime() {
+    /**
+     * updates the uptime of the user for this object, then writes it on the
+     * database
+     */
+    private void updateUptime() {
         uptime = System.currentTimeMillis() - loginTime;
         try {
             uptime = Main.userService.getUser(id, guildID).getUptime() + System.currentTimeMillis() - lastUpdate; // value from db + currentTime - time of last update (=loginTime if there was no update)
@@ -106,6 +110,13 @@ public class User {
         return tiers[(int) Math.min(uptime_hours / linear_scaling_factor, tiers.length - 1)]; //selects an according tier; if uptime_hours > 365 * 6 the highest availabe tier will be selected --> no ArrayOutOfBounds
     }
 
+    /**
+     * updates the object then writes the data to the server
+     */
+    public void save() {
+        updateUptime();
+    }
+
     @Override
     public String toString() {
         SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.SSS");
@@ -114,14 +125,26 @@ public class User {
     }
 
     /**
-     * Updates the uptime of all users within the list
+     * Updates the uptime of all users within the list then writes it to the
+     * database
      *
      * @param users list of users to be updated
      */
-    public static void updateUsers(List<User> users) {
+    private static void updateUsers(List<User> users) {
         for (User user : users) {
             user.updateUptime();
         }
+    }
+
+    /**
+     * updates all user objects within the list then writes the data to the
+     * database
+     *
+     * @param users list of users to be saved
+     */
+    public static void saveUsers(List<User> users) {
+
+        updateUsers(users);
     }
 
     /**

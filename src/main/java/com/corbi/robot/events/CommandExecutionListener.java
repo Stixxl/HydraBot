@@ -74,20 +74,14 @@ public class CommandExecutionListener {
                 break;
             //statistics
             case "stats":
-                for (User user : Main.userListener.onlineUsers) {
-                    if (user.getId().equals(event.getBy().getID())) {
-                        if (!(Chat.showStats(textChannel, user, args))) {
-                            Chat.showUnsupportedFormatMessage(command, args, textChannel);
-                        }
-                        break;
-                    }
-
+                if (!(Chat.showStats(textChannel, event.getBy().getID(), event.getMessage().getGuild().getID(), args))) {
+                    Chat.showUnsupportedFormatMessage(command, args, textChannel);
                 }
                 break;
+            //help menu
             case "help":
                 Chat.showHelp(textChannel, args);
                 break;
-
             default:
                 Chat.showUnsupportedFormatMessage(command, event.getMessage().getChannel());// no suitable command found
         }
