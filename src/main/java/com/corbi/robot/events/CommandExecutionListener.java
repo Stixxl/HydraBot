@@ -52,7 +52,7 @@ public class CommandExecutionListener {
      * through the chat to a suited method
      */
     @EventSubscriber
-    public void handle(CommandExecutionEvent event) throws RateLimitException, DiscordException, MissingPermissionsException {
+    public void handle(CommandExecutionEvent event) {
         String command = event.getCommand();
         String args[] = event.getArgs();
         IChannel textChannel = event.getMessage().getChannel();

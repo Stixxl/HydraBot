@@ -36,12 +36,8 @@ public class Chat {
      * tiny bit harder.
      *
      * @param channel
-     * @throws sx.blah.discord.util.RateLimitException @link
-     * #sendMessage(IChannel, String) channel
-     * @throws DiscordException
-     * @throws MissingPermissionsException
      */
-    public static void insultDaniel(IChannel channel) throws RateLimitException, DiscordException, MissingPermissionsException {
+    public static void insultDaniel(IChannel channel) {
         String[] insults = {"Daniel ist sehr speziell in der Wahl der Musiklautstärke. Tätsächlich ist für ihn alles unangenehm laut.",
             "Daniel kauft keine neuen Spiele, da er zu sehr an seiner einzigen Liebe hängt, der Kunst des Feedens."};
         Random randInt = new Random(System.currentTimeMillis());
@@ -55,12 +51,8 @@ public class Chat {
      * be it in league or real life
      *
      * @param channel
-     * @throws sx.blah.discord.util.RateLimitException @link
-     * #sendMessage(IChannel, String) channel
-     * @throws DiscordException
-     * @throws MissingPermissionsException
      */
-    public static void tellBinsenweisheit(IChannel channel) throws RateLimitException, DiscordException, MissingPermissionsException {
+    public static void tellBinsenweisheit(IChannel channel) {
         String binsenweisheit = null;
         try {
             binsenweisheit = Main.dbService.getBinsenweisheitenService().selectSentenceRandom();
@@ -149,7 +141,7 @@ public class Chat {
      */
     private static void showStatsMe(IChannel channel, User user) {
         user.save();
-        String personalStats = user.toString() + System.lineSeparator() + getGamesMessage(user.getId(), user.getGuildID());
+        String personalStats = user.toString() + System.lineSeparator() + getGamesMessage(user.getUserID(), user.getGuildID());
         sendMessage(channel, personalStats);
     }
 
@@ -173,7 +165,7 @@ public class Chat {
         if (!(users.isEmpty())) {
             StringBuilder sb = new StringBuilder();
             for (User user : users) {
-                sb.append(user.toString()).append(System.lineSeparator()).append(getGamesMessage(user.getId(), user.getGuildID()));
+                sb.append(user.toString()).append(System.lineSeparator()).append(getGamesMessage(user.getUserID(), user.getGuildID()));
             }
             sendMessage(channel, sb.toString());
         } else {
