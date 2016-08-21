@@ -26,16 +26,16 @@ public class User {
 
     private String name;
     private long uptime;
-    private String id;
+    private String userID;
     private String guildID;
     private String tier;
     private final long loginTime;
     private long lastUpdate;
     private Game game;
 
-    public User(long uptime, String id, String guildID, String name) {
+    public User(long uptime, String userID, String guildID, String name) {
         this.uptime = uptime;
-        this.id = id;
+        this.userID = userID;
         this.loginTime = System.currentTimeMillis();
         this.guildID = guildID;
         this.tier = calculateTier();
@@ -70,8 +70,8 @@ public class User {
     private void updateUptime() {
         uptime = System.currentTimeMillis() - loginTime;
         try {
-            uptime = Main.userService.getUser(id, guildID).getUptime() + System.currentTimeMillis() - lastUpdate; // value from db + currentTime - time of last update (=loginTime if there was no update)
-            Main.userService.updateUser(id, guildID, uptime);
+            uptime = Main.userService.getUser(userID, guildID).getUptime() + System.currentTimeMillis() - lastUpdate; // value from db + currentTime - time of last update (=loginTime if there was no update)
+            Main.userService.updateUser(userID, guildID, uptime);
         } catch (SQLException ex) {
             Logger.getGlobal().log(Level.SEVERE, "Could not retrieve User.", ex);
         }
@@ -86,12 +86,12 @@ public class User {
         this.uptime = uptime;
     }
 
-    public String getId() {
-        return id;
+    public String getUserID() {
+        return userID;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setUserID(String userID) {
+        this.userID = userID;
     }
 
     public Game getGame() {

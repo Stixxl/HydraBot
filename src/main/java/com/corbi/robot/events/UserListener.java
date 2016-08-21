@@ -10,6 +10,7 @@ import com.corbi.robot.objects.Game;
 import com.corbi.robot.objects.User;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -89,7 +90,7 @@ public class UserListener {
         String title = event.getNewGame().orElse("idle");
         Game game = null;
         for (User user : onlineUsers) {
-            if (user.getId().equals(event.getUser().getID()) && user.getGuildID().equals(event.getGuild().getID()))//user on same server and same user as specified in event
+            if (user.getUserID().equals(event.getUser().getID()) && user.getGuildID().equals(event.getGuild().getID()))//user on same server and same user as specified in event
             {
                 if (!(title.equals("idle"))) { // true if the new game is a game, false if user is now idle
                     try {
@@ -133,7 +134,6 @@ public class UserListener {
      */
     public User addOnlineUser(String userID, String guildID, String name) {
         User user = null;
-
         try {
             user = Main.userService.getUser(userID, guildID);//looks if user exists
         } catch (SQLException ex) {
@@ -155,5 +155,21 @@ public class UserListener {
             Logger.getGlobal().log(Level.SEVERE, "User could not be added to onlineUsers since he was not created nor retrieved.");
         }
         return user;
+    }
+
+    /**
+     * Finds an user, if they are online
+     * 
+     * @param userID id of user to be found
+     * @param guildID server id of user to be found
+     * @return an user object, which is online; null if none was found
+     */
+    public User getOnlineUser(String userID, String guildID) {
+        for (User user : onlineUsers) {
+            if (user.getId().equals(userID) && user.getGuildID().equals(guildID)) {
+                return user;
+            }
+        }
+        return null;
     }
 }

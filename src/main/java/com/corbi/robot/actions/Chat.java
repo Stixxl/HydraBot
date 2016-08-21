@@ -36,7 +36,8 @@ public class Chat {
      * tiny bit harder.
      *
      * @param channel
-     * @throws sx.blah.discord.util.RateLimitException @link #sendMessage(IChannel, String) channel
+     * @throws sx.blah.discord.util.RateLimitException @link
+     * #sendMessage(IChannel, String) channel
      * @throws DiscordException
      * @throws MissingPermissionsException
      */
@@ -54,7 +55,8 @@ public class Chat {
      * be it in league or real life
      *
      * @param channel
-     * @throws sx.blah.discord.util.RateLimitException @link #sendMessage(IChannel, String) channel
+     * @throws sx.blah.discord.util.RateLimitException @link
+     * #sendMessage(IChannel, String) channel
      * @throws DiscordException
      * @throws MissingPermissionsException
      */
@@ -85,26 +87,25 @@ public class Chat {
      * shows stats such as overall uptime on servers, time spent playing etc.
      *
      * @param channel id of the server from which the request was received
-     * @param id id of the user that sent request
+     * @param userID id of the user that sent request
      * @param guildID @link #sendMessage(IChannel, String) channel
      * @param args the arguments received with the command
      * @return true if format of input was correct, false otherwise
      */
-    public static boolean showStats(IChannel channel, String id, String guildID, String args[]) {
+    public static boolean showStats(IChannel channel, String userID, String guildID, String args[]) {
         if (args.length > 2 || args.length == 0) {
             return false;
         } else {
+            User user = Main.userListener.getOnlineUser(userID, guildID);
             switch (args[0]) {
 
                 case "me":
-                    for (User user : Main.userListener.onlineUsers) {
-                        if (user.getId().equals(id) && user.getGuildID().equals(guildID)) {
-                            showStatsMe(channel, user);
-                            break;
-                        } else {
-                            Chat.sendErrorMessage(channel);
-                            return true;
-                        }
+                    if (user != null) {
+                        showStatsMe(channel, user);
+                        break;
+                    } else {
+                        sendErrorMessage(channel);
+                        return true;
                     }
 
                 case "all":
@@ -125,16 +126,13 @@ public class Chat {
                         return false;
                     }
                 case "save":
-                    for (User user : Main.userListener.onlineUsers) {
-                        if (user.getId().equals(id) && user.getGuildID().equals(guildID)) {
-                            user.save();
-                            break;
-                        } else {
-                            Chat.sendErrorMessage(channel);
-                            return true;
-                        }
+                    if (user != null) {
+                        user.save();
+                        break;
+                    } else {
+                        sendErrorMessage(channel);
+                        return true;
                     }
-                    break;
                 default:
                     return false;
             }
@@ -147,9 +145,7 @@ public class Chat {
      *
      * @param channel @link #showStats(IChannel, IUser, String, String[])
      * channel
-     * @param id of the user that sent the request
-     * @param guildID @link #showStats(IChannel, IUser, String, String[])
-     * guildID
+     * @param user user from which the request was received
      */
     private static void showStatsMe(IChannel channel, User user) {
         user.save();
@@ -311,15 +307,15 @@ public class Chat {
     /**
      * A utility method that will retrieve and format the games for a given user
      *
-     * @param id unique id for an user
+     * @param userID unique id for an user
      * @param guildID Server from which the request was sent
      * @return a formatted String that contains all information for games from a
      * single user
      */
-    private static String getGamesMessage(String id, String guildID) {
+    private static String getGamesMessage(String userID, String guildID) {
         List<Game> games = null;
         try {
-            games = Main.gameService.getGames(id, guildID);
+            games = Main.gameService.getGames(userID, guildID);
         } catch (SQLException ex) {
             Logger.getGlobal().log(Level.SEVERE, "games could not be retrieved.", ex);
         }
