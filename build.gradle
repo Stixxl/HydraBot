@@ -32,7 +32,7 @@ repositories {
      maven { url "http://repo.maven.apache.org/maven2" }
 }
 dependencies {
-    compile "com.github.austinv11:Discord4j:@2.5.3@:shaded"
+    compile "com.github.austinv11:Discord4j:2.5.3:shaded"
     compile group: 'ch.qos.logback', name: 'logback-classic', version:'1.1.7'
     compile group: 'org.postgresql', name: 'postgresql', version:'9.2-1002-jdbc4'
 }
