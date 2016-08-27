@@ -20,7 +20,7 @@ task fatJar(type: Jar) {
         	'Implementation-Version': version,
         	'Main-Class': 'com.corbi.robot.main.Main'
    }
-    baseName = project.name + '-all'
+    baseName = project.name
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
 }
@@ -32,7 +32,7 @@ repositories {
      maven { url "http://repo.maven.apache.org/maven2" }
 }
 dependencies {
-    compile "com.github.austinv11:Discord4j:2.5.3:shaded"
+    compile group: 'com.github.austinv11', name: 'Discord4j', version: '2.5.4'
     compile group: 'ch.qos.logback', name: 'logback-classic', version:'1.1.7'
     compile group: 'org.postgresql', name: 'postgresql', version:'9.2-1002-jdbc4'
 }
