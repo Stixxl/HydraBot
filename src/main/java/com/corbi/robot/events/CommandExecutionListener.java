@@ -9,7 +9,6 @@ import com.corbi.robot.actions.Audio;
 import com.corbi.robot.actions.Chat;
 import com.corbi.robot.main.Main;
 import com.corbi.robot.objects.User;
-import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import sx.blah.discord.api.events.EventSubscriber;
@@ -17,9 +16,10 @@ import sx.blah.discord.handle.impl.events.ReadyEvent;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.handle.obj.Status;
 import sx.blah.discord.util.DiscordException;
-import sx.blah.discord.util.HTTP429Exception;
 import sx.blah.discord.util.MissingPermissionsException;
+import sx.blah.discord.util.RateLimitException;
 
 /**
  *
@@ -29,8 +29,12 @@ public class CommandExecutionListener {
 
     @EventSubscriber
     public void onReady(ReadyEvent event) {
-        Optional<String> game = Optional.of("mit der Mumu deiner Mama");
-        event.getClient().updatePresence(false, game);
+        try {
+            event.getClient().changeUsername("Süßwasserpolyp");
+        } catch (DiscordException | RateLimitException ex) {
+            Logger.getGlobal().log(Level.SEVERE, "Error while setting bot's username.", ex);
+        }
+        event.getClient().changeStatus(Status.game("mit der Mumu deiner Mama")); //sets the game of the bot
 
         for (IGuild guild : event.getClient().getGuilds()) {
             Logger.getGlobal().log(Level.FINER, "bot is online on guild{0}", guild.toString());
@@ -42,13 +46,13 @@ public class CommandExecutionListener {
 
     /**
      * @param event event thatis thrown when a new command is received
-     * @throws HTTP429Exception
+     * @throws sx.blah.discord.util.RateLimitException
      * @throws DiscordException
      * @throws MissingPermissionsException This method maps a command received
      * through the chat to a suited method
      */
     @EventSubscriber
-    public void handle(CommandExecutionEvent event) throws HTTP429Exception, DiscordException, MissingPermissionsException {
+    public void handle(CommandExecutionEvent event) {
         String command = event.getCommand();
         String args[] = event.getArgs();
         IChannel textChannel = event.getMessage().getChannel();
@@ -69,20 +73,14 @@ public class CommandExecutionListener {
                 break;
             //statistics
             case "stats":
-                for (User user : Main.userListener.onlineUsers) {
-                    if (user.getId().equals(event.getBy().getID())) {
-                        if (!(Chat.showStats(textChannel, user, args))) {
-                            Chat.showUnsupportedFormatMessage(command, args, textChannel);
-                        }
-                        break;
-                    }
-
+                if (!(Chat.showStats(textChannel, event.getBy().getID(), event.getMessage().getGuild().getID(), args))) {
+                    Chat.showUnsupportedFormatMessage(command, args, textChannel);
                 }
                 break;
+            //help menu
             case "help":
                 Chat.showHelp(textChannel, args);
                 break;
-
             default:
                 Chat.showUnsupportedFormatMessage(command, event.getMessage().getChannel());// no suitable command found
         }

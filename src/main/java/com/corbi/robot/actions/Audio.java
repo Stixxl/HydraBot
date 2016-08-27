@@ -6,21 +6,15 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.sound.sampled.UnsupportedAudioFileException;
-import sx.blah.discord.handle.audio.IAudioManager;
-import sx.blah.discord.handle.impl.obj.VoiceChannel;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
-import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IVoiceChannel;
-import sx.blah.discord.util.DiscordException;
-import sx.blah.discord.util.HTTP429Exception;
 import sx.blah.discord.util.MissingPermissionsException;
-import sx.blah.discord.util.RateLimitException;
 import sx.blah.discord.util.audio.AudioPlayer;
+import sx.blah.discord.util.audio.AudioPlayer.Track;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -46,7 +40,7 @@ public class Audio {
      * @return false, if the key does not exist or to many arguments were
      * received; true if the method could sucessfully execute the audio request
      */
-    public static boolean handleSoundRequest(String[] args, IChannel textChannel, List<IVoiceChannel> voiceChannels, IGuild guild) throws DiscordException, HTTP429Exception, MissingPermissionsException {
+    public static boolean handleSoundRequest(String[] args, IChannel textChannel, List<IVoiceChannel> voiceChannels, IGuild guild) {
         if ((args.length == 1 && !voiceChannels.isEmpty())) {
             String path = null;
             IVoiceChannel voiceChannel = null;
@@ -63,10 +57,10 @@ public class Audio {
             } catch (SQLException ex) {
                 Logger.getGlobal().log(Level.SEVERE, "Sound path could not be retrieved.", ex);
             }
-            Logger.getGlobal().log(Level.FINER, "The retrieved audio path was: {0}", path);
-
+            
             if (path != null && voiceChannel != null) {//true, if requested sound exists in database AND voiceChannel of user could be detected, false otherwise
                 path = UtilityMethods.generatePath(path);
+                Logger.getGlobal().log(Level.FINER, "The generated audio path was: {0}", path);
                 playSound(path, voiceChannel, guild);
             } else {
                 return false;
@@ -83,14 +77,18 @@ public class Audio {
      * @param path absolute path to the audio file
      * @param voiceChannel channel, where the audio will be streamed
      */
-    private static void playSound(String path, IVoiceChannel voiceChannel, IGuild guild) throws MissingPermissionsException {
+    private static void playSound(String path, IVoiceChannel voiceChannel, IGuild guild) {
         AudioPlayer audioPlayer = AudioPlayer.getAudioPlayerForGuild(guild);
         File file = new File(path);
-        voiceChannel.join();
+        try {
+            voiceChannel.join();
+        } catch (MissingPermissionsException ex) {
+            Logger.getGlobal().log(Level.SEVERE, "Could not join voice channel since the bot did not have the needed permissions.");
+        }
         try {
             audioPlayer.setLoop(false);
-            audioPlayer.setVolume(0.5f);
-            audioPlayer.queue(file);
+            audioPlayer.setVolume(0.75f);
+            Track currentTrack = audioPlayer.queue(file);
         } catch (IOException | UnsupportedAudioFileException ex) {
             Logger.getGlobal().log(Level.SEVERE, "Error while trying to play audio.", ex);
             voiceChannel.leave();

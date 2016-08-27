@@ -19,9 +19,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.util.DiscordException;
-import sx.blah.discord.util.HTTP429Exception;
 import sx.blah.discord.util.MessageBuilder;
 import sx.blah.discord.util.MissingPermissionsException;
+import sx.blah.discord.util.RateLimitException;
 
 /**
  *
@@ -35,12 +35,9 @@ public class Chat {
      * This method's only reason for existence is to make Daniel's Life just a
      * tiny bit harder.
      *
-     * @param channel @link #sendMessage(IChannel, String) channel
-     * @throws HTTP429Exception
-     * @throws DiscordException
-     * @throws MissingPermissionsException
+     * @param channel
      */
-    public static void insultDaniel(IChannel channel) throws HTTP429Exception, DiscordException, MissingPermissionsException {
+    public static void insultDaniel(IChannel channel) {
         String[] insults = {"Daniel ist sehr speziell in der Wahl der Musiklautstärke. Tätsächlich ist für ihn alles unangenehm laut.",
             "Daniel kauft keine neuen Spiele, da er zu sehr an seiner einzigen Liebe hängt, der Kunst des Feedens."};
         Random randInt = new Random(System.currentTimeMillis());
@@ -53,12 +50,9 @@ public class Chat {
      * Writes a message, that is specifically aimed at improving anbodys game,
      * be it in league or real life
      *
-     * @param channel @link #sendMessage(IChannel, String) channel
-     * @throws HTTP429Exception
-     * @throws DiscordException
-     * @throws MissingPermissionsException
+     * @param channel
      */
-    public static void tellBinsenweisheit(IChannel channel) throws HTTP429Exception, DiscordException, MissingPermissionsException {
+    public static void tellBinsenweisheit(IChannel channel) {
         String binsenweisheit = null;
         try {
             binsenweisheit = Main.dbService.getBinsenweisheitenService().selectSentenceRandom();
@@ -84,41 +78,53 @@ public class Chat {
     /**
      * shows stats such as overall uptime on servers, time spent playing etc.
      *
-     * @param channel @link #sendMessage(IChannel, String) channel
+     * @param channel id of the server from which the request was received
+     * @param userID id of the user that sent request
+     * @param guildID @link #sendMessage(IChannel, String) channel
      * @param args the arguments received with the command
-     * @param user User who sent the command
      * @return true if format of input was correct, false otherwise
      */
-    public static boolean showStats(IChannel channel, User user, String args[]) {
-        String id = user.getId();
-        String guildID = user.getGuildID();
+    public static boolean showStats(IChannel channel, String userID, String guildID, String args[]) {
         if (args.length > 2 || args.length == 0) {
             return false;
         } else {
+            User user = Main.userListener.getOnlineUser(userID, guildID);
             switch (args[0]) {
+
                 case "me":
-                    showStatsMe(channel, user);
-                    break;
+                    if (user != null) {
+                        showStatsMe(channel, user);
+                        break;
+                    } else {
+                        sendErrorMessage(channel);
+                        return true;
+                    }
+
                 case "all":
                     showStatsAll(channel, guildID);
                     break;
                 case "name":
-                    if (args.length == 2) {//showStatsByName needs a parameter
+                    if (args.length == 2) {//showStatsByName needs a parameter itself
                         showStatsByName(channel, args[1], guildID);
                         break;
                     } else {
                         return false;
                     }
                 case "ranking":
-                    if (args.length == 2 && UtilityMethods.isInteger(args[1])) {//showStatsRanking needs second parameter
+                    if (args.length == 2 && UtilityMethods.isInteger(args[1])) {//showStatsRanking needs a parameter itself
                         showStatsRanking(channel, (int) Integer.parseInt(args[1]), guildID);//selects the top n users by uptime
                         break;
                     } else {
                         return false;
                     }
                 case "save":
-                    user.updateUptime();
-                    break;
+                    if (user != null) {
+                        user.save();
+                        break;
+                    } else {
+                        sendErrorMessage(channel);
+                        return true;
+                    }
                 default:
                     return false;
             }
@@ -131,13 +137,11 @@ public class Chat {
      *
      * @param channel @link #showStats(IChannel, IUser, String, String[])
      * channel
-     * @param id of the user that sent the request
-     * @param guildID @link #showStats(IChannel, IUser, String, String[])
-     * guildID
+     * @param user user from which the request was received
      */
     private static void showStatsMe(IChannel channel, User user) {
-        user.updateUptime();
-        String personalStats = user.toString() + System.lineSeparator() + getGamesMessage(user.getId(), user.getGuildID());
+        user.save();
+        String personalStats = user.toString() + System.lineSeparator() + getGamesMessage(user.getUserID(), user.getGuildID());
         sendMessage(channel, personalStats);
     }
 
@@ -152,7 +156,7 @@ public class Chat {
      */
     private static void showStatsByName(IChannel channel, String name, String guildID) {
         List<User> users = new ArrayList<>();
-        User.updateUsers(Main.userListener.onlineUsers);
+        User.saveUsers(Main.userListener.onlineUsers);
         try {
             users = Main.userService.getUserByName(name, guildID);
         } catch (SQLException ex) {
@@ -161,7 +165,7 @@ public class Chat {
         if (!(users.isEmpty())) {
             StringBuilder sb = new StringBuilder();
             for (User user : users) {
-                sb.append(user.toString()).append(System.lineSeparator()).append(getGamesMessage(user.getId(), user.getGuildID()));
+                sb.append(user.toString()).append(System.lineSeparator()).append(getGamesMessage(user.getUserID(), user.getGuildID()));
             }
             sendMessage(channel, sb.toString());
         } else {
@@ -183,7 +187,7 @@ public class Chat {
     private static void showStatsRanking(IChannel channel, int limit, String guildID) {
         List<User> users = new ArrayList<>();
         StringBuilder sb = new StringBuilder();
-        User.updateUsers(Main.userListener.onlineUsers);
+        User.saveUsers(Main.userListener.onlineUsers);
         try {
             users = Main.userService.getRankingByUptime(guildID, limit);
         } catch (SQLException ex) {
@@ -210,7 +214,7 @@ public class Chat {
     private static void showStatsAll(IChannel channel, String guildID) {
         long uptime = 0;
         List<Game> games = null;
-        User.updateUsers(Main.userListener.onlineUsers);
+        User.saveUsers(Main.userListener.onlineUsers);
         try {
             uptime = Main.userService.getUptimeAll(guildID);
         } catch (SQLException ex) {
@@ -287,7 +291,7 @@ public class Chat {
     public static void sendMessage(IChannel channel, String content) {
         try {
             new MessageBuilder(Main.client).withChannel(channel).withContent(content).build();
-        } catch (HTTP429Exception | DiscordException | MissingPermissionsException ex) {
+        } catch (RateLimitException | DiscordException | MissingPermissionsException ex) {
             Logger.getGlobal().log(Level.SEVERE, "message could not be sent.", ex);
         }
     }
@@ -295,15 +299,15 @@ public class Chat {
     /**
      * A utility method that will retrieve and format the games for a given user
      *
-     * @param id unique id for an user
+     * @param userID unique id for an user
      * @param guildID Server from which the request was sent
      * @return a formatted String that contains all information for games from a
      * single user
      */
-    private static String getGamesMessage(String id, String guildID) {
+    private static String getGamesMessage(String userID, String guildID) {
         List<Game> games = null;
         try {
-            games = Main.gameService.getGames(id, guildID);
+            games = Main.gameService.getGames(userID, guildID);
         } catch (SQLException ex) {
             Logger.getGlobal().log(Level.SEVERE, "games could not be retrieved.", ex);
         }
@@ -317,6 +321,11 @@ public class Chat {
         return sb.toString();
     }
 
+    /**
+     * sends a general message that an error occured
+     *
+     * @param channel Text channel in which to send the message
+     */
     private static void sendErrorMessage(IChannel channel) {
         sendMessage(channel, "Ein Fehler ist aufgetreten. Bitte kontaktiere den nächstbesten Alpha.");
     }

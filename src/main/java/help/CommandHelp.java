@@ -5,16 +5,14 @@
  */
 package help;
 
-import com.corbi.robot.utilities.UtilityMethods;
-
 /**
  *
  * @author PogChamp
  */
 public class CommandHelp {
 
-    private String name;
-    private String description;
+    private final String name;
+    private final String description;
     private CommandHelp[] subcommands = {}; // in command !hydra stats me; me is a subcommand
 
     public CommandHelp(String name, String description) {

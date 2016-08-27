@@ -26,16 +26,16 @@ public class User {
 
     private String name;
     private long uptime;
-    private String id;
+    private String userID;
     private String guildID;
     private String tier;
     private final long loginTime;
     private long lastUpdate;
     private Game game;
 
-    public User(long uptime, String id, String guildID, String name) {
+    public User(long uptime, String userID, String guildID, String name) {
         this.uptime = uptime;
-        this.id = id;
+        this.userID = userID;
         this.loginTime = System.currentTimeMillis();
         this.guildID = guildID;
         this.tier = calculateTier();
@@ -63,11 +63,15 @@ public class User {
         this.guildID = guildID;
     }
 
-    public void updateUptime() {
+    /**
+     * updates the uptime of the user for this object, then writes it on the
+     * database
+     */
+    private void updateUptime() {
         uptime = System.currentTimeMillis() - loginTime;
         try {
-            uptime = Main.userService.getUser(id, guildID).getUptime() + System.currentTimeMillis() - lastUpdate; // value from db + currentTime - time of last update (=loginTime if there was no update)
-            Main.userService.updateUser(id, guildID, uptime);
+            uptime = Main.userService.getUser(userID, guildID).getUptime() + System.currentTimeMillis() - lastUpdate; // value from db + currentTime - time of last update (=loginTime if there was no update)
+            Main.userService.updateUser(userID, guildID, uptime);
         } catch (SQLException ex) {
             Logger.getGlobal().log(Level.SEVERE, "Could not retrieve User.", ex);
         }
@@ -82,12 +86,12 @@ public class User {
         this.uptime = uptime;
     }
 
-    public String getId() {
-        return id;
+    public String getUserID() {
+        return userID;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setUserID(String userID) {
+        this.userID = userID;
     }
 
     public Game getGame() {
@@ -106,6 +110,14 @@ public class User {
         return tiers[(int) Math.min(uptime_hours / linear_scaling_factor, tiers.length - 1)]; //selects an according tier; if uptime_hours > 365 * 6 the highest availabe tier will be selected --> no ArrayOutOfBounds
     }
 
+    /**
+     * updates the object then writes the data to the server
+     */
+    public void save() {
+        updateUptime();
+        calculateTier();//update tier after uptime was adjusted
+    }
+
     @Override
     public String toString() {
         SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.SSS");
@@ -114,14 +126,26 @@ public class User {
     }
 
     /**
-     * Updates the uptime of all users within the list
+     * Updates the uptime of all users within the list then writes it to the
+     * database
      *
      * @param users list of users to be updated
      */
-    public static void updateUsers(List<User> users) {
+    private static void updateUsers(List<User> users) {
         for (User user : users) {
             user.updateUptime();
         }
+    }
+
+    /**
+     * updates all user objects within the list then writes the data to the
+     * database
+     *
+     * @param users list of users to be saved
+     */
+    public static void saveUsers(List<User> users) {
+
+        updateUsers(users);
     }
 
     /**
