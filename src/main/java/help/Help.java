@@ -27,7 +27,12 @@ public class Help {
         new CommandHelp("faker", "Reaction to Corbi's daily plays."),
         new CommandHelp("money", "When you hit the stripclub..."),
         new CommandHelp("power", "Energizes your brain within seconds."),
-        new CommandHelp("mlg", "Cancer ist nur einen Aufruf entfernt :^)")
+        new CommandHelp("mlg", "Cancer ist nur einen Aufruf entfernt :^)"),
+        new CommandHelp("junkrat", "It's just a prank, bro!"),
+        new CommandHelp("wow", ";)"),
+        new CommandHelp("genji", "Wenn Corbi wieder tryharden muss."),
+        new CommandHelp("psych", "Wenn ein Mädel dir ne falsche Nummber gibt. FeelsBadMan"),
+        new CommandHelp("freedom", "\"I give you three money\"")
     });
     CommandHelp binsenweissheiten = new CommandHelp("binsenweisheit", "Gibt Tipps und Tricks fürs Leben.");
     CommandHelp daniel = new CommandHelp("daniel", "Flamt Daniel.");
