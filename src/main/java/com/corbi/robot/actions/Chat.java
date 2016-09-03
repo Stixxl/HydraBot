@@ -244,7 +244,8 @@ public class Chat {
      * @param channel @link #sendMessage(IChannel, String) channel
      */
     public static void showUnsupportedFormatMessage(String wrongCommand, IChannel channel) {
-        String errorInfo = "The HydraBot does not support the command " + UtilityMethods.highlightStringItalic(wrongCommand) + ".";
+        String errorInfo = "The HydraBot does not support the command " + UtilityMethods.highlightStringItalic(wrongCommand) + "."
+                + " Gib " + UtilityMethods.highlightStringItalic("!hydra help") + " ein um mögliche Befehle einzusehen.";
 
         sendMessage(channel, errorInfo);
     }
@@ -260,7 +261,8 @@ public class Chat {
     public static void showUnsupportedFormatMessage(String command, String[] wrongArgs, IChannel channel) {
 
         String errorInfo = "The HydraBot does not support the arguments " + UtilityMethods.highlightStringItalic(Arrays.toString(wrongArgs))
-                + " for the command " + UtilityMethods.highlightStringItalic(command) + ".";
+                + " for the command " + UtilityMethods.highlightStringItalic(command) + "."
+                + " Gib " + UtilityMethods.highlightStringItalic("!hydra help " + command) + " ein, für mögliche Unterbefehle.";
         sendMessage(channel, errorInfo);
 
     }
@@ -327,7 +329,7 @@ public class Chat {
      * @param channel Text channel in which to send the message
      */
     private static void sendErrorMessage(IChannel channel) {
-        sendMessage(channel, "Ein Fehler ist aufgetreten. Bitte kontaktiere den nächstbesten Alpha.");
+        sendMessage(channel, "Ein Fehler ist aufgetreten. Bitte kontaktiere die nächstbeste Bedienung im Penny.");
     }
 
 }

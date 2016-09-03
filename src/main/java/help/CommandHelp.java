@@ -41,6 +41,10 @@ public class CommandHelp {
     public CommandHelp[] getSubcommands() {
         return subcommands;
     }
+    
+    public void setSubcommands(CommandHelp[] subcommands) {
+        this.subcommands = subcommands;
+    }
 
     public boolean hasSubcommands() {
         return subcommands.length != 0;

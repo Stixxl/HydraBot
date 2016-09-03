@@ -30,7 +30,7 @@ public class CommandExecutionListener {
     @EventSubscriber
     public void onReady(ReadyEvent event) {
         try {
-            event.getClient().changeUsername("Süßwasserpolyp");
+            Main.client.changeUsername("Süßwasserpolyp");
         } catch (DiscordException | RateLimitException ex) {
             Logger.getGlobal().log(Level.SEVERE, "Error while setting bot's username.", ex);
         }

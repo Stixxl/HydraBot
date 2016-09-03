@@ -5,7 +5,11 @@
  */
 package help;
 
+import com.corbi.robot.main.Main;
 import com.corbi.robot.utilities.UtilityMethods;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -20,23 +24,18 @@ public class Help {
         new CommandHelp("name", "Wählt eine Person nach Namen aus, etwa so: " + UtilityMethods.highlightStringItalic("!hydra stats name Mr. Poopy Butthole")),
         new CommandHelp("all", "FUSION! GENKIDAMA; Kombiniert eure Kraft. Gibt die kombinierten Stats von euch an."),
         new CommandHelp("save", "Speichert eure Daten, falls der Bot wieder mal abstürzt. FeelsBadMan")});
-//command sounds
-    CommandHelp sounds = new CommandHelp("sounds", "Spielt danke Memes ab.", new CommandHelp[]{
-        new CommandHelp("rko", "WATCH OUT WATCH OUT WATCH OUT!"),
-        new CommandHelp("cena", "What's his name?"),
-        new CommandHelp("faker", "Reaction to Corbi's daily plays."),
-        new CommandHelp("money", "When you hit the stripclub..."),
-        new CommandHelp("power", "Energizes your brain within seconds."),
-        new CommandHelp("mlg", "Cancer ist nur einen Aufruf entfernt :^)"),
-        new CommandHelp("junkrat", "It's just a prank, bro!"),
-        new CommandHelp("wow", ";)"),
-        new CommandHelp("genji", "Wenn Corbi wieder tryharden muss."),
-        new CommandHelp("psych", "Wenn ein Mädel dir ne falsche Nummber gibt. FeelsBadMan"),
-        new CommandHelp("freedom", "\"I give you three money\"")
-    });
+    CommandHelp sounds;
     CommandHelp binsenweissheiten = new CommandHelp("binsenweisheit", "Gibt Tipps und Tricks fürs Leben.");
     CommandHelp daniel = new CommandHelp("daniel", "Flamt Daniel.");
     CommandHelp[] commandMans = {stats, sounds, binsenweissheiten, daniel};
+
+    public Help() {
+        try {
+            sounds = new CommandHelp("sounds", "Spielt danke Memes ab.", Main.soundService.getCommandHelp());
+        } catch (SQLException ex) {
+            Logger.getGlobal().log(Level.SEVERE, "Error occured while trying to retrieve the help menu for sounds.", ex);
+        }
+    }
 
     /**
      *
@@ -57,9 +56,14 @@ public class Help {
      *
      * @param args contains parts of the queried command
      * @return a String with Information about the queried command, aswell as
-     * itsdirect subcommands
+     * its direct subcommands
      */
     public String showHelp(String[] args) {
+        try {
+            sounds.setSubcommands(Main.soundService.getCommandHelp());
+        } catch (SQLException ex) {
+            Logger.getGlobal().log(Level.SEVERE, "Error occured while trying to retrieve the help menu for sounds.", ex);
+        }
         for (CommandHelp help : commandMans) {
             if (help.getName().equals(args[0])) {//true if the specified high level command by the user exists; false otherwise
                 return showHelpRecursively(args, help, 1);
