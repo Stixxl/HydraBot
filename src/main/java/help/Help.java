@@ -16,22 +16,22 @@ import java.util.logging.Logger;
  * @author PogChamp
  */
 public class Help {
-//command stats
 
+    //command stats
     CommandHelp stats = new CommandHelp("stats", "Zeigt wer den längsten hat und wie lang er eigentlich ist.", new CommandHelp[]{
         new CommandHelp("me", "Gibt deine eigenen Stats aus."),
         new CommandHelp("ranking", "Wählt die besten der besten aus. Gib eine Zahl an um die besten n Personen auszuwählen, etwa so: " + UtilityMethods.highlightStringItalic("!hydra stats ranking 3")),
         new CommandHelp("name", "Wählt eine Person nach Namen aus, etwa so: " + UtilityMethods.highlightStringItalic("!hydra stats name Mr. Poopy Butthole")),
         new CommandHelp("all", "FUSION! GENKIDAMA; Kombiniert eure Kraft. Gibt die kombinierten Stats von euch an."),
         new CommandHelp("save", "Speichert eure Daten, falls der Bot wieder mal abstürzt. FeelsBadMan")});
-    CommandHelp sounds;
+    CommandHelp sounds = new CommandHelp("sounds", "Spielt danke Memes ab.");
     CommandHelp binsenweissheiten = new CommandHelp("binsenweisheit", "Gibt Tipps und Tricks fürs Leben.");
     CommandHelp daniel = new CommandHelp("daniel", "Flamt Daniel.");
     CommandHelp[] commandMans = {stats, sounds, binsenweissheiten, daniel};
 
     public Help() {
         try {
-            sounds = new CommandHelp("sounds", "Spielt danke Memes ab.", Main.soundService.getCommandHelp());
+            sounds.setSubcommands(Main.soundService.getCommandHelp());
         } catch (SQLException ex) {
             Logger.getGlobal().log(Level.SEVERE, "Error occured while trying to retrieve the help menu for sounds.", ex);
         }
