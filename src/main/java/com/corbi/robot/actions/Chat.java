@@ -262,7 +262,7 @@ public class Chat {
 
         String errorInfo = "The HydraBot does not support the arguments " + UtilityMethods.highlightStringItalic(Arrays.toString(wrongArgs))
                 + " for the command " + UtilityMethods.highlightStringItalic(command) + "."
-                + " Gib " + UtilityMethods.highlightStringItalic("!hydra help " + command) + " ein, für mögliche Unterbefehle.";
+                + " Gib " + UtilityMethods.highlightStringItalic("!hydra help " + command) + " für mögliche Unterbefehle ein.";
         sendMessage(channel, errorInfo);
 
     }

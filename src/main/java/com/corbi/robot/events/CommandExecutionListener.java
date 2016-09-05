@@ -18,7 +18,6 @@ import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.handle.obj.Status;
 import sx.blah.discord.util.DiscordException;
-import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.RateLimitException;
 
 /**
@@ -39,17 +38,13 @@ public class CommandExecutionListener {
         for (IGuild guild : event.getClient().getGuilds()) {
             Logger.getGlobal().log(Level.FINER, "bot is online on guild{0}", guild.toString());
             for (IUser user : User.getOnlineUsers(guild.getUsers())) {
-                Main.userListener.addOnlineUser(user.getID(), guild.getID(), user.getName());//adds every user that is online when the bot started to the onlineUser list
+                Main.userListener.addOnlineUser(user.getID(), guild.getID(), user.getName());//adds every user that is online, when the bot started, to the onlineUser list
             }
         }
     }
 
     /**
      * @param event event thatis thrown when a new command is received
-     * @throws sx.blah.discord.util.RateLimitException
-     * @throws DiscordException
-     * @throws MissingPermissionsException This method maps a command received
-     * through the chat to a suited method
      */
     @EventSubscriber
     public void handle(CommandExecutionEvent event) {
