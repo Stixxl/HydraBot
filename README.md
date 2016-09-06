@@ -7,6 +7,7 @@ In case you want to use this bot simply contact me and ill make sure it will be 
 Future Features:
   - Use of the League of Legends API
   - Continuous Integration
+  - Integration Tests
 
 Yours truly
 Corbinian Stiglmair
