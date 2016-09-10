@@ -5,10 +5,13 @@
  */
 package com.corbi.robot.actions.DBServices;
 
+import help.CommandHelp;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * a class, that delivers path to soundfiles and takes care of the sound table
@@ -57,6 +60,23 @@ public class SoundService {
                 + "WHERE name=?");
         statement.setString(1, name);
         DBService.execute(statement);
+    }
+    
+    /**
+     * Retrieves name and description for sound commands from the database
+     * @return an Array containing CommandHelp objects(that do not contain subcommands) for the command sounds
+     * @throws SQLException 
+     */
+    public CommandHelp[] getCommandHelp() throws SQLException
+    {
+        List<CommandHelp> results = new ArrayList<>();
+        PreparedStatement statement = con.prepareStatement("SELECT name,description FROM " + TABLENAME);
+        ResultSet result = statement.executeQuery();
+        while(result.next())
+        {
+            results.add(new CommandHelp(result.getString("name"), result.getString("description")));
+        }
+        return results.toArray(new CommandHelp[results.size()]);
     }
 
 }
