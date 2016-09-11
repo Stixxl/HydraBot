@@ -8,6 +8,4 @@ Future Features:
   - Use of the League of Legends API
   - Integration Tests
 
-http://80.241.212.103:8080/buildStatus/icon?job=HydraBot_CI_maven
-
 [![Build Status](http://80.241.212.103:8080/buildStatus/icon?job=HydraBot_CI_maven)](http://80.241.212.103:8080/job/HydraBot_CI_maven/)
