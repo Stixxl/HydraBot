@@ -41,21 +41,27 @@
     <build>
         <finalName>HydraBot</finalName>
         <plugins>
+
             <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <configuration>
-                    <file>${project.build.finalName}</file>
-                    <archive>
-                        <manifest>
-                            <mainClass>com.corbi.robot.main.Main</mainClass>
-                        </manifest>
-                    </archive>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                </configuration>
-            </plugin>
-            <plugin>
+    <moduleSets>
+        <moduleSet>
+            <useAllReactorProjects>true</useAllReactorProjects>
+            <excludes>
+                <exclude>*:test-distribution</exclude>
+            </excludes>
+            <sources>
+                <includeModuleDirectory>false</includeModuleDirectory>
+                <fileSets>
+                    <fileSet>
+                        <includes>
+                            <include>/**</include>
+                        </includes>
+                        <outputDirectory>.</outputDirectory>
+                    </fileSet>
+                </fileSets>
+            </sources>
+        </moduleSet>
+    </moduleSets>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
                     <archive>
