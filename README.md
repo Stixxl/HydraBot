@@ -6,8 +6,8 @@ In case you want to use this bot simply contact me and ill make sure it will be 
 
 Future Features:
   - Use of the League of Legends API
-  - Continuous Integration
   - Integration Tests
 
-Yours truly
-Corbinian Stiglmair
+http://80.241.212.103:8080/buildStatus/icon?job=HydraBot_CI_maven
+
+[![Build Status](http://80.241.212.103:8080/buildStatus/icon?job=HydraBot_CI_maven)](http://80.241.212.103:8080/job/HydraBot_CI_maven/)
