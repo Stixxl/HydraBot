@@ -131,11 +131,7 @@ public class User {
      *
      * @param users list of users to be updated
      */
-    private static void updateUsers(List<User> users) {
-        for (User user : users) {
-            user.updateUptime();
-        }
-    }
+
 
     /**
      * updates all user objects within the list then writes the data to the
@@ -145,7 +141,10 @@ public class User {
      */
     public static void saveUsers(List<User> users) {
 
-        updateUsers(users);
+        for(User user: users)
+        {
+            user.save();
+        }
     }
 
     /**
