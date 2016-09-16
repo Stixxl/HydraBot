@@ -24,7 +24,6 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
-import sx.blah.discord.Discord4J;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.util.DiscordException;
@@ -45,7 +44,7 @@ public class Main {
     private static FileHandler fh_info = null;
     private static FileHandler fh_finer = null;
     private static final int LOGGING_FILE_SIZE = 1024 * 1024;//1MB
-    private static final String LOGFOLDER = "logs/";
+    private static final String LOGFOLDER = UtilityMethods.generatePath("/logs");
     public static UserListener userListener;
 
     public static void main(String[] args) {

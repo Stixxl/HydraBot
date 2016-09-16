@@ -27,7 +27,7 @@ public class DBService {
         try {
             Class.forName("org.postgresql.Driver");
         } catch (ClassNotFoundException ex) {
-            Logger.getLogger(DBService.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getGlobal().log(Level.SEVERE, "Error while testing classname.", ex);
         }
         try {
             con = DriverManager.getConnection("jdbc:postgresql:" + TABLENAME,
@@ -35,7 +35,7 @@ public class DBService {
                     password);
             con.setAutoCommit(true);
         } catch (SQLException ex) {
-            Logger.getLogger(DBService.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getGlobal().log(Level.SEVERE, "Error during  connection to database.", ex);
         }
     }
 
