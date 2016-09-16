@@ -44,7 +44,7 @@ public class Main {
     private static FileHandler fh_info = null;
     private static FileHandler fh_finer = null;
     private static final int LOGGING_FILE_SIZE = 1024 * 1024;//1MB
-    private static final String LOGFOLDER = UtilityMethods.generatePath("/logs");
+    private static final String LOGFOLDER = "logs/";
     public static UserListener userListener;
 
     public static void main(String[] args) {
@@ -137,7 +137,7 @@ public class Main {
         if (!(f.exists() && f.isDirectory())) {
             f.mkdir();
         } else {
-            //deletes the logging folder and creates a new one, thus swiping its content
+            //deletes the logging folder and creates a new one, thus wiping its content
             try {
                 UtilityMethods.deleteFileOrFolder(f.toPath());
 
