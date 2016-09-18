@@ -55,7 +55,7 @@ public class UserService {
     public void updateUser(String id, String name, long uptime) throws SQLException {
         PreparedStatement statement = con.prepareStatement("UPDATE " + TABLENAME//selects user, it will always be one user or none since (id, guild_id) is primary key
                 + " SET uptime=?"
-                + " SET name=?"
+                + " ,name=?"
                 + " WHERE id=?");
         //sets parameter in above statement
         statement.setLong(1, uptime);
