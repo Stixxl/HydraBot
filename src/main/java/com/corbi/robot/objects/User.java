@@ -58,9 +58,9 @@ public class User {
      * database
      */
     private void updateUptime() {
-        uptime = System.currentTimeMillis() - lastUpdate;
+        long time_passed = System.currentTimeMillis() - lastUpdate; //time since last update
         try {
-            uptime = Main.userService.getUser(userID).getUptime() + System.currentTimeMillis() - lastUpdate; // value from db + currentTime - time of last update (=loginTime if there was no update)
+            uptime = Main.userService.getUser(userID).getUptime() + System.currentTimeMillis() + time_passed; // value from db + currentTime - time of last update (=loginTime if there was no update)
         } catch (SQLException ex) {
             Logger.getGlobal().log(Level.SEVERE, "Could not retrieve User.", ex);
         }
