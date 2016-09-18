@@ -38,7 +38,7 @@ public class CommandExecutionListener {
         for (IGuild guild : event.getClient().getGuilds()) {
             Logger.getGlobal().log(Level.FINER, "bot is online on guild{0}", guild.toString());
             for (IUser user : User.getOnlineUsers(guild.getUsers())) {
-                Main.userListener.addOnlineUser(user.getID(), guild.getID(), user.getName());//adds every user that is online, when the bot started, to the onlineUser list
+                Main.userListener.addOnlineUser(user.getID(), user.getName());//adds every user that is online, when the bot started, to the onlineUser list
             }
         }
     }

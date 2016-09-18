@@ -141,7 +141,7 @@ public class Chat {
      */
     private static void showStatsMe(IChannel channel, User user) {
         user.save();
-        String personalStats = user.toString() + System.lineSeparator() + getGamesMessage(user.getUserID(), user.getGuildID());
+        String personalStats = user.toString() + System.lineSeparator() + getGamesMessage(user.getUserID());
         sendMessage(channel, personalStats);
     }
 
@@ -158,14 +158,14 @@ public class Chat {
         List<User> users = new ArrayList<>();
         User.saveUsers(Main.userListener.onlineUsers);
         try {
-            users = Main.userService.getUserByName(name, guildID);
+            users = Main.userService.getUserByName(name);
         } catch (SQLException ex) {
             Logger.getGlobal().log(Level.SEVERE, "User could not be retrieved by name.", ex);
         }
         if (!(users.isEmpty())) {
             StringBuilder sb = new StringBuilder();
             for (User user : users) {
-                sb.append(user.toString()).append(System.lineSeparator()).append(getGamesMessage(user.getUserID(), user.getGuildID()));
+                sb.append(user.toString()).append(System.lineSeparator()).append(getGamesMessage(user.getUserID()));
             }
             sendMessage(channel, sb.toString());
         } else {
@@ -189,7 +189,7 @@ public class Chat {
         StringBuilder sb = new StringBuilder();
         User.saveUsers(Main.userListener.onlineUsers);
         try {
-            users = Main.userService.getRankingByUptime(guildID, limit);
+            users = Main.userService.getRankingByUptime(limit);
         } catch (SQLException ex) {
             Logger.getGlobal().log(Level.SEVERE, "Users could not be retrieved by ranking.", ex);
         }
@@ -216,12 +216,12 @@ public class Chat {
         List<Game> games = null;
         User.saveUsers(Main.userListener.onlineUsers);
         try {
-            uptime = Main.userService.getUptimeAll(guildID);
+            uptime = Main.userService.getUptimeAll();
         } catch (SQLException ex) {
             Logger.getGlobal().log(Level.SEVERE, "could not retrieve data for all users", ex);
         }
         try {
-            games = Main.gameService.getGamesAll(guildID);
+            games = Main.gameService.getGamesAll();
         } catch (SQLException ex) {
             Logger.getGlobal().log(Level.SEVERE, "could not retrieve game data for all users.", ex);
         }
@@ -306,10 +306,10 @@ public class Chat {
      * @return a formatted String that contains all information for games from a
      * single user
      */
-    private static String getGamesMessage(String userID, String guildID) {
+    private static String getGamesMessage(String userID) {
         List<Game> games = null;
         try {
-            games = Main.gameService.getGames(userID, guildID);
+            games = Main.gameService.getGames(userID);
         } catch (SQLException ex) {
             Logger.getGlobal().log(Level.SEVERE, "games could not be retrieved.", ex);
         }
