@@ -1,4 +1,8 @@
 # HydraBot
+
+[![Build Status](http://80.241.212.103:8080/buildStatus/icon?job=HydraBot_CI_maven)](http://80.241.212.103:8080/job/HydraBot_CI_maven/)
+
+
 Hello everybody,
 The HydraBot is a small handcrafted bot designed for our own little server.
 Any suggestions for improvements are greatly appreciated and will be answered swiftly.
