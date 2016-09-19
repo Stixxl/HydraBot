@@ -140,7 +140,7 @@ public class UserService {
         try (PreparedStatement statement = con.prepareStatement("SELECT uptime, id, name FROM " + TABLENAME
                 + " ORDER BY uptime DESC"
                 + " LIMIT ?::integer")) {
-            statement.setInt(2, limit);
+            statement.setInt(1, limit);
             ResultSet result = statement.executeQuery();
             while (result.next()) {
                 User user = new User(result.getBigDecimal("uptime").longValue(), result.getString("id"), result.getString("name"));
