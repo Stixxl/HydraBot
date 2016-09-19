@@ -139,6 +139,7 @@ public class UserListener {
         {
             if(user.getUserID().equals(userID))
             {
+                Logger.getGlobal().log(Level.WARNING, "User is already online; ID: {0}", user.getUserID());
                 return null;
             }
         }
