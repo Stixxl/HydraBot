@@ -68,7 +68,7 @@ public class CommandExecutionListener {
                 break;
             //statistics
             case "stats":
-                if (!(Chat.showStats(textChannel, event.getBy().getID(), event.getMessage().getGuild().getID(), args))) {
+                if (!(Chat.showStats(textChannel, event.getBy().getID(), args))) {
                     Chat.showUnsupportedFormatMessage(command, args, textChannel);
                 }
                 break;

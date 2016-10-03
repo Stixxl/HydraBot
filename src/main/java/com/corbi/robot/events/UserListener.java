@@ -171,10 +171,9 @@ public class UserListener {
      * Finds an user, if they are online
      *
      * @param userID id of user to be found
-     * @param guildID server id of user to be found
      * @return an user object, which is online; null if none was found
      */
-    public User getOnlineUser(String userID, String guildID) {
+    public User getOnlineUser(String userID) {
         for (User user : onlineUsers) {
             if (user.getUserID().equals(userID)) {
                 return user;

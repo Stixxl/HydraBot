@@ -63,6 +63,7 @@ public class Chat {
             sendMessage(channel, binsenweisheit);
         } else {
             sendErrorMessage(channel);
+            Logger.getGlobal().warning("Error occured while trying to retrieve a Binsenweisheit.");
         }
     }
 
@@ -79,16 +80,15 @@ public class Chat {
      * shows stats such as overall uptime on servers, time spent playing etc.
      *
      * @param channel id of the server from which the request was received
-     * @param userID id of the user that sent request
-     * @param guildID @link #sendMessage(IChannel, String) channel
+     * @param userID id of the user that sent request @link #sendMessage(IChannel, String) channel
      * @param args the arguments received with the command
      * @return true if format of input was correct, false otherwise
      */
-    public static boolean showStats(IChannel channel, String userID, String guildID, String args[]) {
+    public static boolean showStats(IChannel channel, String userID, String args[]) {
         if (args.length > 2 || args.length == 0) {
             return false;
         } else {
-            User user = Main.userListener.getOnlineUser(userID, guildID);
+            User user = Main.userListener.getOnlineUser(userID);
             switch (args[0]) {
 
                 case "me":
@@ -96,23 +96,24 @@ public class Chat {
                         showStatsMe(channel, user);
                         break;
                     } else {
+                        Logger.getGlobal().log(Level.WARNING, "User could not be found in onlineUsers. UserID: {0}", userID);
                         sendErrorMessage(channel);
                         return true;
                     }
 
                 case "all":
-                    showStatsAll(channel, guildID);
+                    showStatsAll(channel);
                     break;
                 case "name":
                     if (args.length == 2) {//showStatsByName needs a parameter itself
-                        showStatsByName(channel, args[1], guildID);
+                        showStatsByName(channel, args[1]);
                         break;
                     } else {
                         return false;
                     }
                 case "ranking":
                     if (args.length == 2 && UtilityMethods.isInteger(args[1])) {//showStatsRanking needs a parameter itself
-                        showStatsRanking(channel, (int) Integer.parseInt(args[1]), guildID);//selects the top n users by uptime
+                        showStatsRanking(channel, (int) Integer.parseInt(args[1]));//selects the top n users by uptime
                         break;
                     } else {
                         return false;
@@ -123,6 +124,7 @@ public class Chat {
                         break;
                     } else {
                         sendErrorMessage(channel);
+                        Logger.getGlobal().log(Level.WARNING, "User could not be found in onlineUsers. UserID: {0}", userID);
                         return true;
                     }
                 default:
@@ -154,7 +156,7 @@ public class Chat {
      * @param guildID @link #showStats(IChannel, IUser, String, String[])
      * guildID
      */
-    private static void showStatsByName(IChannel channel, String name, String guildID) {
+    private static void showStatsByName(IChannel channel, String name) {
         List<User> users = new ArrayList<>();
         User.saveUsers(Main.userListener.onlineUsers);
         try {
@@ -184,7 +186,7 @@ public class Chat {
      * @param guildID @link #showStats(IChannel, IUser, String, String[])
      * guildID
      */
-    private static void showStatsRanking(IChannel channel, int limit, String guildID) {
+    private static void showStatsRanking(IChannel channel, int limit) {
         List<User> users = new ArrayList<>();
         StringBuilder sb = new StringBuilder();
         User.saveUsers(Main.userListener.onlineUsers);
@@ -211,7 +213,7 @@ public class Chat {
      * @param guildID @link #showStats(IChannel, IUser, String, String[])
      * guildID
      */
-    private static void showStatsAll(IChannel channel, String guildID) {
+    private static void showStatsAll(IChannel channel) {
         long uptime = 0;
         List<Game> games = null;
         User.saveUsers(Main.userListener.onlineUsers);
