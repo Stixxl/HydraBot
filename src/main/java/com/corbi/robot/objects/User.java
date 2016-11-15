@@ -147,7 +147,9 @@ public class User {
     public static List<IUser> getOnlineUsers(List<IUser> users) {
         List<IUser> onlineUsers = new ArrayList<>();
         for (IUser user : users) {
-            if (!(user.isBot()) && !user.getPresence().equals(Presences.OFFLINE)) {//true if user is online and not a bot (in any guild?), false otherwise
+            if (!(user.isBot())
+                    && (user.getPresence().equals(Presences.ONLINE)
+                    || user.getPresence().equals(Presences.STREAMING))) {//true if user is online and not a bot, false otherwise
                 onlineUsers.add(user);
             }
         }
