@@ -26,7 +26,7 @@ import sx.blah.discord.handle.obj.Status.StatusType;
  * @author PogChamp
  */
 public class UserListener {
-
+    
     public List<User> onlineUsers = new ArrayList<>();
 
     /**
@@ -45,7 +45,7 @@ public class UserListener {
                     || event.getNewPresence().equals(Presences.STREAMING)))) //user goes online or stops being idle
             {
                 onOfflineToOnline(event);
-            } else if (event.getNewPresence().equals(Presences.OFFLINE)) //user goes offline or is idle
+            } else if (event.getNewPresence().equals(Presences.OFFLINE) || event.getNewPresence().equals(Presences.IDLE)) //user goes offline or is idle
             {
                 onOnlineToOffline(event);
             }
@@ -150,7 +150,7 @@ public class UserListener {
         } catch (SQLException ex) {
             Logger.getGlobal().log(Level.SEVERE, "User could not be retrieved.", ex);
         }
-
+        
         try {
             if (user == null) {
                 user = Main.userService.createUser(userID, name);//creates user if none exists
@@ -158,7 +158,7 @@ public class UserListener {
         } catch (SQLException ex) {
             Logger.getGlobal().log(Level.SEVERE, "User could not be created.", ex);
         }
-
+        
         if (user != null) {
             onlineUsers.add(user);
             Logger.getGlobal().log(Level.FINER, "Following user was added to online users: {0}", user.toString());
