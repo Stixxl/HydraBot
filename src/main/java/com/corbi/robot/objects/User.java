@@ -125,8 +125,6 @@ public class User {
      *
      * @param users list of users to be updated
      */
-
-
     /**
      * updates all user objects within the list then writes the data to the
      * database
@@ -135,8 +133,7 @@ public class User {
      */
     public static void saveUsers(List<User> users) {
 
-        for(User user: users)
-        {
+        for (User user : users) {
             user.save();
         }
     }
@@ -150,7 +147,7 @@ public class User {
     public static List<IUser> getOnlineUsers(List<IUser> users) {
         List<IUser> onlineUsers = new ArrayList<>();
         for (IUser user : users) {
-            if (!(user.isBot()) && user.getPresence().equals(Presences.ONLINE)) {//true if user is online and not a bot (in any guild?), false otherwise
+            if (!(user.isBot()) && !user.getPresence().equals(Presences.OFFLINE)) {//true if user is online and not a bot (in any guild?), false otherwise
                 onlineUsers.add(user);
             }
         }

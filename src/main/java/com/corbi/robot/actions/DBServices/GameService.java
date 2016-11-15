@@ -12,6 +12,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Handles db requests for the table GAMES
@@ -36,9 +38,10 @@ public class GameService {
      * @throws java.sql.SQLException
      */
     public Game createGame(String title, String id) throws SQLException {
-
-        try (PreparedStatement statement = con.prepareStatement("INSERT INTO " + TABLENAME
-                + "(title, id, time_played, amount_played) values('" + title + "', '" + id + "', 0, 1)")) {
+        String sql = "INSERT INTO " + TABLENAME
+                + "(title, id, time_played, amount_played) values('" + title + "', '" + id + "', 0, 1)";
+        Logger.getGlobal().log(Level.FINE, "Create Game: {0}", sql);
+        try (PreparedStatement statement = con.prepareStatement(sql)) {
             DBService.execute(statement);
         }
         return new Game(title, 0, 0);

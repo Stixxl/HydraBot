@@ -39,10 +39,13 @@ public class UserListener {
     @EventSubscriber
     public void onPresenceUpdated(PresenceUpdateEvent event) {
         if (!(event.getUser().isBot())) {
-            if (event.getOldPresence().equals(Presences.OFFLINE)) //user goes online
+            if (event.getOldPresence().equals(Presences.OFFLINE)
+                    || (event.getOldPresence().equals(Presences.IDLE)
+                    && (event.getNewPresence().equals(Presences.ONLINE)
+                    || event.getNewPresence().equals(Presences.STREAMING)))) //user goes online or stops being idle
             {
                 onOfflineToOnline(event);
-            } else if (event.getNewPresence().equals(Presences.OFFLINE)) //user goes offline
+            } else if (event.getNewPresence().equals(Presences.OFFLINE)) //user goes offline or is idle
             {
                 onOnlineToOffline(event);
             }
@@ -90,8 +93,7 @@ public class UserListener {
         Game game = null;
         Status status = event.getNewStatus();
         for (User user : onlineUsers) {
-            if (user.getUserID().equals(event.getUser().getID()) && status.getType().compareTo(StatusType.GAME) == 0)
-            { //true if the user started playing a game
+            if (user.getUserID().equals(event.getUser().getID()) && status.getType().compareTo(StatusType.GAME) == 0) { //true if the user started playing a game
                 String title = status.getStatusMessage();
                 if (user.getGame() != null) { //true if the user was playing a game
                     try {
@@ -124,7 +126,7 @@ public class UserListener {
                 break;
             }
             //user on same server and same user as specified in event
-                    }
+        }
     }
 
     /**
@@ -132,13 +134,12 @@ public class UserListener {
      *
      * @param userID id of user
      * @param name name of user
-     * @return the newly created user object; returns null if the user already exists (is in onlineUsers)
+     * @return the newly created user object; returns null if the user already
+     * exists (is in onlineUsers)
      */
     public User addOnlineUser(String userID, String name) {
-        for(User user: onlineUsers)
-        {
-            if(user.getUserID().equals(userID))
-            {
+        for (User user : onlineUsers) {
+            if (user.getUserID().equals(userID)) {
                 Logger.getGlobal().log(Level.WARNING, "User is already online; ID: {0}", user.getUserID());
                 return null;
             }
