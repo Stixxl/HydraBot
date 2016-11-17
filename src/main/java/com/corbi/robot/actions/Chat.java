@@ -80,7 +80,8 @@ public class Chat {
      * shows stats such as overall uptime on servers, time spent playing etc.
      *
      * @param channel id of the server from which the request was received
-     * @param userID id of the user that sent request @link #sendMessage(IChannel, String) channel
+     * @param userID id of the user that sent request @link
+     * #sendMessage(IChannel, String) channel
      * @param args the arguments received with the command
      * @return true if format of input was correct, false otherwise
      */
@@ -95,6 +96,8 @@ public class Chat {
                     if (user != null) {
                         showStatsMe(channel, user);
                         break;
+                    } else if (userID != null) {
+                        showStatsMe(channel, userID);
                     } else {
                         Logger.getGlobal().log(Level.WARNING, "User could not be found in onlineUsers. UserID: {0}", userID);
                         sendErrorMessage(channel);
@@ -147,6 +150,16 @@ public class Chat {
         sendMessage(channel, personalStats);
     }
 
+    private static void showStatsMe(IChannel channel, String userID) {
+        StringBuilder sb = new StringBuilder();
+        try {
+            sb.append(Main.userService.getUser(userID).toString()).append(System.lineSeparator()).append(getGamesMessage(userID));
+        } catch (SQLException ex) {
+            Logger.getLogger(Chat.class.getName()).log(Level.SEVERE, "ShowStats failed for user with ID (not in onlineUsers): " + userID, ex);
+        }
+        sendMessage(channel, sb.toString());
+    }
+
     /**
      * returns Users which equal the specified name
      *
@@ -171,7 +184,7 @@ public class Chat {
             }
             sendMessage(channel, sb.toString());
         } else {
-            sendMessage(channel, "Die Person mit dem Namen " + UtilityMethods.highlightStringItalic(name) + " existiert genau so wenig wie deine Freundin.");
+            sendMessage(channel, "Die Person mit dem Namen " + UtilityMethods.highlightItalic(name) + " existiert genau so wenig wie deine Freundin.");
         }
     }
 
@@ -197,7 +210,7 @@ public class Chat {
         }
         if (!(users.isEmpty())) {
             for (int i = 0; i < users.size(); i++) {
-                sb.append(UtilityMethods.highlightStringBold(String.valueOf(i + 1))).append(": ").append(users.get(i).toString()).append(System.lineSeparator());// bold rank number: user.toString() + linebreak
+                sb.append(UtilityMethods.highlightBold(String.valueOf(i + 1))).append(": ").append(users.get(i).toString()).append(System.lineSeparator());// bold rank number: user.toString() + linebreak
             }
             sendMessage(channel, sb.toString());
         } else {
@@ -235,7 +248,7 @@ public class Chat {
                 sb.append(System.lineSeparator()).append(String.valueOf(i)).append(". ").append(games.get(i).toString());
             }
         }
-        String statsAll = "Ihr habt insgesamt " + UtilityMethods.highlightStringItalic(UtilityMethods.formatTime(uptime)) + " auf diesem Server verschwendet." + sb.toString();
+        String statsAll = "Ihr habt insgesamt " + UtilityMethods.highlightItalic(UtilityMethods.formatTime(uptime)) + " auf diesem Server verschwendet." + sb.toString();
         sendMessage(channel, statsAll);
     }
 
@@ -246,8 +259,8 @@ public class Chat {
      * @param channel @link #sendMessage(IChannel, String) channel
      */
     public static void showUnsupportedFormatMessage(String wrongCommand, IChannel channel) {
-        String errorInfo = "The HydraBot does not support the command " + UtilityMethods.highlightStringItalic(wrongCommand) + "."
-                + " Gib " + UtilityMethods.highlightStringItalic("!hydra help") + " ein um mögliche Befehle einzusehen.";
+        String errorInfo = "The HydraBot does not support the command " + UtilityMethods.highlightItalic(wrongCommand) + "."
+                + " Gib " + UtilityMethods.highlightItalic("!hydra help") + " ein um mögliche Befehle einzusehen.";
 
         sendMessage(channel, errorInfo);
     }
@@ -262,9 +275,9 @@ public class Chat {
      */
     public static void showUnsupportedFormatMessage(String command, String[] wrongArgs, IChannel channel) {
 
-        String errorInfo = "The HydraBot does not support the arguments " + UtilityMethods.highlightStringItalic(Arrays.toString(wrongArgs))
-                + " for the command " + UtilityMethods.highlightStringItalic(command) + "."
-                + " Gib " + UtilityMethods.highlightStringItalic("!hydra help " + command) + " für mögliche Unterbefehle ein.";
+        String errorInfo = "The HydraBot does not support the arguments " + UtilityMethods.highlightItalic(Arrays.toString(wrongArgs))
+                + " for the command " + UtilityMethods.highlightItalic(command) + "."
+                + " Gib " + UtilityMethods.highlightItalic("!hydra help " + command) + " für mögliche Unterbefehle ein.";
         sendMessage(channel, errorInfo);
 
     }
@@ -286,17 +299,24 @@ public class Chat {
     }
 
     /**
-     * The bot will send the specified message in the specified channel
+     * The bot will send the specified message in the specified channel splits
+     * the message if needed so it does not exceed 200 chars as required by the
+     * discord API
      *
      * @param channel channel where the message is to be sent
      * @param content the content of the intended message
      *
      */
     public static void sendMessage(IChannel channel, String content) {
-        try {
-            new MessageBuilder(Main.client).withChannel(channel).withContent(content).build();
-        } catch (RateLimitException | DiscordException | MissingPermissionsException ex) {
-            Logger.getGlobal().log(Level.SEVERE, "message could not be sent.", ex);
+        int MessageParts = content.length() / 2000 + 1; // Ammount of parts that have to be sent; +1 because the result will be rounded off
+        for (int i = 0; i < MessageParts; i++) {
+            String splitMessage = content.substring(i * 2000, (i + 1) * 2000);
+
+            try {
+                new MessageBuilder(Main.client).withChannel(channel).withContent(splitMessage).build();
+            } catch (RateLimitException | DiscordException | MissingPermissionsException ex) {
+                Logger.getGlobal().log(Level.SEVERE, "message could not be sent.", ex);
+            }
         }
     }
 

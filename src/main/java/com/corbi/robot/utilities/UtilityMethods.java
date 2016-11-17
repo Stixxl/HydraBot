@@ -24,6 +24,13 @@ import java.util.logging.Logger;
  */
 public class UtilityMethods {
 
+    public enum Emote {
+        KAPPA, KREYGASM, POGCHAMP, RESIDENTSLEEPER, TRIHARD,
+        TWITCH, FAILFISH, SMILEY, KAPPAPRIDE, FEELSBADMAN,
+        BIBLETHUMP, MINGLEE, PJSALT, SAYAN, FOURHEAD, HAHAA,
+        KEEPO, KAPPAROSS, KAPPAXPLOSION, ANELE, TYLERENGINE
+    }
+
     /**
      * converts a relative path to an absolute one
      *
@@ -84,7 +91,7 @@ public class UtilityMethods {
      * @param s String to be converted
      * @return String s, which will be underlined in discord
      */
-    public static String highlightStringUnderline(String s) {
+    public static String highlightUnderline(String s) {
         return "__" + s + "__";
     }
 
@@ -94,7 +101,7 @@ public class UtilityMethods {
      * @param s String to beconverted
      * @return String s, which will be italic in discord
      */
-    public static String highlightStringItalic(String s) {
+    public static String highlightItalic(String s) {
         return "*" + s + "*";
     }
 
@@ -104,7 +111,7 @@ public class UtilityMethods {
      * @param s String to be converted
      * @return String s, which will be bold in discord
      */
-    public static String highlightStringBold(String s) {
+    public static String highlightBold(String s) {
         return "**" + s + "**";
     }
 
@@ -146,5 +153,80 @@ public class UtilityMethods {
             }
         });
     }
-;
+
+    public static String getEmote(Emote emote) {
+        String parsedEmote = ":";
+        switch (emote) {
+            case KAPPA:
+                parsedEmote += "Kappa";
+                break;
+            case KREYGASM:
+                parsedEmote += "Kreygasm";
+                break;
+            case POGCHAMP:
+                parsedEmote += "PogChamp";
+                break;
+            case RESIDENTSLEEPER:
+                parsedEmote += "ResidentSleeper";
+                break;
+            case TRIHARD:
+                parsedEmote += "TriHard";
+                break;
+            case TWITCH:
+                parsedEmote += "Twitch";
+                break;
+            case FAILFISH:
+                parsedEmote += "FailFish";
+                break;
+            case SMILEY:
+                parsedEmote += "Smiley";
+                break;
+            case KAPPAPRIDE:
+                parsedEmote += "KappaPride";
+                break;
+            case FEELSBADMAN:
+                parsedEmote += "FeelsBadMan";
+                break;
+            case BIBLETHUMP:
+                parsedEmote += "BibleThump";
+                break;
+            case MINGLEE:
+                parsedEmote += "MingLee";
+                break;
+            case PJSALT:
+                parsedEmote += "PJSalt";
+                break;
+            case SAYAN:
+                parsedEmote += "Sayan";
+                break;
+            case FOURHEAD:
+                parsedEmote += "4Head";
+                break;
+            case HAHAA:
+                parsedEmote += "haHaa";
+                break;
+            case KEEPO:
+                parsedEmote += "Keepo";
+                break;
+            case KAPPAROSS:
+                parsedEmote += "KappaRoss";
+                break;
+            case KAPPAXPLOSION:
+                parsedEmote += "KappaXplosion";
+                break;
+            case ANELE:
+                parsedEmote += "Anele";
+                break;
+            case TYLERENGINE:
+                parsedEmote += "TylerEngine";
+                break;
+            default:
+                parsedEmote = "";
+        }
+        if (parsedEmote.isEmpty()) {
+            return parsedEmote;
+        } else {
+            return parsedEmote += ":";
+        }
+    }
 }

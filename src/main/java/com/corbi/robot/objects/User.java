@@ -116,7 +116,7 @@ public class User {
     public String toString() {
         SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.SSS");
         Date loginDate = new Date(loginTime);
-        return UtilityMethods.highlightStringBold(name) + ", Uptime: " + UtilityMethods.highlightStringItalic(UtilityMethods.formatTime(uptime)) + ", Tier: " + UtilityMethods.highlightStringBold(tier);
+        return UtilityMethods.highlightBold(name) + ", Uptime: " + UtilityMethods.highlightItalic(UtilityMethods.formatTime(uptime)) + ", Tier: " + UtilityMethods.highlightBold(tier);
     }
 
     /**

@@ -20,8 +20,8 @@ public class Help {
     //command stats
     CommandHelp stats = new CommandHelp("stats", "Zeigt wer den längsten hat und wie lang er eigentlich ist.", new CommandHelp[]{
         new CommandHelp("me", "Gibt deine eigenen Stats aus."),
-        new CommandHelp("ranking", "Wählt die besten der besten aus. Gib eine Zahl an um die besten n Personen auszuwählen, etwa so: " + UtilityMethods.highlightStringItalic("!hydra stats ranking 3")),
-        new CommandHelp("name", "Wählt eine Person nach Namen aus, etwa so: " + UtilityMethods.highlightStringItalic("!hydra stats name Mr. Poopy Butthole")),
+        new CommandHelp("ranking", "Wählt die besten der besten aus. Gib eine Zahl an um die besten n Personen auszuwählen, etwa so: " + UtilityMethods.highlightItalic("!hydra stats ranking 3")),
+        new CommandHelp("name", "Wählt eine Person nach Namen aus, etwa so: " + UtilityMethods.highlightItalic("!hydra stats name Mr. Poopy Butthole")),
         new CommandHelp("all", "FUSION! GENKIDAMA; Kombiniert eure Kraft. Gibt die kombinierten Stats von euch an."),
         new CommandHelp("save", "Speichert eure Daten, falls der Bot wieder mal abstürzt. FeelsBadMan")});
     CommandHelp sounds = new CommandHelp("sounds", "Spielt danke Memes ab.");
@@ -110,6 +110,6 @@ public class Help {
      * @return a formatted String for a given help of a command
      */
     private String formatHelp(CommandHelp help) {
-        return UtilityMethods.highlightStringBold(help.getName()) + " - " + help.getDescription();
+        return UtilityMethods.highlightBold(help.getName()) + " - " + help.getDescription();
     }
 }
