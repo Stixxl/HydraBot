@@ -310,7 +310,7 @@ public class Chat {
     public static void sendMessage(IChannel channel, String content) {
         int MessageParts = content.length() / 2000 + 1; // Ammount of parts that have to be sent; +1 because the result will be rounded off
         for (int i = 0; i < MessageParts; i++) {
-            String splitMessage = content.substring(i * 2000, (i + 1) * 2000);
+            String splitMessage = content.substring(i * 2000, Math.min((i + 1) * 2000, content.length()));
 
             try {
                 new MessageBuilder(Main.client).withChannel(channel).withContent(splitMessage).build();
