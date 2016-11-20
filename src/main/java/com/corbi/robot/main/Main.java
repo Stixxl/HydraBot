@@ -5,10 +5,10 @@
  */
 package com.corbi.robot.main;
 
-import com.corbi.robot.actions.DBServices.DBService;
-import com.corbi.robot.actions.DBServices.GameService;
-import com.corbi.robot.actions.DBServices.SoundService;
-import com.corbi.robot.actions.DBServices.UserService;
+import com.corbi.robot.DBServices.DBService;
+import com.corbi.robot.DBServices.GameService;
+import com.corbi.robot.DBServices.SoundService;
+import com.corbi.robot.DBServices.UserService;
 import com.corbi.robot.events.AudioListener;
 import com.corbi.robot.events.CommandListener;
 import com.corbi.robot.events.CommandExecutionListener;

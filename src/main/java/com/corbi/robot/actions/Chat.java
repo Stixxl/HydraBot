@@ -283,6 +283,17 @@ public class Chat {
     }
 
     /**
+     * sends a message that will indicate to the user that he is no authorized
+     *
+     * @param textChannel @see
+     * com.corbi.robot.actions.Chat#sendMessage(sx.blah.discord.handle.obj.IChannel,
+     * java.lang.String)
+     */
+    public static void showUnauthorizedMessage(IChannel textChannel) {
+        Chat.sendMessage(textChannel, "?\n Diese Funktion ist nicht für Plebs gedacht.");
+    }
+
+    /**
      * sends Information regarding a given command; if args is empty (=!hydra
      * help) only top level commands will be shown
      *
