@@ -29,7 +29,7 @@ public class Help {
     CommandHelp daniel = new CommandHelp("daniel", "Flamt Daniel.");
     CommandHelp pause = new CommandHelp("pause", "Unterbricht die Ausführung des Bots. Benötigt Adminrechte. Anwendungsfall: Sayan wird wieder gespammt.");
     CommandHelp unpause = new CommandHelp("unpause", "Setzt die Ausführung des Bots fort. Benötigt Adminrechte. Anwendungsfall: Sayan soll wieder gespammt werden können.");
-    CommandHelp[] commandMans = {stats, sounds, binsenweissheiten, daniel};
+    CommandHelp[] commandMans = {stats, sounds, binsenweissheiten, daniel, pause, unpause};
 
     public Help() {
         try {
