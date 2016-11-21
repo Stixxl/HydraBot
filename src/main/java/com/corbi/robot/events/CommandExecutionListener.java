@@ -85,10 +85,10 @@ public class CommandExecutionListener {
                     if (Role.authorize(event.getBy(), textChannel.getGuild(), Role.ROLE.ADMIN)) {
                         isPaused = true;
                         Chat.sendMessage(textChannel, "Gute Nacht, Kinder. Wecke mich wieder auf mit einem liebevollen " + UtilityMethods.highlightItalic("!hydra unpause") + ".");
-                    }
-                    else {
+                    } else {
                         Chat.showUnauthorizedMessage(textChannel);
                     }
+                    break;
                 default:
                     Chat.showUnsupportedFormatMessage(command, event.getMessage().getChannel());// no suitable command found
             }
