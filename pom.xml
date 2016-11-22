@@ -46,7 +46,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.corbi.robot.main.Main</mainClass>
+                            <mainClass>stiglmair.com.hydra.main.Main</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
