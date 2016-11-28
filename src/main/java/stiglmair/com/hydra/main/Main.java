@@ -46,6 +46,7 @@ public class Main {
     private static final int LOGGING_FILE_SIZE = 1024 * 1024;//1MB
     private static final String LOGFOLDER = "logs/";
     public static UserListener userListener;
+    private static String key;
 
     public static void main(String[] args) {
         init();
@@ -80,7 +81,7 @@ public class Main {
         fh_info.setFilter((LogRecord record) -> record.getLevel().equals(Level.INFO));
         fh_finer.setFilter((LogRecord record) -> record.getLevel().equals(Level.FINER));
 
-        readConfig();
+        //DB Services
         userService = dbService.getUserService();
         gameService = dbService.getGameService();
         soundService = dbService.getSoundService();
@@ -110,6 +111,7 @@ public class Main {
      */
     public static void readConfig() {
         String path = "config.properties";
+        String securePath = "key.properties";
         path = UtilityMethods.generatePath(path);
         File f = new File(path);
         if (f.exists() && !f.isDirectory()) {//true if there is configurationdata to be read, false otherwise
@@ -124,8 +126,10 @@ public class Main {
                 properties.load(inStream);
             } catch (IOException e) {
             }
+            String username = properties.getProperty("dbusername");
+            String dbpassword = properties.getProperty("dbpassword");
+            dbService = new DBService(username, dbpassword);
             Token = properties.getProperty("token");
-            dbService = new DBService(properties.getProperty("dbusername"), properties.getProperty("dbpassword"));
         }
     }
 
@@ -146,5 +150,6 @@ public class Main {
                 Logger.getGlobal().log(Level.SEVERE, "Error occured while trying to delete the logging folder.", ex);
             }
         }
+        readConfig();
     }
 }

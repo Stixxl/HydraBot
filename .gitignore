@@ -10,12 +10,12 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 # folders with data inserted by the user
-config.properties
+key.properties
 
 *.lck
 *.log
 log*
-
+config.properties
 ErrorHandling/
 # NetBeans specific git ignore 
 nbproject/private
