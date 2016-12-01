@@ -46,7 +46,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>stiglmair.com.hydra.main.Main</mainClass>
+                            <mainClass>com.stiglmair.hydra.main.Main</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
