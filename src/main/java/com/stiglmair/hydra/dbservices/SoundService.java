@@ -63,14 +63,14 @@ public class SoundService {
     }
     
     /**
-     * Retrieves name and description for sound commands from the database
+     * Retrieves name and description for sound commands from the database and orders them alphabetically
      * @return an Array containing CommandHelp objects(that do not contain subcommands) for the command sounds
      * @throws SQLException 
      */
     public CommandHelp[] getCommandHelp() throws SQLException
     {
         List<CommandHelp> results = new ArrayList<>();
-        PreparedStatement statement = con.prepareStatement("SELECT name,description FROM " + TABLENAME);
+        PreparedStatement statement = con.prepareStatement("SELECT name,description FROM " + TABLENAME + "ORDER BY name ASC");
         ResultSet result = statement.executeQuery();
         while(result.next())
         {
