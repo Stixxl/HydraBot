@@ -70,7 +70,7 @@ public class SoundService {
     public CommandHelp[] getCommandHelp() throws SQLException
     {
         List<CommandHelp> results = new ArrayList<>();
-        PreparedStatement statement = con.prepareStatement("SELECT name,description FROM " + TABLENAME + "ORDER BY name ASC");
+        PreparedStatement statement = con.prepareStatement("SELECT name,description FROM " + TABLENAME + " ORDER BY name ASC");
         ResultSet result = statement.executeQuery();
         while(result.next())
         {
