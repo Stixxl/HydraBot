@@ -6,6 +6,7 @@
 package com.stiglmair.hydra.dbservices;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
@@ -23,6 +24,8 @@ public class FlameForDanielService {
     }
 
     public String selectSentenceRandom() throws SQLException {
-        return DBService.selectRandom(TABLENAME, con).getString("content");
+        ResultSet result = DBService.selectRandom(TABLENAME, con);
+        result.next();
+        return result.getString("content");
     }
 }

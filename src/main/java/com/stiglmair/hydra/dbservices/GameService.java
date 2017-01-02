@@ -65,6 +65,7 @@ public class GameService {
             if (result.next()) {
                 game = new Game(title, result.getBigDecimal("time_played").longValue(), result.getInt("amount_played"));
             }
+            statement.close();
         }
         return game;
     }
@@ -90,6 +91,7 @@ public class GameService {
             statement.setString(3, title);
             statement.setString(4, id);
             statement.execute();
+            statement.close();
         }
         return new Game(title, timePlayed, amountPlayed);
     }
@@ -115,6 +117,7 @@ public class GameService {
                 String title = result.getString("title");
                 games.add(new Game(title, time_played, amount_played));
             }
+            statement.close();
         }
         return games;
     }
@@ -144,6 +147,7 @@ public class GameService {
                 Game temp = new Game(title, time_played, amount_played);
                 games.add(temp);
             }
+            statement.close();
         }
         return games;
     }

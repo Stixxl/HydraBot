@@ -36,14 +36,15 @@ public class SoundService {
      * @throws SQLException
      */
     public String getPath(String name) throws SQLException {
-        PreparedStatement statement = con.prepareStatement("SELECT path FROM " + TABLENAME
-                + " WHERE name=?");
-        statement.setString(1, name);
-        ResultSet result = statement.executeQuery();
-        //returns path, if it exists; otherwise throws SQLException
-        result.next();
-        String path = result.getString("path");
-        statement.close();
+        String path;
+        try (PreparedStatement statement = con.prepareStatement("SELECT path FROM " + TABLENAME
+                + " WHERE name=?")) {
+            statement.setString(1, name);
+            ResultSet result = statement.executeQuery();
+            //returns path, if it exists; otherwise throws SQLException
+            result.next();
+            path = result.getString("path");
+        }
         return path;
 
     }
@@ -61,22 +62,25 @@ public class SoundService {
         statement.setString(1, name);
         DBService.execute(statement);
     }
-    
+
     /**
-     * Retrieves name and description for sound commands from the database and orders them alphabetically
-     * @return an Array containing CommandHelp objects(that do not contain subcommands) for the command sounds
-     * @throws SQLException 
+     * Retrieves name and description for sound commands from the database and
+     * orders them alphabetically
+     *
+     * @return an Array containing CommandHelp objects(that do not contain
+     * subcommands) for the command sounds
+     * @throws SQLException
      */
-    public CommandHelp[] getCommandHelp() throws SQLException
-    {
+    public CommandHelp[] getCommandHelp() throws SQLException {
         List<CommandHelp> results = new ArrayList<>();
-        PreparedStatement statement = con.prepareStatement("SELECT name,description FROM " + TABLENAME + " ORDER BY name ASC");
-        ResultSet result = statement.executeQuery();
-        while(result.next())
-        {
-            results.add(new CommandHelp(result.getString("name"), result.getString("description")));
+        CommandHelp[] commandHelp;
+        try (PreparedStatement statement = con.prepareStatement("SELECT name,description FROM " + TABLENAME + " ORDER BY name ASC")) {
+            ResultSet result = statement.executeQuery();
+            while (result.next()) {
+                results.add(new CommandHelp(result.getString("name"), result.getString("description")));
+            }   commandHelp = results.toArray(new CommandHelp[results.size()]);
         }
-        return results.toArray(new CommandHelp[results.size()]);
+        return commandHelp;
     }
 
 }

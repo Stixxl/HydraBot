@@ -107,6 +107,7 @@ public class UserService {
                 String id = result.getString("id");
                 users.add(new User(uptime, id, name));
             }
+            statement.close();
         }
         return users;
     }
@@ -124,6 +125,7 @@ public class UserService {
             if (result.next()) {
                 uptimeAll = result.getBigDecimal("uptime_all").longValue();
             }
+            statement.close();
         }
         return uptimeAll;
     }
@@ -147,6 +149,7 @@ public class UserService {
                 Logger.getGlobal().log(Level.FINER, "Following user was retrieved by ranking: {0}", user.toString());
                 users.add(user);
             }
+            statement.close();
         }
         return users;
     }
