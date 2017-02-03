@@ -44,6 +44,7 @@ public class Audio {
         if ((args.length == 1 && !voiceChannels.isEmpty())) {
             String path = null;
             IVoiceChannel voiceChannel = null;
+            
             for (IVoiceChannel channel : voiceChannels) {
                 if (channel.getGuild().equals(guild))//true if channel is in the same guild as origin of request, false otherwise
                 {

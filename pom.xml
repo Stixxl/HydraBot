@@ -38,8 +38,9 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>9.4.1212</version>
+            <version>9.4-1206-jdbc42</version>
         </dependency>
+
     </dependencies>
     <build>
         <finalName>HydraBot</finalName>
