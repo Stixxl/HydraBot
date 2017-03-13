@@ -133,9 +133,9 @@ public class GameService {
         try (PreparedStatement statement = con.prepareStatement("SELECT DISTINCT title, ua1.amount_played_all amount_played_all, ua2.time_played_all time_played_all FROM "
                 + TABLENAME + ", "
                 + "(SELECT SUM(amount_played) AS amount_played_all, title t FROM " + TABLENAME
-                + "GROUP BY title) AS ua1, "
+                + " GROUP BY title) AS ua1, "
                 + "(SELECT SUM(time_played) AS time_played_all, title t FROM " + TABLENAME
-                + "GROUP BY title) as ua2 "
+                + " GROUP BY title) as ua2 "
                 + "WHERE title=ua1.t "
                 + "AND title=ua2.t "
                 + "ORDER BY ua2.time_played_all DESC")) {
