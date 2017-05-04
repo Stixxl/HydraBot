@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.Timer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import sx.blah.discord.handle.obj.IChannel;
@@ -146,14 +147,14 @@ public class Chat {
      */
     private static void showStatsMe(IChannel channel, User user) {
         user.save();
-        String personalStats = user.toString() + System.lineSeparator() + getGamesMessage(user.getUserID());
+        String personalStats = user.toString() + System.lineSeparator() + System.lineSeparator() + getGamesMessage(user.getUserID());
         sendMessage(channel, personalStats);
     }
 
     private static void showStatsMe(IChannel channel, String userID) {
         StringBuilder sb = new StringBuilder();
         try {
-            sb.append(Main.userService.getUser(userID).toString()).append(System.lineSeparator()).append(getGamesMessage(userID));
+            sb.append(Main.userService.getUser(userID).toString()).append(System.lineSeparator()).append(System.lineSeparator()).append(getGamesMessage(userID));
         } catch (SQLException ex) {
             Logger.getLogger(Chat.class.getName()).log(Level.SEVERE, "ShowStats failed for user with ID (not in onlineUsers): " + userID, ex);
         }
@@ -180,7 +181,7 @@ public class Chat {
         if (!(users.isEmpty())) {
             StringBuilder sb = new StringBuilder();
             for (User user : users) {
-                sb.append(user.toString()).append(System.lineSeparator()).append(getGamesMessage(user.getUserID()));
+                sb.append(user.toString()).append(System.lineSeparator()).append(System.lineSeparator()).append(getGamesMessage(user.getUserID()));
             }
             sendMessage(channel, sb.toString());
         } else {
@@ -242,7 +243,7 @@ public class Chat {
         }
         StringBuilder sb = new StringBuilder();
         if (games != null) {
-            sb.append(System.lineSeparator());
+            sb.append(System.lineSeparator()).append(System.lineSeparator());
             sb.append("Eure verschwendete Zeit teilt ihr anscheinend wie folgt auf:");
             for (int i = 0; i < games.size(); i++) {
                 sb.append(System.lineSeparator()).append(String.valueOf(i)).append(". ").append(games.get(i).toString());
@@ -290,7 +291,16 @@ public class Chat {
      * java.lang.String)
      */
     public static void showUnauthorizedMessage(IChannel textChannel) {
-        Chat.sendMessage(textChannel, "?\n Diese Funktion ist nicht für Plebs gedacht.");
+        Chat.sendMessage(textChannel, "?");
+        new Timer().schedule(
+                new java.util.TimerTask() {
+            @Override
+            public void run() {
+                Chat.sendMessage(textChannel, "Diese Funktion ist nicht für Plebs gedacht.");
+            }
+        },
+                1000
+        );
     }
 
     /**
