@@ -48,12 +48,10 @@ local.properties
 *.launch
 
 # Maven target
-
 target/
 
 # Gradle
 .gradle
-/build/
-gradle-app.setting
-!gradle-wrapper-jar
+build/
+!gradle-wrapper.jar
 .gradletasknamecache
