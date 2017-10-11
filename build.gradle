@@ -3,34 +3,30 @@ apply plugin: 'maven'
 apply plugin: 'application'
 apply plugin: 'eclipse'
 
-mainClassName='com.corbi.robot.main.Main'
+mainClassName='com.stiglmair.hydra.main.Main'
 group = 'com.corbi'
-version = ''
 archivesBaseName = 'HydraBot'
-
-description = """"""
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 //create a single Jar with all dependencies
-task fatJar(type: Jar) {
-	manifest {
-        	attributes 'Implementation-Title': 'HydraBot',
-        	'Implementation-Version': version,
-        	'Main-Class': 'com.corbi.robot.main.Main'
-   }
-    baseName = project.name
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-    with jar
+jar {
+    manifest {
+        attributes 'Main-Class': "$mainClassName"
+    }
+
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }
 
 repositories {
- 
-     maven { url "http://jcenter.bintray.com" }
-     maven { url "https://jitpack.io" }
-     maven { url "http://repo.maven.apache.org/maven2" }
+     maven { url 'http://jcenter.bintray.com' }
+     maven { url 'https://jitpack.io' }
+     maven { url 'http://repo.maven.apache.org/maven2' }
 }
+
 dependencies {
     compile group: 'com.github.austinv11', name: 'Discord4j', version: '2.5.4'
     compile group: 'ch.qos.logback', name: 'logback-classic', version:'1.1.7'
