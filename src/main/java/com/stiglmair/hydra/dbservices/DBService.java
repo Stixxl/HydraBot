@@ -14,7 +14,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * A class that handles anny dbcalls
+ * A class that handles any dbcalls
  *
  * @author PogChamp
  */
