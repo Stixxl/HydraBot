@@ -96,7 +96,6 @@ public class Chat {
                 case "me":
                     if (user != null) {
                         showStatsMe(channel, user);
-                        break;
                     } else if (userID != null) {
                         showStatsMe(channel, userID);
                     } else {
@@ -104,6 +103,7 @@ public class Chat {
                         sendErrorMessage(channel);
                         return true;
                     }
+                    break;
 
                 case "all":
                     showStatsAll(channel);

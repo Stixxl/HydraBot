@@ -1,11 +1,12 @@
 package com.stiglmair.hydra.actions;
 
+import com.stiglmair.hydra.listener.AudioListener;
 import com.stiglmair.hydra.main.Main;
+import com.stiglmair.hydra.objects.AudioObject;
 import com.stiglmair.hydra.utilities.UtilityMethods;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.sound.sampled.UnsupportedAudioFileException;
@@ -34,35 +35,25 @@ public class Audio {
      * @param args the arguments that were sent in addition to the command
      * @param textChannel the TextChannel, where a potential error message can
      * be printed
-     * @param voiceChannels channel in which the user is, only the first will be
-     * used
+     * @param voiceChannel Voice channel, in which user currently is
      * @param guild guild, in which the request was received
      * @return false, if the key does not exist or to many arguments were
      * received; true if the method could sucessfully execute the audio request
      */
-    public static boolean handleSoundRequest(String[] args, IChannel textChannel, List<IVoiceChannel> voiceChannels, IGuild guild) {
-        if ((args.length == 1 && !voiceChannels.isEmpty())) {
+    public static boolean handleSoundRequest(String[] args, IChannel textChannel, IVoiceChannel voiceChannel, IGuild guild) {
+        if ((args.length == 1 && voiceChannel != null)) {
             String path = null;
-            IVoiceChannel voiceChannel = null;
-            
-            for (IVoiceChannel channel : voiceChannels) {
-                if (channel.getGuild().equals(guild))//true if channel is in the same guild as origin of request, false otherwise
-                {
-                    Logger.getGlobal().log(Level.FINER, "VoiceChannel on correct server found.");
-                    voiceChannel = channel;
-                }
-            }
             try {
                 path = Main.soundService.getPath(args[0]);//retrieves path for requested file and increments the overall call counter
                 Main.soundService.incrementRequestAmount(args[0]);
             } catch (SQLException ex) {
                 Logger.getGlobal().log(Level.SEVERE, "Sound path could not be retrieved.", ex);
             }
-            
-            if (path != null && voiceChannel != null) {//true, if requested sound exists in database AND voiceChannel of user could be detected, false otherwise
+
+            if (path != null) {//true, if requested sound exists in database, false otherwise
                 path = UtilityMethods.generatePath(path);
                 Logger.getGlobal().log(Level.FINER, "The generated audio path was: {0}", path);
-                playSound(path, voiceChannel, guild);
+                AudioListener.addAudio(path, voiceChannel, guild);
             } else {
                 return false;
             }
@@ -73,16 +64,16 @@ public class Audio {
     }
 
     /**
-     * plays a soundfile
+     * plays audio
      *
-     * @param path absolute path to the audio file
-     * @param voiceChannel channel, where the audio will be streamed
+     * @param audioObject Object, which contains guild, voicechannel and path to
+     * audiofile
      */
-    private static void playSound(String path, IVoiceChannel voiceChannel, IGuild guild) {
-        AudioPlayer audioPlayer = AudioPlayer.getAudioPlayerForGuild(guild);
-        File file = new File(path);
+    public static void playSound(AudioObject audioObject) {
+        AudioPlayer audioPlayer = AudioPlayer.getAudioPlayerForGuild(audioObject.getGuild());
+        File file = new File(audioObject.getPath());
         try {
-            voiceChannel.join();
+            audioObject.getVoiceChannel().join();
         } catch (MissingPermissionsException ex) {
             Logger.getGlobal().log(Level.SEVERE, "Could not join voice channel since the bot did not have the needed permissions.");
         }
@@ -92,7 +83,8 @@ public class Audio {
             Track currentTrack = audioPlayer.queue(file);
         } catch (IOException | UnsupportedAudioFileException ex) {
             Logger.getGlobal().log(Level.SEVERE, "Error while trying to play audio.", ex);
-            voiceChannel.leave();
+            audioObject.getVoiceChannel().leave();
+            AudioListener.removeHead(); //removes current head of list to remove bad audioObject
         }
     }
 }
