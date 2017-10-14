@@ -24,6 +24,9 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
+
+import com.stiglmair.hydra.webapi.WebApiCommandHandler;
+import com.stiglmair.hydra.webapi.WebApiServer;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.util.DiscordException;
@@ -103,6 +106,19 @@ public class Main {
                 .registerListener(userListener);
         Logger.getGlobal()
                 .log(Level.FINER, "Server started.");
+        Thread webApiThread = new Thread("Web Server") {
+            public void run(){
+                try {
+                    WebApiServer server = new WebApiServer(1337);
+                    server.addHandler("/commands", new WebApiCommandHandler());
+                    server.start();
+                } catch (IOException ex) {
+                    Logger.getGlobal().log(Level.SEVERE,
+                        "Error while initialising server. Printing error:\n" + ex);
+                }
+            }
+        };
+        webApiThread.run();
     }
 
     /**

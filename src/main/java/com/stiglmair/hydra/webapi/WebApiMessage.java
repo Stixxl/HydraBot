@@ -1,4 +1,4 @@
-package com.stiglmair.hydra.webinterface;
+package com.stiglmair.hydra.webapi;
 
 import com.vdurmont.emoji.Emoji;
 import sx.blah.discord.api.IDiscordClient;
@@ -27,15 +27,15 @@ import java.util.logging.Logger;
  * The goal is that an IMessage can be created from the information provided to the
  * web interface. This IMessage is then used to execute the commands passed to the web interface.
  */
-public class UserWebMessage implements IMessage {
+public class WebApiMessage implements IMessage {
 
     private final IUser user;
 
     /**
-     * Creates the corresponding UserWebMessage object for a user.
+     * Creates the corresponding WebApiMessage object for a user.
      * @param user The user.
      */
-    public UserWebMessage(IUser user) {
+    public WebApiMessage(IUser user) {
         this.user = user;
     }
 
