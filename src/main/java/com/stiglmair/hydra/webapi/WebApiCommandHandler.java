@@ -48,7 +48,7 @@ public class WebApiCommandHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         String requestMethod = exchange.getRequestMethod();
-        if (requestMethod.equalsIgnoreCase("POST")) {
+        if (requestMethod.equalsIgnoreCase("GET")) {
             URL requestUrl = exchange.getRequestURI().toURL();
             MultiMap<String> requestParams = new MultiMap<>();
             UrlEncoded.decodeTo(requestUrl.getQuery(), requestParams, "UTF-8");
