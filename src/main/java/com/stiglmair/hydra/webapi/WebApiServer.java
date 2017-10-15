@@ -1,22 +1,10 @@
 package com.stiglmair.hydra.webapi;
 
-import com.stiglmair.hydra.events.CommandExecutionEvent;
-import com.stiglmair.hydra.main.Main;
-import com.stiglmair.hydra.objects.Command;
-import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
-import org.eclipse.jetty.util.MultiMap;
-import org.eclipse.jetty.util.UrlEncoded;
-import sx.blah.discord.api.events.Event;
-import sx.blah.discord.handle.obj.IMessage;
-import sx.blah.discord.handle.obj.IUser;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.InetSocketAddress;
-import java.net.URL;
-import java.util.List;
 import java.util.concurrent.Executors;
 
 /**
@@ -53,7 +41,7 @@ public class WebApiServer {
      * Starts the server. Call this method after adding all handlers.
      */
     public void start() {
-        this.httpServer.setExecutor(Executors.newCachedThreadPool());
+        this.httpServer.setExecutor(Executors.newSingleThreadExecutor());
         this.httpServer.start();
     }
 }
