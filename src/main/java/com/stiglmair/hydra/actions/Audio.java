@@ -53,7 +53,7 @@ public class Audio {
             if (path != null) {//true, if requested sound exists in database, false otherwise
                 path = UtilityMethods.generatePath(path);
                 Logger.getGlobal().log(Level.FINER, "The generated audio path was: {0}", path);
-                AudioListener.addAudio(path, voiceChannel, guild);
+                Main.audioListener.addAudio(path, voiceChannel, guild);
             } else {
                 return false;
             }
@@ -84,7 +84,7 @@ public class Audio {
         } catch (IOException | UnsupportedAudioFileException ex) {
             Logger.getGlobal().log(Level.SEVERE, "Error while trying to play audio.", ex);
             audioObject.getVoiceChannel().leave();
-            AudioListener.removeHead(); //removes current head of list to remove bad audioObject
+            Main.audioListener.removeHead(); //removes current head of list to remove bad audioObject
         }
     }
 }

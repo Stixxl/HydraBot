@@ -23,7 +23,7 @@ public class AudioListener {
     /**
      *
      */
-    private static final ConcurrentLinkedQueue<AudioObject> PLAYLIST = new ConcurrentLinkedQueue<>();
+    private final ConcurrentLinkedQueue<AudioObject> PLAYLIST = new ConcurrentLinkedQueue<>();
 
     /**
      * When track finishes playing, play another
@@ -31,12 +31,12 @@ public class AudioListener {
      * @param event event, that triggers, when audio finishes playing
      */
     @EventSubscriber
-    public static void onAudioPlayed(TrackFinishEvent event) {
+    public void onAudioPlayed(TrackFinishEvent event) {
         PLAYLIST.poll();
         playSound();
     }
     @EventSubscriber
-    public static void onAudioStarted(TrackStartEvent event)
+    public void onAudioStarted(TrackStartEvent event)
     {
         System.out.println("Audio playback started.");
     }
@@ -47,7 +47,7 @@ public class AudioListener {
      * @param voiceChannel voicechannel in which audio should be played
      * @param guild guild of voicechannel
      */
-    public static void addAudio(String path, IVoiceChannel voiceChannel, IGuild guild) {
+    public void addAudio(String path, IVoiceChannel voiceChannel, IGuild guild) {
         AudioObject playlistObject = new AudioObject(path, voiceChannel, guild);
         PLAYLIST.add(playlistObject);
         if (PLAYLIST.size() == 1) {
@@ -58,13 +58,13 @@ public class AudioListener {
     /**
      * plays the next sound in the queue; does nothing if playlist is empty
      */
-    public static void playSound() {
+    public void playSound() {
         if (!PLAYLIST.isEmpty()) {
             Audio.playSound(PLAYLIST.peek());
         }
     }
 
-    public static void removeHead() {
+    public void removeHead() {
         PLAYLIST.poll();
         playSound();
     }

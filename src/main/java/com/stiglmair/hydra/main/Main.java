@@ -46,6 +46,7 @@ public class Main {
     private static final int LOGGING_FILE_SIZE = 1024 * 1024;//1MB
     private static final String LOGFOLDER = "logs/";
     public static UserListener userListener;
+    public static AudioListener audioListener;
     private static String key;
 
     public static void main(String[] args) {
@@ -93,12 +94,13 @@ public class Main {
         }
         //register event listener
         userListener = new UserListener();
+        audioListener = new AudioListener();
         client.getDispatcher()
                 .registerListener(new CommandExecutionListener());
         client.getDispatcher()
                 .registerListener(new CommandListener());
         client.getDispatcher()
-                .registerListener(new AudioListener());
+                .registerListener(audioListener);
         client.getDispatcher()
                 .registerListener(userListener);
         Logger.getGlobal()
