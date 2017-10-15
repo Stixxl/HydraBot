@@ -64,14 +64,16 @@ public class WebApiCommandHandler implements HttpHandler {
                 return;
             }
 
-            IUser user = null;
+            IUser user;
             try {
                 user = Main.client.getUserByID(Long.parseLong(userIdStrings.get(0)));
             } catch (NumberFormatException ex) {
                 sendBadRequestResponse(exchange, "Value of key userId ist not a long.");
+                return;
             }
             if (user == null) {
                 sendBadRequestResponse(exchange, "User with userId is not known to the bot.");
+                return;
             }
 
             IMessage webMessage = new WebApiMessage(user);
