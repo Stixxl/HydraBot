@@ -17,7 +17,7 @@ key.properties
 log*
 config.properties
 ErrorHandling/
-# NetBeans specific git ignore 
+# NetBeans specific gitignore 
 nbproject/private
 build/
 nbbuild/
@@ -25,7 +25,7 @@ dist/
 nbdist/
 nbactions.xml
 nb-configuration.xml
-# eclipse specific git ignore
+# eclipse specific gitignore
 *.pydevproject
 .project
 .metadata
@@ -40,6 +40,8 @@ local.properties
 .classpath
 .settings/
 .loadpath
+#intellij specific gitignore
+.idea/
 
 # External tool builders
 .externalToolBuilders/
