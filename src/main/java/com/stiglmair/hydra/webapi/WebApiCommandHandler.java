@@ -13,7 +13,6 @@ import sx.blah.discord.handle.obj.IUser;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.URL;
 import java.util.List;
 
 /**
@@ -49,9 +48,8 @@ public class WebApiCommandHandler implements HttpHandler {
     public void handle(HttpExchange exchange) throws IOException {
         String requestMethod = exchange.getRequestMethod();
         if (requestMethod.equalsIgnoreCase("GET")) {
-            URL requestUrl = exchange.getRequestURI().toURL();
             MultiMap<String> requestParams = new MultiMap<>();
-            UrlEncoded.decodeTo(requestUrl.getQuery(), requestParams, "UTF-8");
+            UrlEncoded.decodeTo(exchange.getRequestURI().getQuery(), requestParams, "UTF-8");
 
             List<String> commandStrings = requestParams.get("command");
             if (commandStrings.size() != 1) {
@@ -66,17 +64,22 @@ public class WebApiCommandHandler implements HttpHandler {
                 return;
             }
 
+            IUser user = null;
             try {
-                IUser user = Main.client.getUserByID(Long.parseLong(userIdStrings.get(0)));
-                IMessage webMessage = new WebApiMessage(user);
-                Command cmd = Command.parseCommand(commandStrings.get(0));
-                Event cmdExecutionEvent =
-                    new CommandExecutionEvent(cmd, webMessage, user);
-                Main.client.getDispatcher().dispatch(cmdExecutionEvent);
-                exchange.sendResponseHeaders(202, 0);
+                user = Main.client.getUserByID(Long.parseLong(userIdStrings.get(0)));
             } catch (NumberFormatException ex) {
                 sendBadRequestResponse(exchange, "Value of key userId ist not a long.");
             }
+            if (user == null) {
+                sendBadRequestResponse(exchange, "User with userId is not known to the bot.");
+            }
+
+            IMessage webMessage = new WebApiMessage(user);
+            Command cmd = Command.parseCommand(commandStrings.get(0));
+            Event cmdExecutionEvent =
+                new CommandExecutionEvent(cmd, webMessage, user);
+            Main.client.getDispatcher().dispatch(cmdExecutionEvent);
+            exchange.sendResponseHeaders(202, 0);
         }
     }
 }
