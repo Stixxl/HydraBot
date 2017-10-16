@@ -19,4 +19,5 @@ Future Features:
   - Use of the League of Legends API
   - Integration Tests
   - Admin Commands
+  - Token for REST Usage
 
