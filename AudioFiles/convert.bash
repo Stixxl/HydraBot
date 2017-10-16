@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 for f in $(ls); do
     f_r="$(echo "$f" | sed 's/.mp3//g')"
     echo "${f_r}"
