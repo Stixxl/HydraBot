@@ -145,9 +145,14 @@ public class Main {
                 properties.load(inStream);
             } catch (IOException e) {
             }
-            String username = properties.getProperty("dbusername");
-            String dbpassword = properties.getProperty("dbpassword");
-            dbService = new DBService(username, dbpassword);
+            dbService = new DBService(
+                properties.getProperty("dbhost"),
+                0,
+                properties.getProperty("dbname"),
+                properties.getProperty("dbschema", "HydraBotDB"),
+                properties.getProperty("dbusername"),
+                properties.getProperty("dbpassword")
+            );
             Token = properties.getProperty("token");
         }
     }
