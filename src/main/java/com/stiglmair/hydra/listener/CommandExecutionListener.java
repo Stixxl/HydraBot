@@ -14,11 +14,13 @@ import com.stiglmair.hydra.utilities.UtilityMethods;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import com.stiglmair.hydra.events.CommandExecutionEvent;
+import java.util.List;
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.handle.obj.IVoiceChannel;
 import sx.blah.discord.handle.obj.Status;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.RateLimitException;
@@ -67,7 +69,7 @@ public class CommandExecutionListener {
                     break;
                 //sounds
                 case "sounds":
-                    if (!(Audio.handleSoundRequest(args, textChannel, event.getBy().getConnectedVoiceChannels(), event.getMessage().getGuild()))) {
+                    if (!(Audio.handleSoundRequest(args, textChannel, event.getBy().getVoiceStateForGuild(event.getMessage().getGuild()).getChannel(), event.getMessage().getGuild()))) {
                         Chat.showUnsupportedFormatMessage(command, args, textChannel);
                     }
                     break;
