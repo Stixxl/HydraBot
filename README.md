@@ -10,6 +10,7 @@ In case you want to use this bot simply contact me and ill make sure it will be 
 
 Current Features:
   - Audioplayback with some dope ass audio
+  - Audioplayback via REST
   - Help Command, which displays possible actions
   - Smartass Tips
   - Ranking of users via their time spent online
@@ -17,6 +18,5 @@ Current Features:
 Future Features:
   - Use of the League of Legends API
   - Integration Tests
-  - Audioplayback via REST
   - Admin Commands
 
