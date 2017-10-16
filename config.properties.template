@@ -2,4 +2,5 @@ dbhost=
 dbname=
 dbschema=
 dbusername=HydraBotDB
-dbpassword=MyHydraBotPassword
+dbpassword=<POSTGRES PASSWORD>
+token=<DISCORD BOT TOKEN>
