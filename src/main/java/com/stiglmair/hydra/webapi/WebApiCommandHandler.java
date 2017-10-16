@@ -81,7 +81,7 @@ public class WebApiCommandHandler implements HttpHandler {
             Event cmdExecutionEvent =
                 new CommandExecutionEvent(cmd, webMessage, user);
             Main.client.getDispatcher().dispatch(cmdExecutionEvent);
-            exchange.sendResponseHeaders(202, 0);
+            exchange.sendResponseHeaders(204, -1);
         }
     }
 }
