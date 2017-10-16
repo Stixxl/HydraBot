@@ -163,7 +163,6 @@ public class Main {
             //deletes the logging folder and creates a new one, thus wiping its content
             try {
                 UtilityMethods.deleteFileOrFolder(f.toPath());
-
                 f.mkdir();
             } catch (IOException ex) {
                 Logger.getGlobal().log(Level.SEVERE, "Error occured while trying to delete the logging folder.", ex);
