@@ -53,14 +53,20 @@ def do_config():
     print('warning: (loading "{}")'.format(cfg_filename), e)
     data = {}
 
-  info = ' [{}]'.format(data['user_id']) if data.get('user_id') else ''
-  data['user_id'] = input('Discord User ID{}: '.format(info)) or data['user_id']
+  def ask(key, title):
+    info = ' [{}]'.format(data[key]) if data.get(key) not in (None, '') else ''
+    value = input('{}{}: '.format(title, info))
+    if value == ' ':  # delete the entry when a space is entered
+      del data[key]
+      value = None
+    else:
+      value = value.strip() or data.get(key)
+    if value not in (None, ''):
+      data[key] = value
 
-  info = ' [{}]'.format(data['token']) if data.get('token') else ''
-  data['token'] = input('User Access Token{}: '.format(info)) or data['token']
-
-  info = ' [{}]'.format(data['host']) if data.get('host') else ''
-  data['host'] = input('HydraBot Host{}: '.format(info)) or data['host']
+  ask('user_id', 'Discord User ID')
+  ask('token', 'User Access Token')
+  ask('host', 'HydraBot Host')
 
   data = {k: v for k, v in data.items() if v}
   with open(cfg_filename, 'w') as fp:
