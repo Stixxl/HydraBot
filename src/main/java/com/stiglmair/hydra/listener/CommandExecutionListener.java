@@ -14,14 +14,11 @@ import com.stiglmair.hydra.utilities.UtilityMethods;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import com.stiglmair.hydra.events.CommandExecutionEvent;
-import java.util.List;
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IUser;
-import sx.blah.discord.handle.obj.IVoiceChannel;
-import sx.blah.discord.handle.obj.Status;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.RateLimitException;
 
@@ -40,12 +37,12 @@ public class CommandExecutionListener {
         } catch (DiscordException | RateLimitException ex) {
             Logger.getGlobal().log(Level.SEVERE, "Error while setting bot's username.", ex);
         }
-        event.getClient().changeStatus(Status.game("mit der Mumu deiner Mama")); //sets the game of the bot
+        event.getClient().changePlayingText("with your emotions"); //sets the game of the bot
 
         for (IGuild guild : event.getClient().getGuilds()) {
             Logger.getGlobal().log(Level.FINER, "bot is online on guild{0}", guild.toString());
             for (IUser user : User.getOnlineUsers(guild.getUsers())) {
-                Main.userListener.addOnlineUser(user.getID(), user.getName());//adds every user that is online, when the bot started, to the onlineUser list
+                Main.userListener.addOnlineUser(String.valueOf(user.getLongID()), user.getName());//adds every user that is online, when the bot started, to the onlineUser list
             }
         }
     }
@@ -75,7 +72,7 @@ public class CommandExecutionListener {
                     break;
                 //statistics
                 case "stats":
-                    if (!(Chat.showStats(textChannel, event.getBy().getID(), args))) {
+                    if (!(Chat.showStats(textChannel, String.valueOf(event.getBy().getLongID()), args))) {
                         Chat.showUnsupportedFormatMessage(command, args, textChannel);
                     }
                     break;

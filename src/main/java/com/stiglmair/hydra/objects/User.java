@@ -14,8 +14,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import sx.blah.discord.handle.impl.obj.Presence;
 import sx.blah.discord.handle.obj.IUser;
-import sx.blah.discord.handle.obj.Presences;
+import sx.blah.discord.handle.obj.StatusType;
 
 /**
  * identifies a user that ever was or is currently on the server
@@ -148,8 +149,7 @@ public class User {
         List<IUser> onlineUsers = new ArrayList<>();
         for (IUser user : users) {
             if (!(user.isBot())
-                    && (user.getPresence().equals(Presences.ONLINE)
-                    || user.getPresence().equals(Presences.STREAMING))) {//true if user is online and not a bot, false otherwise
+                    && (user.getPresence().getStatus().equals(StatusType.ONLINE))) {//true if user is online and not a bot, false otherwise
                 onlineUsers.add(user);
             }
         }

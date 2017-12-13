@@ -8,7 +8,7 @@ package com.stiglmair.hydra.listener;
 import com.stiglmair.hydra.events.CommandExecutionEvent;
 import com.stiglmair.hydra.main.Main;
 import sx.blah.discord.api.events.EventSubscriber;
-import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
+import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IMessage;
 
 /**

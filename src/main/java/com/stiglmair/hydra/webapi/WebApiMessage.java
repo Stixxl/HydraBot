@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import sx.blah.discord.handle.impl.obj.ReactionEmoji;
 
 /**
  * This implements a potentially incomplete version of the IMessage interface.
@@ -76,11 +77,6 @@ public class WebApiMessage implements IMessage {
 
     @Override
     public List<Attachment> getAttachments() {
-        throw new RuntimeException("Method not implemented.");
-    }
-
-    @Override
-    public List<IEmbed> getEmbedded() {
         throw new RuntimeException("Method not implemented.");
     }
 
@@ -175,10 +171,6 @@ public class WebApiMessage implements IMessage {
         throw new RuntimeException("Method not implemented.");
     }
 
-    @Override
-    public IReaction getReactionByName(String name) {
-        throw new RuntimeException("Method not implemented.");
-    }
 
     @Override
     public void removeAllReactions() {
@@ -248,5 +240,55 @@ public class WebApiMessage implements IMessage {
     @Override
     public long getLongID() {
         throw new RuntimeException("Method not implemented.");
+    }
+
+    @Override
+    public IReaction getReactionByEmoji(IEmoji iemoji) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public IReaction getReactionByID(long l) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public IReaction getReactionByEmoji(ReactionEmoji re) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void addReaction(ReactionEmoji re) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void removeReaction(IUser iuser, ReactionEmoji re) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void removeReaction(IUser iuser, IEmoji iemoji) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void removeReaction(IUser iuser, Emoji emoji) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void removeReaction(IUser iuser, String string) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Type getType() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean isSystemMessage() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
