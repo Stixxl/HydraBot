@@ -10,7 +10,7 @@ In case you want to use this bot simply contact me and ill make sure it will be 
 
 Current Features:
   - Audioplayback with some dope ass audio
-  - Audioplayback via REST
+  - Audioplayback via http queries
   - Help Command, which displays possible actions
   - Smartass Tips
   - Ranking of users via their time spent online
