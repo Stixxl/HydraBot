@@ -17,6 +17,7 @@ import com.stiglmair.hydra.utilities.UtilityMethods;
 import com.stiglmair.hydra.webapi.WebApiCommandHandler;
 import com.stiglmair.hydra.webapi.WebApiServer;
 
+import com.moandjiezana.toml.Toml;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.CommandLineParser;
@@ -37,6 +38,8 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
+import java.util.Map;
+import java.sql.SQLException;
 
 /**
  *
@@ -91,6 +94,7 @@ public class Main {
 
         initLogging();
         initDbService();
+        initSounds();
         initDiscordClient();
         initWebApi();
     }
@@ -124,6 +128,19 @@ public class Main {
         userService = dbService.getUserService();
         gameService = dbService.getGameService();
         soundService = dbService.getSoundService();
+    }
+
+    public static void initSounds() {
+        Toml toml = new Toml().read(new File(UtilityMethods.generatePath("sounds.toml")));
+        for (Map.Entry e: toml.entrySet()) {
+            Toml entry = (Toml) e.getValue();
+            String path = UtilityMethods.generatePath(entry.getString("path"));
+            try {
+                soundService.updateOrCreateSound((String) e.getKey(), path, entry.getString("description"));
+            } catch (SQLException exc) {
+                Logger.getGlobal().log(Level.SEVERE, exc.getMessage());
+            }
+        }
     }
 
     public static void initDiscordClient() {

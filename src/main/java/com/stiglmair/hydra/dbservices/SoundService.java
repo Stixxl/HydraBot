@@ -64,6 +64,36 @@ public class SoundService {
     }
 
     /**
+     * Updates or creates a sound with the specified information.
+     *
+     * @param name The name of the sound.
+     * @param path The path to the sound file.
+     * @param description The sound description.
+     * @throws SQLException
+     */
+    public void updateOrCreateSound(String name, String path, String description) throws SQLException {
+        if (description == null) {
+            description = "";
+        }
+
+        PreparedStatement statement = con.prepareStatement("UPDATE " + TABLENAME + " SET path=?, description=? WHERE name=?");
+        statement.setString(1, path);
+        statement.setString(2, description);
+        statement.setString(3, name);
+        DBService.execute(statement);
+
+        statement = con.prepareStatement(
+            "INSERT INTO " + TABLENAME + " (name, path, description, amount_requests) " +
+            "SELECT ?, ?, ?, 0 " +
+            "WHERE NOT EXISTS (SELECT 1 FROM " + TABLENAME + " WHERE name=?)");
+        statement.setString(1, name);
+        statement.setString(2, path);
+        statement.setString(3, description);
+        statement.setString(4, name);
+        DBService.execute(statement);
+    }
+
+    /**
      * Retrieves name and description for sound commands from the database and
      * orders them alphabetically
      *

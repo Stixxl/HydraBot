@@ -1,0 +1,71 @@
+[bro]
+path = "AudioFiles/Bro.wav"
+
+[cena]
+path = "AudioFiles/John_Cena.wav"
+
+[faker]
+path = "AudioFiles/Faker_what_was_that.wav"
+
+[freedom]
+path = "AudioFiles/Ding_Ding.wav"
+
+[genji]
+path = "AudioFiles/Pro_Genji.wav"
+
+[hitman]
+path = "AudioFiles/Hitman.wav"
+
+[jews]
+path = "AudioFiles/Jews.wav"
+
+[junkrat]
+path = "AudioFiles/Junkrat_Ultimate_Troll.wav"
+
+[laugh]
+path = "AudioFiles/Laugh.wav"
+
+[meatballs]
+path = "AudioFiles/Meatballs.wav"
+
+[megaman]
+path = "AudioFiles/ImMegaman.wav"
+
+[mlg]
+path = "AudioFiles/MLG.wav"
+
+[money]
+path = "AudioFiles/Here_comes_the_money.wav"
+
+[nomana]
+path = "AudioFiles/noMana.wav"
+
+[pigs]
+path = "AudioFiles/PigsToTheSandwich.wav"
+
+[power]
+path = "AudioFiles/Brainpower.wav"
+
+[psych]
+path = "AudioFiles/Wrong_Number.wav"
+
+[sayan]
+path = "AudioFiles/Sayan.wav"
+
+[shindeiru]
+path = "AudioFiles/Dead.wav"
+
+[shutup]
+path = "AudioFiles/SHUTTHEFUCKUP.wav"
+
+[sparta]
+path = "AudioFiles/Sparta.wav"
+
+[spell]
+path = "AudioFiles/asdpoakaoskdaikd.wav"
+
+[wow]
+path = "AudioFiles/WOW.wav"
+
+[zarya]
+path = "AudioFiles/unlimitedPower.wav"
