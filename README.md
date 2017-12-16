@@ -22,6 +22,7 @@ Future Features:
   - Token for REST Usage
 
 To add the bot to your Discord server:
+  - Initialize the Postgres Database with `psql --username=HydraBot --dbname=HydraBotDB --file=scripts/initdb.sql`
   - Create a new bot in the [Discord Apps Panel](https://discordapp.com/developers/applications/me)
   - Click the "Create a Bot User" button in the bot's dashboard
   - Reveal the "Token" under "Bot > App Bot User" and save it in `config.toml`
