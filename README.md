@@ -21,3 +21,18 @@ Future Features:
   - Admin Commands
   - Token for REST Usage
 
+To add the bot to your Discord server:
+  - Create a new bot in the [Discord Apps Panel](https://discordapp.com/developers/applications/me)
+  - Click the "Create a Bot User" button in the bot's dashboard
+  - Reveal the "Token" under "Bot > App Bot User" and save it in `config.toml`
+    as the `discord.token` key
+  - Build and start the Hydra Bot
+  - Visit https://discordapi.com/permissions.html and mark the following
+    permissions:
+      - Text Permissions: Read Messages
+      - Text Permissions: Send Messages
+      - Voice Permissions: View Channel
+      - Voice Permissions: Connect
+      - Voice Permissions: Speak
+  - Insert the "Client ID" under "App Details" into the permissions builder
+  - Visit the Link displayed in the permissions builder to add the bot to your server

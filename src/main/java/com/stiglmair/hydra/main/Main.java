@@ -17,21 +17,21 @@ import com.stiglmair.hydra.utilities.UtilityMethods;
 import com.stiglmair.hydra.webapi.WebApiCommandHandler;
 import com.stiglmair.hydra.webapi.WebApiServer;
 
-import com.moandjiezana.toml.Toml;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.CommandLine;
 import sx.blah.discord.api.ClientBuilder;
+import sx.blah.discord.api.events.EventDispatcher;
+import sx.blah.discord.api.events.IListener;
+import sx.blah.discord.handle.impl.events.ReadyEvent;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.util.DiscordException;
+import sx.blah.discord.util.Image;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Properties;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -45,31 +45,25 @@ import java.util.logging.SimpleFormatter;
 public class Main {
 
     public static IDiscordClient client;
-    private static String Token;
+    public static Config config = new Config();
     public static DBService dbService;
     public static UserService userService;
     public static GameService gameService;
     public static SoundService soundService;
-    private static FileHandler fh_severe = null;
-    private static FileHandler fh_info = null;
-    private static FileHandler fh_finer = null;
-    private static final int LOGGING_FILE_SIZE = 1024 * 1024;//1MB
-    public static UserListener userListener;
-    public static AudioListener audioListener;
-    private static String key;
+    public static AudioListener audioListener = new AudioListener();
+    public static UserListener userListener = new UserListener();
 
-    // Possibly overwritten from the command-line options.
-    private static String CONFIGFILE = "config.toml";
-    private static String LOGFOLDER = "logs/";
+    private static final int LOGGING_FILE_SIZE = 1024 * 1024;  // 1MB
+    private static String key;
 
     public static CommandLine parseCommandline(String[] argv) {
         Options options = new Options();
         Option option;
 
-        option = new Option(null, "config", true, "The TOML configuration file. Defaults to " + CONFIGFILE);
+        option = new Option(null, "config", true, "The TOML configuration file. Defaults to config.toml");
         options.addOption(option);
 
-        option = new Option(null, "logfolder", true, "The folder where log files are stored. Defaults to " + LOGFOLDER);
+        option = new Option(null, "logfolder", true, "The folder where log files are stored. Defaults to logs/");
         options.addOption(option);
 
         CommandLineParser parser = new org.apache.commons.cli.DefaultParser();
@@ -87,18 +81,27 @@ public class Main {
 
     public static void main(String[] argv) throws Exception {
         CommandLine args = parseCommandline(argv);
-        LOGFOLDER = UtilityMethods.firstNonNull(args.getOptionValue("logfolder", LOGFOLDER));
-        CONFIGFILE = UtilityMethods.firstNonNull(args.getOptionValue("config", CONFIGFILE));
 
-        readConfig();
+        // Read the configuration file.
+        String configFile = UtilityMethods.firstNonNull(args.getOptionValue("config"), "config.toml");
+        config.read(configFile);
 
+        // Determine the log folder.
+        config.logging.folder = UtilityMethods.firstNonNull(args.getOptionValue("logfolder"), config.logging.folder, "logs/");
 
-        // Initialize logging handlers.
-        UtilityMethods.ensureEmptyFolder(LOGFOLDER);
+        initLogging();
+        initDbService();
+        initDiscordClient();
+        initWebApi();
+    }
+
+    public static void initLogging() throws IOException {
+        String folder = config.logging.folder;
+        UtilityMethods.ensureEmptyFolder(folder);
         Logger.getGlobal().setLevel(Level.FINER);
-        fh_severe = new FileHandler(LOGFOLDER + "severe.log", LOGGING_FILE_SIZE, 1);
-        fh_info = new FileHandler(LOGFOLDER + "info.log", LOGGING_FILE_SIZE, 1);
-        fh_finer = new FileHandler(LOGFOLDER + "finer.log", LOGGING_FILE_SIZE, 1);
+        FileHandler fh_severe = new FileHandler(folder + "severe.log", LOGGING_FILE_SIZE, 1);
+        FileHandler fh_info = new FileHandler(folder + "info.log", LOGGING_FILE_SIZE, 1);
+        FileHandler fh_finer = new FileHandler(folder + "finer.log", LOGGING_FILE_SIZE, 1);
         FileHandler[] fileHandlers = {fh_severe, fh_info, fh_finer};
         SimpleFormatter formatter = new SimpleFormatter();
         for (FileHandler fh : fileHandlers) {
@@ -114,51 +117,44 @@ public class Main {
         fh_severe.setFilter((LogRecord record) -> record.getLevel().equals(Level.SEVERE));
         fh_info.setFilter((LogRecord record) -> record.getLevel().equals(Level.INFO));
         fh_finer.setFilter((LogRecord record) -> record.getLevel().equals(Level.FINER));
+    }
 
-        //DB Services
+    public static void initDbService() {
+        dbService = new DBService(config.database.user, config.database.password);
         userService = dbService.getUserService();
         gameService = dbService.getGameService();
         soundService = dbService.getSoundService();
+    }
 
-        // Create the Discord client.
-        client = new ClientBuilder().withToken(Token).login();
-        //register event listener
-        userListener = new UserListener();
-        audioListener = new AudioListener();
-        client.getDispatcher()
-                .registerListener(new CommandExecutionListener());
-        client.getDispatcher()
-                .registerListener(new CommandListener());
-        client.getDispatcher()
-                .registerListener(audioListener);
-        client.getDispatcher()
-                .registerListener(userListener);
-        Logger.getGlobal()
-                .log(Level.FINER, "Server started.");
+    public static void initDiscordClient() {
+        client = new ClientBuilder().withToken(config.discord.token).login();
+        EventDispatcher dispatcher = client.getDispatcher();
 
-        int port = 1337;
-        WebApiServer server = new WebApiServer(port);
+        dispatcher.registerListener(new CommandExecutionListener());
+        dispatcher.registerListener(new CommandListener());
+        dispatcher.registerListener(userListener);
+        dispatcher.registerListener(audioListener);
+        dispatcher.registerListener(new IListener<ReadyEvent>() {
+            @Override
+            public void handle(ReadyEvent event) {
+                initDiscordClientWhenReady();
+            }
+        });
+
+        Logger.getGlobal().log(Level.FINER, "Discord Bot Client started.");
+    }
+
+    public static void initDiscordClientWhenReady() {
+        Logger.getGlobal().log(Level.FINER, "Discord Bot Client ready.");
+    }
+
+    public static void initWebApi() throws IOException {
+        WebApiServer server = new WebApiServer(config.webapi.port);
         server.addHandler("/commands", new WebApiCommandHandler());
         server.start();
         Logger.getGlobal().log(Level.INFO,
-            "Started the web server at port " + port + "."
+            "Started the web server at port " + config.webapi.port + "."
         );
-    }
-
-    /**
-     * a method for reading the config and mapping its values to suited
-     * variables and such
-     */
-    public static void readConfig() throws IOException {
-        //String securePath = "key.properties";
-        String path = UtilityMethods.generatePath(CONFIGFILE);
-        Toml config = new Toml().read(new File(path));
-
-        // Initialize the database service.
-        dbService = new DBService(config.getString("database.user"), config.getString("database.password"));
-
-        // Initialize the Discord Token.
-        Token = config.getString("discord.token");
     }
 
 }

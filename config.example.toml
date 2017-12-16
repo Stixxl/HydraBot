@@ -5,3 +5,6 @@ password = "hydrabot"
 
 [discord]
 token = "DiscordBotApiTokenHere"
+
+[webapi]
+port = 1337
