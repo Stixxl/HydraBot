@@ -1,0 +1,7 @@
+
+[database]
+user = "HydraBot"
+password = "hydrabot"
+
+[discord]
+token = "DiscordBotApiTokenHere"

@@ -16,6 +16,13 @@ import com.stiglmair.hydra.listener.UserListener;
 import com.stiglmair.hydra.utilities.UtilityMethods;
 import com.stiglmair.hydra.webapi.WebApiCommandHandler;
 import com.stiglmair.hydra.webapi.WebApiServer;
+
+import com.moandjiezana.toml.Toml;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.CommandLine;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.util.DiscordException;
@@ -47,39 +54,62 @@ public class Main {
     private static FileHandler fh_info = null;
     private static FileHandler fh_finer = null;
     private static final int LOGGING_FILE_SIZE = 1024 * 1024;//1MB
-    private static final String LOGFOLDER = "logs/";
     public static UserListener userListener;
     public static AudioListener audioListener;
     private static String key;
 
-    public static void main(String[] args) {
-        init();
-        Logger.getGlobal().setLevel(Level.FINER);
+    // Possibly overwritten from the command-line options.
+    private static String CONFIGFILE = "config.toml";
+    private static String LOGFOLDER = "logs/";
+
+    public static CommandLine parseCommandline(String[] argv) {
+        Options options = new Options();
+        Option option;
+
+        option = new Option(null, "config", true, "The TOML configuration file. Defaults to " + CONFIGFILE);
+        options.addOption(option);
+
+        option = new Option(null, "logfolder", true, "The folder where log files are stored. Defaults to " + LOGFOLDER);
+        options.addOption(option);
+
+        CommandLineParser parser = new org.apache.commons.cli.DefaultParser();
+        HelpFormatter formatter = new HelpFormatter();
+        CommandLine cmd = null;
         try {
-            //create filehandler
-            fh_severe = new FileHandler(LOGFOLDER + "severe.log", LOGGING_FILE_SIZE, 1);
-            fh_info = new FileHandler(LOGFOLDER + "info.log", LOGGING_FILE_SIZE, 1);
-            fh_finer = new FileHandler(LOGFOLDER + "finer.log", LOGGING_FILE_SIZE, 1);
-
-        } catch (SecurityException | IOException e) {
-            Logger.getGlobal().log(Level.SEVERE, "Failed to create FileHandler.");
+            cmd = parser.parse(options, argv);
+        } catch (org.apache.commons.cli.ParseException e) {
+            System.out.println(e.getMessage());
+            formatter.printHelp("hydrabot", options);
+            System.exit(1);
         }
+        return cmd;
+    }
 
+    public static void main(String[] argv) throws Exception {
+        CommandLine args = parseCommandline(argv);
+        LOGFOLDER = UtilityMethods.firstNonNull(args.getOptionValue("logfolder", LOGFOLDER));
+        CONFIGFILE = UtilityMethods.firstNonNull(args.getOptionValue("config", CONFIGFILE));
+
+        readConfig();
+
+
+        // Initialize logging handlers.
+        UtilityMethods.ensureEmptyFolder(LOGFOLDER);
+        Logger.getGlobal().setLevel(Level.FINER);
+        fh_severe = new FileHandler(LOGFOLDER + "severe.log", LOGGING_FILE_SIZE, 1);
+        fh_info = new FileHandler(LOGFOLDER + "info.log", LOGGING_FILE_SIZE, 1);
+        fh_finer = new FileHandler(LOGFOLDER + "finer.log", LOGGING_FILE_SIZE, 1);
         FileHandler[] fileHandlers = {fh_severe, fh_info, fh_finer};
-
         SimpleFormatter formatter = new SimpleFormatter();
         for (FileHandler fh : fileHandlers) {
             Logger.getGlobal().addHandler(fh);
             fh.setFormatter(formatter);
         }
-
         Logger.getGlobal().setUseParentHandlers(false);
-
         //set respective level for filehandlers
         fh_severe.setLevel(Level.SEVERE);
         fh_info.setLevel(Level.INFO);
         fh_finer.setLevel(Level.FINER);
-
         //this filehandlers will only receive input for their respective level
         fh_severe.setFilter((LogRecord record) -> record.getLevel().equals(Level.SEVERE));
         fh_info.setFilter((LogRecord record) -> record.getLevel().equals(Level.INFO));
@@ -90,12 +120,8 @@ public class Main {
         gameService = dbService.getGameService();
         soundService = dbService.getSoundService();
 
-        try {
-            client = new ClientBuilder().withToken(Token).login();
-        } catch (DiscordException ex) {
-            Logger.getGlobal().log(Level.SEVERE, null, ex);
-        }
-
+        // Create the Discord client.
+        client = new ClientBuilder().withToken(Token).login();
         //register event listener
         userListener = new UserListener();
         audioListener = new AudioListener();
@@ -110,64 +136,29 @@ public class Main {
         Logger.getGlobal()
                 .log(Level.FINER, "Server started.");
 
-        try {
-            int port = 1337;
-            WebApiServer server = new WebApiServer(port);
-            server.addHandler("/commands", new WebApiCommandHandler());
-            server.start();
-            Logger.getGlobal().log(Level.INFO,
-                "Started the web server at port " + port + "."
-            );
-        } catch (IOException ex) {
-            Logger.getGlobal().log(Level.SEVERE,
-                "Error while initialising web server. Printing error:\n" + ex);
-        }
+        int port = 1337;
+        WebApiServer server = new WebApiServer(port);
+        server.addHandler("/commands", new WebApiCommandHandler());
+        server.start();
+        Logger.getGlobal().log(Level.INFO,
+            "Started the web server at port " + port + "."
+        );
     }
 
     /**
      * a method for reading the config and mapping its values to suited
      * variables and such
      */
-    public static void readConfig() {
-        String path = "config.properties";
-        String securePath = "key.properties";
-        path = UtilityMethods.generatePath(path);
-        File f = new File(path);
-        if (f.exists() && !f.isDirectory()) {//true if there is configurationdata to be read, false otherwise
+    public static void readConfig() throws IOException {
+        //String securePath = "key.properties";
+        String path = UtilityMethods.generatePath(CONFIGFILE);
+        Toml config = new Toml().read(new File(path));
 
-            Properties properties = new Properties();
-            FileInputStream inStream = null;
-            try {
-                inStream = new FileInputStream(path);
-            } catch (FileNotFoundException e1) {
-            }
-            try {
-                properties.load(inStream);
-            } catch (IOException e) {
-            }
-            String username = properties.getProperty("dbusername");
-            String dbpassword = properties.getProperty("dbpassword");
-            dbService = new DBService(username, dbpassword);
-            Token = properties.getProperty("token");
-        }
+        // Initialize the database service.
+        dbService = new DBService(config.getString("database.user"), config.getString("database.password"));
+
+        // Initialize the Discord Token.
+        Token = config.getString("discord.token");
     }
 
-    /**
-     * initializes the System; creates necessary folders;
-     */
-    public static void init() {
-        File f = new File(LOGFOLDER);
-        if (!(f.exists() && f.isDirectory())) {
-            f.mkdir();
-        } else {
-            //deletes the logging folder and creates a new one, thus wiping its content
-            try {
-                UtilityMethods.deleteFileOrFolder(f.toPath());
-                f.mkdir();
-            } catch (IOException ex) {
-                Logger.getGlobal().log(Level.SEVERE, "Error occured while trying to delete the logging folder.", ex);
-            }
-        }
-        readConfig();
-    }
 }

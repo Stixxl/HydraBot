@@ -32,6 +32,22 @@ public class UtilityMethods {
     }
 
     /**
+     * Returns the first non-null argument, or null if all arguments are null
+     * or if no arguments are specified.
+     *
+     * @param args Zero or more arguments.
+     * @return A non-null argument, unless all arguments are null.
+     */
+    public static <T> T firstNonNull(T... args) {
+        for (T v: args) {
+            if (v != null) {
+                return v;
+            }
+        }
+        return null;
+    }
+
+    /**
      * converts a relative path to an absolute one
      *
      * @param relativePath a relative path, to which the absolutePath should be
@@ -152,6 +168,24 @@ public class UtilityMethods {
                 return CONTINUE;
             }
         });
+    }
+
+    /**
+     * Creates a folder. If the folder already exists, it will be deleted
+     * before it is created anew.
+     *
+     * @param path path to folder
+     * @throws IOException
+     */
+    public static void ensureEmptyFolder(String path) throws IOException {
+        File f = new File(path);
+        if (!(f.exists() && f.isDirectory())) {
+            f.mkdir();
+        } else {
+            // Deletes the logging folder and creates a new one, thus wiping its content
+            deleteFileOrFolder(f.toPath());
+            f.mkdir();
+        }
     }
 
     public static String getEmote(Emote emote) {
