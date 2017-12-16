@@ -1,0 +1,4 @@
+
+[java.maven_repos]
+jcenter = 'http://jcenter.bintray.com'
+jitpack = 'https://jitpack.io'
