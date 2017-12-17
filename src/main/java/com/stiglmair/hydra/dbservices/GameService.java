@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.stiglmair.hydra.dbservices;
 
 import com.stiglmair.hydra.objects.Game;
@@ -31,7 +26,6 @@ public class GameService {
     }
 
     /**
-     *
      * @param title title of the game that is being played
      * @param id id of the user
      * @return the newly created Game
@@ -48,7 +42,6 @@ public class GameService {
     }
 
     /**
-     *
      * @param title of the game that is requested
      * @param id id of the user
      * @return the requested Game; null if game wasnt found
@@ -71,7 +64,6 @@ public class GameService {
     }
 
     /**
-     *
      * @param title the title of the game that will be updated
      * @param id id of the user
      * @param amountPlayed the amount of times the game has been played

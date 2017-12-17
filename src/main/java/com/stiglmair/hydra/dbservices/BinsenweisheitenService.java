@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.stiglmair.hydra.dbservices;
 
 import java.sql.Connection;
@@ -21,11 +16,11 @@ public class BinsenweisheitenService {
         this.TABLENAME = DBNAME + ".binsenweisheiten";
         this.con = con;
     }
-    
+
     /**
      * selects a random sentence from all binsenweisheiten
      * @return a random binsenweisheit
-     * @throws SQLException 
+     * @throws SQLException
      */
     public String selectSentenceRandom() throws SQLException {
         ResultSet result =  DBService.selectRandom(TABLENAME, con);

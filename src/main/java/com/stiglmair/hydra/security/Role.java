@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.stiglmair.hydra.security;
 
 import com.stiglmair.hydra.actions.Chat;
@@ -14,7 +9,8 @@ import sx.blah.discord.handle.obj.IRole;
 import sx.blah.discord.handle.obj.IUser;
 
 /**
- * Class that maps discord roles to roles for this bot and handles Authorization
+ * Class that maps discord roles to roles for this bot and handles Authorization.
+ *
  * @author PogChamp
  */
 public class Role {
@@ -50,7 +46,7 @@ public class Role {
      * and prints out a failure message, if access was denied
      * @param user IUser which requires Authorization
      * @param guild IGuild for which Authorization is required
-     * @param requiredRole Level of Authority that is required @see com.corbi.robot.actions.Chat#sendMessage(sx.blah.discord.handle.obj.IChannel, java.lang.String) 
+     * @param requiredRole Level of Authority that is required @see com.corbi.robot.actions.Chat#sendMessage(sx.blah.discord.handle.obj.IChannel, java.lang.String)
      * @return true if user is authorized; false otherwise
      */
     public static boolean authorize(IUser user, IGuild guild, ROLE requiredRole) {

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.stiglmair.hydra.actions;
 
 import com.stiglmair.hydra.main.Main;
@@ -25,10 +20,11 @@ import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.RateLimitException;
 
 /**
- *
- * @author Stiglmair This class is designed to handle anything the bot wants to
+ * This class is designed to handle anything the bot wants to
  * write in a TextChannel. Any write to chat command should be done with this
  * class.
+ *
+ * @author Stiglmair
  */
 public class Chat {
 
