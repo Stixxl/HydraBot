@@ -27,6 +27,7 @@ public class CommandExecutionListener {
         String command = event.getCommand();
         String args[] = event.getArgs();
         IChannel textChannel = event.getMessage().getChannel();
+        String userId = String.valueOf(event.getBy().getLongID());
         if (!isPaused) {
             switch (command) {
                 //chat
@@ -61,6 +62,9 @@ public class CommandExecutionListener {
                         Chat.showUnauthorizedMessage(textChannel);
                     }
                     break;
+                case "token":
+                    handleTokenCommand(userId, command, args, textChannel);
+                    break;
                 default:
                     Chat.showUnsupportedFormatMessage(command, event.getMessage().getChannel());// no suitable command found
             }
@@ -70,4 +74,62 @@ public class CommandExecutionListener {
             Chat.sendMessage(textChannel, "READY TO RUMBLE!");
         }
     }
+
+    private void handleTokenCommand(String userId, String command, String[] args, IChannel textChannel) {
+        User user;
+        try {
+            user = Main.userService.getUser(userId);
+            if (user == null) {
+                throw new NullPointerException("No user returned from UserService.getUser()");
+            }
+        } catch (java.sql.SQLException | NullPointerException e) {
+            Logger.getGlobal().log(Level.SEVERE, "Error while retrieving user with ID " + userId, e);
+            Chat.sendMessage(textChannel, "Sorry, do I know you? " + userId);
+            return;
+        }
+
+        if (args.length != 1) {
+            Chat.showUnsupportedFormatMessage(command, args, textChannel);
+            return;
+        }
+
+        if (!textChannel.isPrivate()) {
+            Chat.sendMessage(textChannel, "Send me a private message, senpai.");
+            return;
+        }
+
+        if (args[0].equals("show")) {
+            String token = user.getApiToken();
+            if (token == null) {
+                Chat.sendMessage(textChannel, "No token.");
+            }
+            else {
+                Chat.sendMessage(textChannel, "Your token is " + token);
+            }
+        }
+        else if (args[0].equals("new")) {
+            String token = user.newApiToken();
+            if (token == null) {
+                Chat.sendMessage(textChannel, "Token could not be created.");
+            }
+            else {
+                user.save();
+                Chat.sendMessage(textChannel, "New token is " + token);
+            }
+        }
+        else if (args[0].equals("revoke")) {
+            if (user.getApiToken() == null) {
+                Chat.sendMessage(textChannel, "No token.");
+            }
+            else {
+                user.revokeApiToken();
+                user.save();
+                Chat.sendMessage(textChannel, "Token revoked.");
+            }
+        }
+        else {
+            Chat.sendMessage(textChannel, "Unsupported command: " + args[0]);
+        }
+    }
+
 }
