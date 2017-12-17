@@ -10,12 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import com.stiglmair.hydra.events.CommandExecutionEvent;
 import sx.blah.discord.api.events.EventSubscriber;
-import sx.blah.discord.handle.impl.events.ReadyEvent;
 import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IGuild;
-import sx.blah.discord.handle.obj.IUser;
-import sx.blah.discord.util.DiscordException;
-import sx.blah.discord.util.RateLimitException;
 
 /**
  * @author PogChamp
@@ -23,23 +18,6 @@ import sx.blah.discord.util.RateLimitException;
 public class CommandExecutionListener {
 
     private boolean isPaused = false;
-
-    @EventSubscriber
-    public void onReady(ReadyEvent event) {
-        try {
-            Main.client.changeUsername("Süßwasserpolyp");
-        } catch (DiscordException | RateLimitException ex) {
-            Logger.getGlobal().log(Level.SEVERE, "Error while setting bot's username.", ex);
-        }
-        event.getClient().changePlayingText("with your emotions"); //sets the game of the bot
-
-        for (IGuild guild : event.getClient().getGuilds()) {
-            Logger.getGlobal().log(Level.FINER, "bot is online on guild{0}", guild.toString());
-            for (IUser user : User.getOnlineUsers(guild.getUsers())) {
-                Main.userListener.addOnlineUser(String.valueOf(user.getLongID()), user.getName());//adds every user that is online, when the bot started, to the onlineUser list
-            }
-        }
-    }
 
     /**
      * @param event event thatis thrown when a new command is received
