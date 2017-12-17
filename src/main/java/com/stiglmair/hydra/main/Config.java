@@ -11,6 +11,10 @@ public class Config {
     }
 
     public class Database {
+        public String host = "localhost";
+        public int port = 0;
+        public String name = "HydraBotDB";
+        public String schema = "HydraBotDB";
         public String user = null;
         public String password = null;
     }
@@ -31,8 +35,12 @@ public class Config {
     public void read(String filename) throws IOException {;
         Toml config = new Toml().read(new File(UtilityMethods.generatePath(filename)));
         logging.folder = config.getString("logging.folder");
-        database.user = config.getString("database.user");
-        database.password = config.getString("database.password");
+        database.host = config.getString("database.host", database.host);
+        database.port = Math.toIntExact(config.getLong("database.port", 0l));
+        database.name = config.getString("database.name", database.name);
+        database.schema = config.getString("database.schema", database.schema);
+        database.user = config.getString("database.user", database.user);
+        database.password = config.getString("database.password", database.password);
         discord.token = config.getString("discord.token");
         webapi.port = Math.toIntExact(config.getLong("webapi.port", 1337l));
     }

@@ -119,8 +119,15 @@ public class Main {
         fh_finer.setFilter((LogRecord record) -> record.getLevel().equals(Level.FINER));
     }
 
-    public static void initDbService() {
-        dbService = new DBService(config.database.user, config.database.password);
+    public static void initDbService() throws SQLException {
+        dbService = new DBService(
+            config.database.host,
+            config.database.port,
+            config.database.name,
+            config.database.schema,
+            config.database.user,
+            config.database.password
+        );
         userService = dbService.getUserService();
         gameService = dbService.getGameService();
         soundService = dbService.getSoundService();

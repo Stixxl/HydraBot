@@ -1,5 +1,8 @@
 
 [database]
+host = "localhost"
+name = "HydraBotDB"
+schema = "HydraBotDB"
 user = "HydraBot"
 password = "hydrabot"
 
