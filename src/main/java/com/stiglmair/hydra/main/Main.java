@@ -135,6 +135,11 @@ public class Main {
         for (Map.Entry e: toml.entrySet()) {
             Toml entry = (Toml) e.getValue();
             String path = UtilityMethods.generatePath(entry.getString("path"));
+            File file = new File(path);
+            if (!file.isFile()) {
+                Logger.getGlobal().log(Level.SEVERE, "Sound " + path + " does not exist!");
+                continue;
+            }
             try {
                 soundService.updateOrCreateSound((String) e.getKey(), path, entry.getString("description"));
             } catch (SQLException exc) {
