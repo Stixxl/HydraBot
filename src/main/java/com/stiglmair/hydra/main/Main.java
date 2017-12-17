@@ -59,6 +59,9 @@ public class Main {
         Options options = new Options();
         Option option;
 
+        option = new Option(null, "help", false, "Print this text and exit.");
+        options.addOption(option);
+
         option = new Option(null, "config", true, "The TOML configuration file. Defaults to config.toml");
         options.addOption(option);
 
@@ -74,6 +77,10 @@ public class Main {
             System.out.println(e.getMessage());
             formatter.printHelp("hydrabot", options);
             System.exit(1);
+        }
+        if (cmd.hasOption("help")) {
+            formatter.printHelp("hydrabot", options);
+            System.exit(0);
         }
         return cmd;
     }
