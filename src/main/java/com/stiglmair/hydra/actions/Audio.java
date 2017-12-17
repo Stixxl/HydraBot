@@ -47,7 +47,6 @@ public class Audio {
             }
 
             if (path != null) {//true, if requested sound exists in database, false otherwise
-                path = UtilityMethods.generatePath(path);
                 Logger.getGlobal().log(Level.FINER, "The generated audio path was: {0}", path);
                 Main.audioListener.addAudio(path, voiceChannel, guild);
             } else {
