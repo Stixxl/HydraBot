@@ -13,8 +13,6 @@ import sx.blah.discord.api.events.Event;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
@@ -95,7 +93,7 @@ public class WebApiCommandHandler implements HttpHandler {
             try {
                 dbUser = Main.userService.getUser(String.valueOf(user.getLongID()));
             } catch (java.sql.SQLException e) {
-                Logger.getGlobal().log(Level.SEVERE, "error fetching user", e);
+                Main.logger.error("error fetching user", e);
                 sendResponse(exchange, "Internal server error.", 500);
                 return;
             }

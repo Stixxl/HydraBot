@@ -1,12 +1,11 @@
 package com.stiglmair.hydra.dbservices;
 
+import com.stiglmair.hydra.main.Main;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * A class that handles any dbcalls
@@ -55,7 +54,7 @@ public class DBService {
                     dbport = Integer.parseInt(portString);
                 } catch (NumberFormatException e) {
                     String msg = "Invalid value for PGPORT='" + portString + "'.";
-                    Logger.getGlobal().log(Level.SEVERE, msg, e);
+                    Main.logger.error(msg, e);
                     throw new RuntimeException(msg);
                 }
             }
@@ -67,7 +66,7 @@ public class DBService {
             username = System.getenv("PGUSER");
             if (username == null || username.isEmpty()) {
                 String msg = "Missing value for PGUSER.";
-                Logger.getGlobal().log(Level.SEVERE, msg);
+                Main.logger.error(msg);
                 throw new RuntimeException(msg);
             }
         }
@@ -82,7 +81,7 @@ public class DBService {
         try {
             Class.forName("org.postgresql.Driver");
         } catch (ClassNotFoundException ex) {
-            Logger.getGlobal().log(Level.SEVERE, "PostgreSQL driver not found.", ex);
+            Main.logger.error("PostgreSQL driver not found.", ex);
             throw new RuntimeException("PostgreSQL driver not found.");
         }
 
@@ -92,7 +91,7 @@ public class DBService {
             url += "?currentSchema=" + schema;
         }
 
-        Logger.getGlobal().log(Level.INFO, "Connecting to database (" + url + ") as '" + username + "'.");
+        Main.logger.info("Connecting to database (" + url + ") as '" + username + "'.");
         con = DriverManager.getConnection(url, username, password);
         con.setAutoCommit(true);
         this.schema = schema;

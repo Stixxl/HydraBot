@@ -6,8 +6,7 @@ import com.stiglmair.hydra.main.Main;
 import com.stiglmair.hydra.objects.User;
 import com.stiglmair.hydra.security.Role;
 import com.stiglmair.hydra.utilities.UtilityMethods;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import com.stiglmair.hydra.events.CommandExecutionEvent;
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.obj.IChannel;
@@ -83,7 +82,7 @@ public class CommandExecutionListener {
                 throw new NullPointerException("No user returned from UserService.getUser()");
             }
         } catch (java.sql.SQLException | NullPointerException e) {
-            Logger.getGlobal().log(Level.SEVERE, "Error while retrieving user with ID " + userId, e);
+            Main.logger.error("Error while retrieving user with ID " + userId, e);
             Chat.sendMessage(textChannel, "Sorry, do I know you? " + userId);
             return;
         }

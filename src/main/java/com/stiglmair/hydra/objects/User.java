@@ -7,8 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import java.security.MessageDigest;
 import sx.blah.discord.handle.impl.obj.Presence;
 import sx.blah.discord.handle.obj.IUser;
@@ -61,7 +60,7 @@ public class User {
         try {
             uptime = Main.userService.getUser(userID).getUptime() + time_passed; // value from db + currentTime - time of last update (=loginTime if there was no update)
         } catch (SQLException ex) {
-            Logger.getGlobal().log(Level.SEVERE, "Could not retrieve User.", ex);
+            Main.logger.error("Could not retrieve User.", ex);
         }
         lastUpdate = System.currentTimeMillis();
     }
@@ -91,7 +90,7 @@ public class User {
             md.update(userID.getBytes("ASCII"));
             md.update(salt.getBytes("ASCII"));
         } catch (Exception e) { // UnsupportedEncodingException, NoSuchAlgorithmException
-            Logger.getGlobal().log(Level.SEVERE, "could not generated new API token", e);
+            Main.logger.error("could not generated new API token", e);
             apiToken = null;
             return null;
         }
@@ -131,7 +130,7 @@ public class User {
         try {
             Main.userService.updateUser(userID, name, apiToken, uptime);
         } catch (SQLException ex) {
-            Logger.getLogger(User.class.getName()).log(Level.SEVERE, "could not update user.", ex);
+            Main.logger.error("could not update user.", ex);
         }
         calculateTier();//update tier after uptime was adjusted
     }
