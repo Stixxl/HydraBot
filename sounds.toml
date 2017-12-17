@@ -1,71 +1,143 @@
 [bro]
 path = "AudioFiles/Bro.wav"
+description = "Wenn dir mal wieder keiner zuhört..."
 
 [cena]
 path = "AudioFiles/John_Cena.wav"
+description = "What's his name?"
+
+[chicken]
+path = "AudioFiles/chicken.wav"
+description = "A wise man once said..."
+
+[cuckerino]
+path = "AudioFiles/cuckerino.wav"
+description = "Domino's Streamer of the Year Award Winner."
 
 [faker]
 path = "AudioFiles/Faker_what_was_that.wav"
+description = "Reaction to Corbi's daily plays."
+
+[flipsi]
+path = "AudioFiles/flipsi.wav"
+description = "ÄÄHHHHH???"
 
 [freedom]
 path = "AudioFiles/Ding_Ding.wav"
+description = "\"I give you three money!\""
+
+[gas]
+path = "AudioFiles/gas.wav"
+description = "Macht der Gewohnheit"
 
 [genji]
 path = "AudioFiles/Pro_Genji.wav"
+description = "Corbi im Tryhard Modus"
+
+[hello]
+path = "AudioFiles/hello.wav"
+description = "Für den Fall, dass du dich einsam fühlst."
+
+[hit]
+path = "AudioFiles/hit.wav"
+description = "Scheming Lisa at her best"
 
 [hitman]
 path = "AudioFiles/Hitman.wav"
+description = "I'm hitman"
 
 [jews]
 path = "AudioFiles/Jews.wav"
+description = "Juden und Geld."
 
 [junkrat]
 path = "AudioFiles/Junkrat_Ultimate_Troll.wav"
+description = "It's just a prank, bro!"
 
 [laugh]
 path = "AudioFiles/Laugh.wav"
+description = "HA-HA-HA. Boosted..."
 
 [meatballs]
 path = "AudioFiles/Meatballs.wav"
+description = "Game of the Year: Super Mario Brothers"
 
 [megaman]
 path = "AudioFiles/ImMegaman.wav"
+description = "I'm Megaman"
 
 [mlg]
 path = "AudioFiles/MLG.wav"
+description = "Cancer ist nur ein Aufruf entfernt :^)"
 
 [money]
 path = "AudioFiles/Here_comes_the_money.wav"
+description = "When you hit the Strip Club..."
+
+[nakedGrandma]
+path = "AudioFiles/nakedGrandma.wav"
+description = "Spookier als Resident Evil VII"
+
+[nay]
+path = "AudioFiles/nay.wav"
+description = "Have you ever caught a superhero on the run?"
 
 [nomana]
 path = "AudioFiles/noMana.wav"
+description = "#FreeTyler1"
+
+[numberOne]
+path = "AudioFiles/numberOne.wav"
+description = "Here's a little lesson in trickery."
 
 [pigs]
 path = "AudioFiles/PigsToTheSandwich.wav"
+description = "Solider Vergleich"
 
 [power]
 path = "AudioFiles/Brainpower.wav"
+description = "Mit Vorsicht genießen; Kann zu Gehirntod und Koma führen."
 
 [psych]
 path = "AudioFiles/Wrong_Number.wav"
+description = "Das Mädel, wenn sie dir die falsche Nummer gegeben hat."
+
+[rko]
+path = "AudioFiles/RKO.wav"
+description = "WATCH OUT WATCH OUT WATCH OUT"
 
 [sayan]
 path = "AudioFiles/Sayan.wav"
+description = "TYLER FUCKING ONE"
 
 [shindeiru]
 path = "AudioFiles/Dead.wav"
+description = "Omae Wa Mou Shindeiru"
 
 [shutup]
 path = "AudioFiles/SHUTTHEFUCKUP.wav"
+description = "Manche Leute labern einfach so viel..."
+
+[sneakman]
+path = "AudioFiles/Sneakman.wav"
+description = "I'm Sneakman"
 
 [sparta]
 path = "AudioFiles/Sparta.wav"
+description = "Madness?"
 
 [spell]
 path = "AudioFiles/asdpoakaoskdaikd.wav"
+description = "Originalaufnahme der Uraufführung von Faust, als er Mephistopheles beschwört."
+
+[thinking]
+path = "AudioFiles/thinking.wav"
+description = "\"You invited all my friends!\""
 
 [wow]
 path = "AudioFiles/WOW.wav"
+description = ";)"
 
 [zarya]
 path = "AudioFiles/unlimitedPower.wav"
+description = "Valid Theory?"
