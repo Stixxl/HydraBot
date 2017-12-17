@@ -15,6 +15,7 @@ import com.stiglmair.hydra.listener.CommandListener;
 import com.stiglmair.hydra.listener.UserListener;
 import com.stiglmair.hydra.utilities.UtilityMethods;
 import com.stiglmair.hydra.webapi.WebApiCommandHandler;
+import com.stiglmair.hydra.webapi.WebApiIndexPageHandler;
 import com.stiglmair.hydra.webapi.WebApiServer;
 
 import com.moandjiezana.toml.Toml;
@@ -172,6 +173,7 @@ public class Main {
 
     public static void initWebApi() throws IOException {
         WebApiServer server = new WebApiServer(config.webapi.port);
+        server.addHandler("/", new WebApiIndexPageHandler());
         server.addHandler("/commands", new WebApiCommandHandler());
         server.start();
         Logger.getGlobal().log(Level.INFO,
