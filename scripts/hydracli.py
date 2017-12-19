@@ -14,8 +14,9 @@ import sys
 try:
   from urllib.request import urlopen
   from urllib.parse import urlencode
+  from urllib.error import HTTPError
 except ImportError:
-  from urllib2 import urlopen
+  from urllib2 import urlopen, HTTPError
   from urllib import urlencode
 
 try:
@@ -85,18 +86,31 @@ def main():
   if not args.user_id: args.user_id = config.get('user_id')
   if not args.host: args.host = config.get('host')
 
-  # if not args.token: pass
+  if not args.token:
+    print('fatal: no token specified, pass --token argument')
+    return 1
   if not args.user_id:
     print('fatal: no user id configured, pass --user-id argument')
     return 1
 
+  if not args.host.startswith('http://') and not args.host.startswith('https://'):
+    args.host = 'https://' + args.host
+
   query = {'command': ' '.join(args.command), 'userId': args.user_id}
-  url = 'https://{}/commands?{}'.format(args.host, urlencode(query))
+  if args.token:
+    query['token'] = args.token
+
+  url = '{}/commands?{}'.format(args.host, urlencode(query))
   print('GET', url)
-  response = urlopen(url)
-  if response.getcode() != 204:
-    print('error: status code', response.getcode())
-    return 1
+  try:
+    response = urlopen(url)
+  except HTTPError as e:
+    print('error:', e)
+    print(e.read().decode('utf8'))
+    return 2
+  else:
+    print(response.read().decode('utf8'))
+    pass
 
 
 if __name__ == '__main__':

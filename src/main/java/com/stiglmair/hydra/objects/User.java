@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.security.MessageDigest;
 import sx.blah.discord.handle.impl.obj.Presence;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.handle.obj.StatusType;
@@ -23,16 +24,18 @@ public class User {
     private String name;
     private long uptime;
     private String userID;
+    private String apiToken;
     private String tier;
     private final long loginTime;
     private long lastUpdate;
     private Game game;
 
-    public User(long uptime, String userID, String name) {
+    public User(long uptime, String userID, String name, String apiToken) {
         this.uptime = uptime;
         this.userID = userID;
         this.loginTime = System.currentTimeMillis();
         this.name = name;
+        this.apiToken = apiToken;
         lastUpdate = loginTime;
         calculateTier();
     }
@@ -75,6 +78,31 @@ public class User {
         return userID;
     }
 
+    public String getApiToken() {
+        return apiToken;
+    }
+
+    public String newApiToken() {
+        String salt = System.currentTimeMillis() + "-" + java.util.UUID.randomUUID().toString();
+        MessageDigest md;
+        try {
+            md = MessageDigest.getInstance("SHA-1");
+            md.update("PogChamp".getBytes("ASCII"));
+            md.update(userID.getBytes("ASCII"));
+            md.update(salt.getBytes("ASCII"));
+        } catch (Exception e) { // UnsupportedEncodingException, NoSuchAlgorithmException
+            Logger.getGlobal().log(Level.SEVERE, "could not generated new API token", e);
+            apiToken = null;
+            return null;
+        }
+        apiToken = String.format("%040x", new java.math.BigInteger(1, md.digest()));
+        return apiToken;
+    }
+
+    public void revokeApiToken() {
+        apiToken = null;
+    }
+
     public void setUserID(String userID) {
         this.userID = userID;
     }
@@ -101,7 +129,7 @@ public class User {
     public void save() {
         updateUptime();
         try {
-            Main.userService.updateUser(userID, name, uptime);
+            Main.userService.updateUser(userID, name, apiToken, uptime);
         } catch (SQLException ex) {
             Logger.getLogger(User.class.getName()).log(Level.SEVERE, "could not update user.", ex);
         }
@@ -121,14 +149,7 @@ public class User {
      *
      * @param users list of users to be updated
      */
-    /**
-     * updates all user objects within the list then writes the data to the
-     * database
-     *
-     * @param users list of users to be saved
-     */
     public static void saveUsers(List<User> users) {
-
         for (User user : users) {
             user.save();
         }

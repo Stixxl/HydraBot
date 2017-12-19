@@ -4,6 +4,7 @@ import com.stiglmair.hydra.dbservices.DBService;
 import com.stiglmair.hydra.dbservices.GameService;
 import com.stiglmair.hydra.dbservices.SoundService;
 import com.stiglmair.hydra.dbservices.UserService;
+import com.stiglmair.hydra.objects.User;
 import com.stiglmair.hydra.listener.AudioListener;
 import com.stiglmair.hydra.listener.CommandExecutionListener;
 import com.stiglmair.hydra.listener.CommandListener;
@@ -24,8 +25,12 @@ import sx.blah.discord.api.events.EventDispatcher;
 import sx.blah.discord.api.events.IListener;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
 import sx.blah.discord.api.IDiscordClient;
+import sx.blah.discord.handle.obj.IGuild;
+import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.Image;
+import sx.blah.discord.util.DiscordException;
+import sx.blah.discord.util.RateLimitException;
 
 import java.io.File;
 import java.io.IOException;
@@ -177,6 +182,22 @@ public class Main {
     }
 
     public static void initDiscordClientWhenReady() {
+        // Change the name and playing message of the bot.
+        try {
+            client.changeUsername("Süßwasserpolyp");
+        } catch (DiscordException | RateLimitException ex) {
+            Logger.getGlobal().log(Level.SEVERE, "Error while setting bot's username.", ex);
+        }
+        client.changePlayingText("with your emotions"); //sets the game of the bot
+
+        // Initialize users that are currently online/
+        for (IGuild guild : client.getGuilds()) {
+            Logger.getGlobal().log(Level.FINER, "bot is online on guild{0}", guild.toString());
+            for (IUser user : User.getOnlineUsers(guild.getUsers())) {
+                userListener.addOnlineUser(String.valueOf(user.getLongID()), user.getName());//adds every user that is online, when the bot started, to the onlineUser list
+            }
+        }
+
         Logger.getGlobal().log(Level.FINER, "Discord Bot Client ready.");
     }
 
