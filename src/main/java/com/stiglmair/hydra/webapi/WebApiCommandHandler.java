@@ -40,7 +40,7 @@ public class WebApiCommandHandler implements HttpHandler {
      * It accepts the keys command and userId.
      * Example: example.com/exampleLocation?command=sounds%20faker&userId=1337.
      * If the request is malformed a 400 response is issued with an according message.
-     * Otherwise the server responds with a 202 status code.
+     * Otherwise the server responds with a 204 status code.
      * @param exchange The http exchange.
      * @throws IOException
      */
