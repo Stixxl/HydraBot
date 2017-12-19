@@ -1,7 +1,6 @@
 package com.stiglmair.hydra.objects;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import com.stiglmair.hydra.main.Main;
 
 public class Command {
 
@@ -43,7 +42,7 @@ public class Command {
         String[] splitInput = input.split(" ");
         switch (splitInput.length) {
             case 0:
-                Logger.getGlobal().log(Level.WARNING, "No Command was received.");
+                Main.logger.warn("No Command was received.");
                 return null;
             case 1:
                 return new Command(splitInput[0]);

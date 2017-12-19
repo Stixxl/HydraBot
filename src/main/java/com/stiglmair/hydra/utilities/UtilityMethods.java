@@ -1,5 +1,7 @@
 package com.stiglmair.hydra.utilities;
 
+import com.stiglmair.hydra.main.Main;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
@@ -9,8 +11,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * This class provides Utility Methods that are required through all packages
@@ -149,7 +149,7 @@ public class UtilityMethods {
             }
 
             private FileVisitResult handleException(final IOException e) {
-                Logger.getGlobal().log(Level.SEVERE, "Error occured while trying to delete a file or folder.", e);
+                Main.logger.error("Error occured while trying to delete a file or folder.", e);
                 return TERMINATE;
             }
 

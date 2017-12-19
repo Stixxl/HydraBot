@@ -1,5 +1,6 @@
 package com.stiglmair.hydra.dbservices;
 
+import com.stiglmair.hydra.main.Main;
 import com.stiglmair.hydra.objects.Game;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -7,8 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 /**
  * Handles db requests for the table GAMES
@@ -34,7 +34,7 @@ public class GameService {
     public Game createGame(String title, String id) throws SQLException {
         String sql = "INSERT INTO " + TABLENAME
                 + "(title, id, time_played, amount_played) values('" + title + "', '" + id + "', 0, 1)";
-        Logger.getGlobal().log(Level.FINE, "Create Game: {0}", sql);
+        Main.logger.info("Create Game: {0}", sql);
         try (PreparedStatement statement = con.prepareStatement(sql)) {
             DBService.execute(statement);
         }

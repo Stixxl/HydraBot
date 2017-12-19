@@ -3,8 +3,7 @@ package com.stiglmair.hydra.help;
 import com.stiglmair.hydra.main.Main;
 import com.stiglmair.hydra.utilities.UtilityMethods;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 /**
  * @author PogChamp
@@ -29,7 +28,7 @@ public class Help {
         try {
             sounds.setSubcommands(Main.soundService.getCommandHelp());
         } catch (SQLException ex) {
-            Logger.getGlobal().log(Level.SEVERE, "Error occured while trying to retrieve the help menu for sounds.", ex);
+            Main.logger.error("Error occured while trying to retrieve the help menu for sounds.", ex);
         }
     }
 
@@ -58,7 +57,7 @@ public class Help {
         try {
             sounds.setSubcommands(Main.soundService.getCommandHelp());
         } catch (SQLException ex) {
-            Logger.getGlobal().log(Level.SEVERE, "Error occured while trying to retrieve the help menu for sounds.", ex);
+            Main.logger.error("Error occured while trying to retrieve the help menu for sounds.", ex);
         }
         for (CommandHelp help : commandMans) {
             if (help.getName().equals(args[0])) {//true if the specified high level command by the user exists; false otherwise

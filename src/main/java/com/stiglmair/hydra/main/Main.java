@@ -48,6 +48,7 @@ import java.sql.SQLException;
  */
 public class Main {
 
+    public static org.slf4j.Logger logger;
     public static IDiscordClient client;
     public static Config config = new Config();
     public static DBService dbService;
@@ -110,25 +111,33 @@ public class Main {
     public static void initLogging() throws IOException {
         String folder = config.logging.folder;
         UtilityMethods.ensureEmptyFolder(folder);
-        Logger.getGlobal().setLevel(Level.FINER);
-        FileHandler fh_severe = new FileHandler(folder + "severe.log", LOGGING_FILE_SIZE, 1);
-        FileHandler fh_info = new FileHandler(folder + "info.log", LOGGING_FILE_SIZE, 1);
-        FileHandler fh_finer = new FileHandler(folder + "finer.log", LOGGING_FILE_SIZE, 1);
-        FileHandler[] fileHandlers = {fh_severe, fh_info, fh_finer};
+
+        FileHandler handler;
+        java.util.ArrayList<FileHandler> handlers = new java.util.ArrayList<FileHandler>();
+
+        handler = new FileHandler(folder + "severe.log", LOGGING_FILE_SIZE, 1);
+        handler.setLevel(Level.SEVERE);
+        handlers.add(handler);
+
+        handler = new FileHandler(folder + "info.log", LOGGING_FILE_SIZE, 1);
+        handler.setLevel(Level.INFO);
+        handlers.add(handler);
+
+        handler = new FileHandler(folder + "debug.log", LOGGING_FILE_SIZE, 1);
+        handler.setLevel(Level.FINER);
+        handlers.add(handler);
+
         SimpleFormatter formatter = new SimpleFormatter();
-        for (FileHandler fh : fileHandlers) {
-            Logger.getGlobal().addHandler(fh);
+        for (FileHandler fh: handlers) {
             fh.setFormatter(formatter);
+            fh.setFilter((LogRecord record) -> record.getLevel().equals(fh.getLevel()));
+            Logger.getLogger("").addHandler(fh);
         }
-        Logger.getGlobal().setUseParentHandlers(false);
-        //set respective level for filehandlers
-        fh_severe.setLevel(Level.SEVERE);
-        fh_info.setLevel(Level.INFO);
-        fh_finer.setLevel(Level.FINER);
-        //this filehandlers will only receive input for their respective level
-        fh_severe.setFilter((LogRecord record) -> record.getLevel().equals(Level.SEVERE));
-        fh_info.setFilter((LogRecord record) -> record.getLevel().equals(Level.INFO));
-        fh_finer.setFilter((LogRecord record) -> record.getLevel().equals(Level.FINER));
+
+        Logger.getGlobal().setLevel(Level.INFO);
+
+        // TODO: Disable logging method entries.
+        logger = org.slf4j.LoggerFactory.getLogger(Main.class);
     }
 
     public static void initDbService() throws SQLException {
@@ -152,13 +161,13 @@ public class Main {
             String path = UtilityMethods.generatePath(entry.getString("path"));
             File file = new File(path);
             if (!file.isFile()) {
-                Logger.getGlobal().log(Level.SEVERE, "Sound " + path + " does not exist!");
+                logger.error("Sound " + path + " does not exist!");
                 continue;
             }
             try {
                 soundService.updateOrCreateSound((String) e.getKey(), path, entry.getString("description"));
             } catch (SQLException exc) {
-                Logger.getGlobal().log(Level.SEVERE, exc.getMessage());
+                logger.error(exc.getMessage());
             }
         }
     }
@@ -178,7 +187,7 @@ public class Main {
             }
         });
 
-        Logger.getGlobal().log(Level.FINER, "Discord Bot Client started.");
+        logger.info("Discord Bot Client started.");
     }
 
     public static void initDiscordClientWhenReady() {
@@ -186,19 +195,19 @@ public class Main {
         try {
             client.changeUsername("Süßwasserpolyp");
         } catch (DiscordException | RateLimitException ex) {
-            Logger.getGlobal().log(Level.SEVERE, "Error while setting bot's username.", ex);
+            logger.error("Error while setting bot's username.", ex);
         }
         client.changePlayingText("with your emotions"); //sets the game of the bot
 
         // Initialize users that are currently online/
         for (IGuild guild : client.getGuilds()) {
-            Logger.getGlobal().log(Level.FINER, "bot is online on guild{0}", guild.toString());
+            logger.info("bot is online on guild{0}", guild.toString());
             for (IUser user : User.getOnlineUsers(guild.getUsers())) {
                 userListener.addOnlineUser(String.valueOf(user.getLongID()), user.getName());//adds every user that is online, when the bot started, to the onlineUser list
             }
         }
 
-        Logger.getGlobal().log(Level.FINER, "Discord Bot Client ready.");
+        logger.info("Discord Bot Client ready.");
     }
 
     public static void initWebApi() throws IOException {
@@ -206,9 +215,7 @@ public class Main {
         server.addHandler("/", new WebApiIndexPageHandler());
         server.addHandler("/commands", new WebApiCommandHandler());
         server.start();
-        Logger.getGlobal().log(Level.INFO,
-            "Started the web server at port " + config.webapi.port + "."
-        );
+        logger.info("Started the web server at port " + config.webapi.port + ".");
     }
 
 }

@@ -6,8 +6,7 @@ import com.stiglmair.hydra.objects.User;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.user.PresenceUpdateEvent;
 import sx.blah.discord.handle.obj.IUser;
@@ -78,7 +77,7 @@ public class UserListener {
             if (user.getUserID().equals(String.valueOf(event.getUser().getLongID())))//user on same server and same user as specified in event
             {
                 user.save();
-                Logger.getGlobal().log(Level.FINER, "Following user went offline: {0}", user.toString());
+                Main.logger.info("Following user went offline: {0}", user.toString());
                 onlineUsers.remove(user);
                 break;
             }
@@ -96,16 +95,16 @@ public class UserListener {
             if (userID.equals(Long.parseUnsignedLong(user.getUserID()))) {
                 try {
                     game = Main.gameService.getGame(gameName, user.getUserID()); //retrieves game data, throws exception if none is retrieved
-                    Logger.getGlobal().log(Level.INFO, "Game retrieved.");
+                    Main.logger.info("Game retrieved.");
                 } catch (SQLException ex) {
-                    Logger.getGlobal().log(Level.SEVERE, "game could not be retrieved.", ex);
+                    Main.logger.error("game could not be retrieved.", ex);
                 }
                 if (game == null) {
                     try {
                         game = Main.gameService.createGame(gameName, user.getUserID()); // creates game, throws excepton if none could be created; either getGame or createGame should always work
-                        Logger.getGlobal().log(Level.INFO, "New game created. {0}", game.toString());
+                        Main.logger.info("New game created. {0}", game.toString());
                     } catch (SQLException ex) {
-                        Logger.getGlobal().log(Level.SEVERE, "game could not be created.", ex);
+                        Main.logger.error("game could not be created.", ex);
                     }
                 }
                 if (game != null) {
@@ -127,9 +126,9 @@ public class UserListener {
                 try {
                     //will update the game; increments the AmountPlayed and calculates new overall time as follows: current time - time of login + overall time spent online overall
                     Main.gameService.updateGame(user.getGame().getTitle(), user.getUserID(), user.getGame().getAmount_played() + 1, time - user.getGame().getStartTime() + user.getGame().getTime_played());
-                    Logger.getGlobal().log(Level.INFO, "New game created. {0}", user.getGame().toString());
+                    Main.logger.info("New game created. {0}", user.getGame().toString());
                 } catch (SQLException ex) {
-                    Logger.getGlobal().log(Level.SEVERE, "could not update game.", ex);
+                    Main.logger.error("could not update game.", ex);
                 }
             }
         }
@@ -146,7 +145,7 @@ public class UserListener {
     public User addOnlineUser(String userID, String name) {
         for (User user : onlineUsers) {
             if (user.getUserID().equals(userID)) {
-                Logger.getGlobal().log(Level.WARNING, "User is already online; ID: {0}", user.getUserID());
+                Main.logger.warn("User is already online; ID: {0}", user.getUserID());
                 return null;
             }
         }
@@ -154,7 +153,7 @@ public class UserListener {
         try {
             user = Main.userService.getUser(userID);//looks if user exists
         } catch (SQLException ex) {
-            Logger.getGlobal().log(Level.SEVERE, "User could not be retrieved.", ex);
+            Main.logger.error("User could not be retrieved.", ex);
         }
 
         try {
@@ -162,14 +161,14 @@ public class UserListener {
                 user = Main.userService.createUser(userID, name);//creates user if none exists
             }
         } catch (SQLException ex) {
-            Logger.getGlobal().log(Level.SEVERE, "User could not be created.", ex);
+            Main.logger.error("User could not be created.", ex);
         }
 
         if (user != null) {
             onlineUsers.add(user);
-            Logger.getGlobal().log(Level.FINER, "Following user was added to online users: {0}", user.toString());
+            Main.logger.info("Following user was added to online users: {0}", user.toString());
         } else {
-            Logger.getGlobal().log(Level.SEVERE, "User could not be added to onlineUsers since he was not created nor retrieved.");
+            Main.logger.error("User could not be added to onlineUsers since he was not created nor retrieved.");
         }
         return user;
     }

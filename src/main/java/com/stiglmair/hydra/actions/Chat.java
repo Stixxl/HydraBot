@@ -11,8 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.Timer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.MessageBuilder;
@@ -54,13 +53,13 @@ public class Chat {
         try {
             binsenweisheit = Main.dbService.getBinsenweisheitenService().selectSentenceRandom();
         } catch (SQLException ex) {
-            Logger.getGlobal().log(Level.SEVERE, "Could not retrieve Binsenweisheit.", ex);
+            Main.logger.error("Could not retrieve Binsenweisheit.", ex);
         }
         if (binsenweisheit != null) {
             sendMessage(channel, binsenweisheit);
         } else {
             sendErrorMessage(channel);
-            Logger.getGlobal().warning("Error occured while trying to retrieve a Binsenweisheit.");
+            Main.logger.warn("Error occured while trying to retrieve a Binsenweisheit.");
         }
     }
 
@@ -95,7 +94,7 @@ public class Chat {
                     } else if (userID != null) {
                         showStatsMe(channel, userID);
                     } else {
-                        Logger.getGlobal().log(Level.WARNING, "User could not be found in onlineUsers. UserID: {0}", userID);
+                        Main.logger.warn("User could not be found in onlineUsers. UserID: {0}", userID);
                         sendErrorMessage(channel);
                         return true;
                     }
@@ -124,7 +123,7 @@ public class Chat {
                         break;
                     } else {
                         sendErrorMessage(channel);
-                        Logger.getGlobal().log(Level.WARNING, "User could not be found in onlineUsers. UserID: {0}", userID);
+                        Main.logger.warn("User could not be found in onlineUsers. UserID: {0}", userID);
                         return true;
                     }
                 default:
@@ -152,7 +151,7 @@ public class Chat {
         try {
             sb.append(Main.userService.getUser(userID).toString()).append(System.lineSeparator()).append(System.lineSeparator()).append(getGamesMessage(userID));
         } catch (SQLException ex) {
-            Logger.getLogger(Chat.class.getName()).log(Level.SEVERE, "ShowStats failed for user with ID (not in onlineUsers): " + userID, ex);
+            Main.logger.error("ShowStats failed for user with ID (not in onlineUsers): " + userID, ex);
         }
         sendMessage(channel, sb.toString());
     }
@@ -172,7 +171,7 @@ public class Chat {
         try {
             users = Main.userService.getUserByName(name);
         } catch (SQLException ex) {
-            Logger.getGlobal().log(Level.SEVERE, "User could not be retrieved by name.", ex);
+            Main.logger.error("User could not be retrieved by name.", ex);
         }
         if (!(users.isEmpty())) {
             StringBuilder sb = new StringBuilder();
@@ -203,7 +202,7 @@ public class Chat {
         try {
             users = Main.userService.getRankingByUptime(limit);
         } catch (SQLException ex) {
-            Logger.getGlobal().log(Level.SEVERE, "Users could not be retrieved by ranking.", ex);
+            Main.logger.error("Users could not be retrieved by ranking.", ex);
         }
         if (!(users.isEmpty())) {
             for (int i = 0; i < users.size(); i++) {
@@ -230,12 +229,12 @@ public class Chat {
         try {
             uptime = Main.userService.getUptimeAll();
         } catch (SQLException ex) {
-            Logger.getGlobal().log(Level.SEVERE, "could not retrieve data for all users", ex);
+            Main.logger.error("could not retrieve data for all users", ex);
         }
         try {
             games = Main.gameService.getGamesAll();
         } catch (SQLException ex) {
-            Logger.getGlobal().log(Level.SEVERE, "could not retrieve game data for all users.", ex);
+            Main.logger.error("could not retrieve game data for all users.", ex);
         }
         StringBuilder sb = new StringBuilder();
         if (games != null) {
@@ -332,7 +331,7 @@ public class Chat {
             try {
                 new MessageBuilder(Main.client).withChannel(channel).withContent(splitMessage).build();
             } catch (RateLimitException | DiscordException | MissingPermissionsException ex) {
-                Logger.getGlobal().log(Level.SEVERE, "message could not be sent.", ex);
+                Main.logger.error("message could not be sent.", ex);
             }
         }
     }
@@ -350,7 +349,7 @@ public class Chat {
         try {
             games = Main.gameService.getGames(userID);
         } catch (SQLException ex) {
-            Logger.getGlobal().log(Level.SEVERE, "games could not be retrieved.", ex);
+            Main.logger.error("games could not be retrieved.", ex);
         }
         StringBuilder sb = new StringBuilder();
         if (games != null) {

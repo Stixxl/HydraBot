@@ -1,5 +1,6 @@
 package com.stiglmair.hydra.dbservices;
 
+import com.stiglmair.hydra.main.Main;
 import com.stiglmair.hydra.objects.User;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -7,8 +8,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * @author PogChamp
@@ -150,7 +149,7 @@ public class UserService {
                     result.getString("id"),
                     result.getString("name"),
                     result.getString("apitoken"));
-                Logger.getGlobal().log(Level.FINER, "Following user was retrieved by ranking: {0}", user.toString());
+                Main.logger.info("Following user was retrieved by ranking: {0}", user.toString());
                 users.add(user);
             }
             statement.close();
