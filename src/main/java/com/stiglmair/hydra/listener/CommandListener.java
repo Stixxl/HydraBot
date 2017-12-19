@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.stiglmair.hydra.listener;
 
 import com.stiglmair.hydra.events.CommandExecutionEvent;
@@ -12,7 +7,6 @@ import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedE
 import sx.blah.discord.handle.obj.IMessage;
 
 /**
- *
  * @author PogChamp
  */
 public class CommandListener {
@@ -38,7 +32,7 @@ public class CommandListener {
         IMessage _message = event.getMessage();
         String _content = _message.getContent();
 
-        if (!_content.startsWith(key)) { //this means the message was not meant for us 
+        if (!_content.startsWith(key)) { //this means the message was not meant for us
             return;
         }
         // a standard command looks like this: !hydra command param param...

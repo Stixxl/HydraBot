@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.stiglmair.hydra.objects;
 
 import com.stiglmair.hydra.main.Main;
@@ -19,7 +14,7 @@ import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.handle.obj.StatusType;
 
 /**
- * identifies a user that ever was or is currently on the server
+ * Identifies a user that ever was or is currently on the server.
  *
  * @author PogChamp
  */

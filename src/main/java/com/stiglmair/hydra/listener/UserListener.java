@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.stiglmair.hydra.listener;
 
 import com.stiglmair.hydra.main.Main;
@@ -28,7 +23,6 @@ public class UserListener {
     public List<User> onlineUsers = new ArrayList<>();
 
     /**
-     *
      * This method receives events that include the change of a satus (such as
      * offline to online) and calls a suited method.
      *
@@ -123,7 +117,7 @@ public class UserListener {
     }
     /**
      * Gets called when a game is ended
-     * 
+     *
      * @param userID ID of User
      */
     private void onGameStopped(Long userID) {

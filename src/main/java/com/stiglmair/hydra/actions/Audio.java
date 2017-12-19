@@ -17,15 +17,11 @@ import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.audio.AudioPlayer;
 import sx.blah.discord.util.audio.AudioPlayer.Track;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 /**
- *
- * @author Stiglmair This class is designed to handle anything the bot wants to
+ * This class is designed to handle anything the bot wants to
  * say. Any Audiocommand should use this class.
+ *
+ * @author Stiglmair
  */
 public class Audio {
 
@@ -51,7 +47,6 @@ public class Audio {
             }
 
             if (path != null) {//true, if requested sound exists in database, false otherwise
-                path = UtilityMethods.generatePath(path);
                 Logger.getGlobal().log(Level.FINER, "The generated audio path was: {0}", path);
                 Main.audioListener.addAudio(path, voiceChannel, guild);
             } else {

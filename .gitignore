@@ -1,3 +1,5 @@
+config.toml
+
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
@@ -17,7 +19,7 @@ key.properties
 log*
 config.properties
 ErrorHandling/
-# NetBeans specific gitignore 
+# NetBeans specific gitignore
 nbproject/private
 build/
 nbbuild/

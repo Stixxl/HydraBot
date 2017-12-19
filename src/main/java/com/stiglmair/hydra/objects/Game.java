@@ -1,14 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.stiglmair.hydra.objects;
 
 import com.stiglmair.hydra.utilities.UtilityMethods;
 
 /**
- * represents a game that is being monitored by discord
+ * Represents a game that is being monitored by discord.
  *
  * @author PogChamp
  */
@@ -57,9 +52,10 @@ public class Game {
     public void setAmount_played(int amount_played) {
         this.amount_played = amount_played;
     }
+
     @Override
-    public String toString()
-{
-    return "__" + title + "__ - Zeit gespielt: *" + UtilityMethods.formatTime(time_played) + "*; Anzahl Aufrufe: " + String.valueOf(amount_played);
-}
+    public String toString() {
+        return "__" + title + "__ - Zeit gespielt: *" + UtilityMethods.formatTime(time_played) + "*; Anzahl Aufrufe: " + String.valueOf(amount_played);
+    }
+
 }
