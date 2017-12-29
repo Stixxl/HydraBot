@@ -1,6 +1,6 @@
 # HydraBot
 
-[![Build Status](https://jenkins.stiglmair.com/buildStatus/icon?job=HydraBot_CI_git)](https://jenkins.stiglmair.com/job/HydraBot_CI_git/)
+[![Build Status](https://www.jenkins.stiglmair.com/buildStatus/icon?job=HydraBot_CI_git)](https://www.jenkins.stiglmair.com/job/HydraBot_CI_git/)
 
 
 Hello everybody,
