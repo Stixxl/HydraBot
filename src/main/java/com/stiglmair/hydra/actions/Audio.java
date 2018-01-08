@@ -7,8 +7,7 @@ import com.stiglmair.hydra.utilities.UtilityMethods;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import javax.sound.sampled.UnsupportedAudioFileException;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
@@ -17,15 +16,11 @@ import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.audio.AudioPlayer;
 import sx.blah.discord.util.audio.AudioPlayer.Track;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 /**
- *
- * @author Stiglmair This class is designed to handle anything the bot wants to
+ * This class is designed to handle anything the bot wants to
  * say. Any Audiocommand should use this class.
+ *w
+ * @author Stiglmair
  */
 public class Audio {
 
@@ -47,12 +42,11 @@ public class Audio {
                 path = Main.soundService.getPath(args[0]);//retrieves path for requested file and increments the overall call counter
                 Main.soundService.incrementRequestAmount(args[0]);
             } catch (SQLException ex) {
-                Logger.getGlobal().log(Level.SEVERE, "Sound path could not be retrieved.", ex);
+                Main.logger.error("Sound path could not be retrieved.", ex);
             }
 
             if (path != null) {//true, if requested sound exists in database, false otherwise
-                path = UtilityMethods.generatePath(path);
-                Logger.getGlobal().log(Level.FINER, "The generated audio path was: {0}", path);
+                Main.logger.info("The generated audio path was: {0}", path);
                 Main.audioListener.addAudio(path, voiceChannel, guild);
             } else {
                 return false;
@@ -75,14 +69,14 @@ public class Audio {
         try {
             audioObject.getVoiceChannel().join();
         } catch (MissingPermissionsException ex) {
-            Logger.getGlobal().log(Level.SEVERE, "Could not join voice channel since the bot did not have the needed permissions.");
+            Main.logger.error("Could not join voice channel since the bot did not have the needed permissions.");
         }
         try {
             audioPlayer.setLoop(false);
             audioPlayer.setVolume(0.75f);
             Track currentTrack = audioPlayer.queue(file);
         } catch (IOException | UnsupportedAudioFileException ex) {
-            Logger.getGlobal().log(Level.SEVERE, "Error while trying to play audio.", ex);
+            Main.logger.error("Error while trying to play audio.", ex);
             audioObject.getVoiceChannel().leave();
             Main.audioListener.removeHead(); //removes current head of list to remove bad audioObject
         }

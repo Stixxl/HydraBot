@@ -1,10 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.stiglmair.hydra.dbservices;
 
+import com.stiglmair.hydra.main.Main;
 import com.stiglmair.hydra.objects.Game;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,8 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 /**
  * Handles db requests for the table GAMES
@@ -31,7 +26,6 @@ public class GameService {
     }
 
     /**
-     *
      * @param title title of the game that is being played
      * @param id id of the user
      * @return the newly created Game
@@ -40,7 +34,7 @@ public class GameService {
     public Game createGame(String title, String id) throws SQLException {
         String sql = "INSERT INTO " + TABLENAME
                 + "(title, id, time_played, amount_played) values('" + title + "', '" + id + "', 0, 1)";
-        Logger.getGlobal().log(Level.FINE, "Create Game: {0}", sql);
+        Main.logger.info("Create Game: {0}", sql);
         try (PreparedStatement statement = con.prepareStatement(sql)) {
             DBService.execute(statement);
         }
@@ -48,7 +42,6 @@ public class GameService {
     }
 
     /**
-     *
      * @param title of the game that is requested
      * @param id id of the user
      * @return the requested Game; null if game wasnt found
@@ -71,7 +64,6 @@ public class GameService {
     }
 
     /**
-     *
      * @param title the title of the game that will be updated
      * @param id id of the user
      * @param amountPlayed the amount of times the game has been played

@@ -1,10 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.stiglmair.hydra.dbservices;
 
+import com.stiglmair.hydra.main.Main;
 import com.stiglmair.hydra.objects.User;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,11 +8,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
- *
  * @author PogChamp
  */
 public class UserService {
@@ -39,10 +32,11 @@ public class UserService {
      */
     public User createUser(String id, String name) throws SQLException {
         PreparedStatement statement = con.prepareStatement("insert into " + TABLENAME
-                + "(id, uptime, name) values('" + id + "', 0, '" + name + "')");
+                + "(id, uptime, name, apitoken) values(?, 0, ?, null)");
+        statement.setString(1, id);
+        statement.setString(2, name);
         DBService.execute(statement);
-        return new User(0, id, name);
-
+        return new User(0, id, name, null);
     }
 
     /**
@@ -52,15 +46,16 @@ public class UserService {
      * @param uptime The overall time that was spent on the server
      * @throws SQLException
      */
-    public void updateUser(String id, String name, long uptime) throws SQLException {
-        PreparedStatement statement = con.prepareStatement("UPDATE " + TABLENAME//selects user, it will always be one user or none since (id, guild_id) is primary key
-                + " SET uptime=?"
-                + " ,name=?"
+    public void updateUser(String id, String name, String apiToken, long uptime) throws SQLException {
+        PreparedStatement statement = con.prepareStatement(
+            "UPDATE " + TABLENAME
+                + " SET uptime=?, name=?, apitoken=?"
                 + " WHERE id=?");
         //sets parameter in above statement
         statement.setLong(1, uptime);
         statement.setString(2, name);
-        statement.setString(3, id);
+        statement.setString(3, apiToken);
+        statement.setString(4, id);
         DBService.execute(statement);
     }
 
@@ -74,17 +69,17 @@ public class UserService {
      */
     public User getUser(String id) throws SQLException {
         User user = null;
-        PreparedStatement statement = con.prepareStatement("SELECT uptime, name FROM " + TABLENAME
-                + " WHERE id=? ");
+        PreparedStatement statement = con.prepareStatement(
+            "SELECT uptime, name, apitoken FROM " + TABLENAME + " WHERE id=?");
         statement.setString(1, id);
         ResultSet result = statement.executeQuery();
         if (result.next()) {
             Long uptime = result.getBigDecimal("uptime").longValue();
             String name = result.getString("name");
-            user = new User(uptime, id, name);
+            String apiToken = result.getString("apitoken");
+            user = new User(uptime, id, name, apiToken);
             statement.close();
         }
-
         return user;
     }
 
@@ -98,14 +93,16 @@ public class UserService {
      */
     public List<User> getUserByName(String name) throws SQLException {
         List<User> users = new ArrayList<>();
-        try (PreparedStatement statement = con.prepareStatement("SELECT uptime, id FROM " + TABLENAME
-                + " WHERE name=?")) {
+        try (PreparedStatement statement = con.prepareStatement(
+            "SELECT uptime, id, apitoken FROM " + TABLENAME + " WHERE name=?"))
+        {
             statement.setString(1, name);
             ResultSet result = statement.executeQuery();
             while (result.next()) {
                 Long uptime = result.getBigDecimal("uptime").longValue();
                 String id = result.getString("id");
-                users.add(new User(uptime, id, name));
+                String apiToken = result.getString("apitoken");
+                users.add(new User(uptime, id, name, apiToken));
             }
             statement.close();
         }
@@ -139,14 +136,20 @@ public class UserService {
      */
     public List<User> getRankingByUptime(int limit) throws SQLException {
         List<User> users = new ArrayList();
-        try (PreparedStatement statement = con.prepareStatement("SELECT uptime, id, name FROM " + TABLENAME
+        try (PreparedStatement statement = con.prepareStatement(
+            "SELECT uptime, id, name, apitoken FROM " + TABLENAME
                 + " ORDER BY uptime DESC"
-                + " LIMIT ?::integer")) {
+                + " LIMIT ?::integer"))
+{
             statement.setInt(1, limit);
             ResultSet result = statement.executeQuery();
             while (result.next()) {
-                User user = new User(result.getBigDecimal("uptime").longValue(), result.getString("id"), result.getString("name"));
-                Logger.getGlobal().log(Level.FINER, "Following user was retrieved by ranking: {0}", user.toString());
+                User user = new User(
+                    result.getBigDecimal("uptime").longValue(),
+                    result.getString("id"),
+                    result.getString("name"),
+                    result.getString("apitoken"));
+                Main.logger.info("Following user was retrieved by ranking: {0}", user.toString());
                 users.add(user);
             }
             statement.close();

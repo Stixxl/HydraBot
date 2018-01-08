@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.stiglmair.hydra.events;
 
 import com.stiglmair.hydra.objects.Command;
@@ -11,9 +6,10 @@ import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
 
 /**
+ * This Event holds a parsed input. It should only be fired,
+ * whenever a new textcommand adressed at our bot is received.
  *
- * @author PogChamp This Event holds a parsed input. It should only be fired,
- * whenever a new textcommand adressed at our bot is received
+ * @author PogChamp
  */
 public class CommandExecutionEvent extends Event {
 

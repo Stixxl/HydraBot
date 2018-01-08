@@ -1,20 +1,16 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.stiglmair.hydra.security;
 
 import com.stiglmair.hydra.actions.Chat;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import com.stiglmair.hydra.main.Main;
+
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IRole;
 import sx.blah.discord.handle.obj.IUser;
 
 /**
- * Class that maps discord roles to roles for this bot and handles Authorization
+ * Class that maps discord roles to roles for this bot and handles Authorization.
+ *
  * @author PogChamp
  */
 public class Role {
@@ -50,15 +46,15 @@ public class Role {
      * and prints out a failure message, if access was denied
      * @param user IUser which requires Authorization
      * @param guild IGuild for which Authorization is required
-     * @param requiredRole Level of Authority that is required @see com.corbi.robot.actions.Chat#sendMessage(sx.blah.discord.handle.obj.IChannel, java.lang.String) 
+     * @param requiredRole Level of Authority that is required @see com.corbi.robot.actions.Chat#sendMessage(sx.blah.discord.handle.obj.IChannel, java.lang.String)
      * @return true if user is authorized; false otherwise
      */
     public static boolean authorize(IUser user, IGuild guild, ROLE requiredRole) {
         if (requiredRole.equals(getRole(user, guild))) {
-            Logger.getGlobal().log(Level.INFO, "Authorized access for user with ID:{0}", user.getLongID());
+            Main.logger.info("Authorized access for user with ID:{0}", user.getLongID());
             return true;
         } else {
-            Logger.getGlobal().log(Level.WARNING, "Unauthorized access for user with ID: {0}", user.getLongID());
+            Main.logger.warn("Unauthorized access for user with ID: {0}", user.getLongID());
             return false;
         }
     }

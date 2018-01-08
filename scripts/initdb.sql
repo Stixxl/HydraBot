@@ -4,6 +4,7 @@ CREATE TABLE HydraBotDB.USERS (
   ID varchar(255) NOT NULL,
   UPTIME bigint NOT NULL,
   NAME varchar(255) NOT NULL,
+  APITOKEN varchar(40),              -- A token string generated using SHA1 (40 hexdigits).
   PRIMARY KEY (ID)
 );
 

@@ -1,17 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.stiglmair.hydra.objects;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import com.stiglmair.hydra.main.Main;
 
-/**
- *
- * @author PogChamp
- */
 public class Command {
 
     private String command;
@@ -52,7 +42,7 @@ public class Command {
         String[] splitInput = input.split(" ");
         switch (splitInput.length) {
             case 0:
-                Logger.getGlobal().log(Level.WARNING, "No Command was received.");
+                Main.logger.warn("No Command was received.");
                 return null;
             case 1:
                 return new Command(splitInput[0]);

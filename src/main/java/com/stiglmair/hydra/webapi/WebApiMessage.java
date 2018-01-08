@@ -1,9 +1,12 @@
 package com.stiglmair.hydra.webapi;
 
+import com.stiglmair.hydra.main.Main;
 import com.vdurmont.emoji.Emoji;
+
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.IShard;
 import sx.blah.discord.api.internal.json.objects.EmbedObject;
+import sx.blah.discord.handle.impl.obj.ReactionEmoji;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IEmbed;
 import sx.blah.discord.handle.obj.IEmoji;
@@ -19,9 +22,7 @@ import sx.blah.discord.util.cache.LongMap;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import sx.blah.discord.handle.impl.obj.ReactionEmoji;
+
 
 /**
  * This implements a potentially incomplete version of the IMessage interface.
@@ -140,8 +141,7 @@ public class WebApiMessage implements IMessage {
         LongMap<IVoiceState> voiceStates = user.getVoiceStatesLong();
         Optional<IVoiceState> voiceStateOpt = voiceStates.values().stream().findFirst();
         if (voiceStates.values().size() > 1) {
-            Logger.getGlobal().log(Level.WARNING,
-                "User has more than one IVoiceState. Choosing the first one.");
+            Main.logger.warn("User has more than one IVoiceState. Choosing the first one.");
         }
         return voiceStateOpt.map(IVoiceState::getGuild).orElse(null);
     }
