@@ -130,6 +130,9 @@ description = "Madness?"
 path = "AudioFiles/asdpoakaoskdaikd.wav"
 description = "Originalaufnahme der Uraufführung von Faust, als er Mephistopheles beschwört."
 
+[tearing]
+path = "AudioFiles/tearing.wav"
+description = "Relationship Goals"
 [thinking]
 path = "AudioFiles/thinking.wav"
 description = "\"You invited all my friends!\""
