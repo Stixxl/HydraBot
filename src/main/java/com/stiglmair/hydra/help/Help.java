@@ -26,7 +26,7 @@ public class Help {
 	    new CommandHelp("new", "Generiert einen neuen Token."),
 	    new CommandHelp("show", "Zeigt das bereits generierte Token an."),
 	    new CommandHelp("revoke", "Löscht das Token.")});
-    CommandHelp[] commandMans = {stats, sounds, binsenweissheiten, daniel, pause, unpause};
+    CommandHelp[] commandMans = {stats, sounds, token, binsenweissheiten, daniel, pause, unpause};
 
     public Help() {
         try {
