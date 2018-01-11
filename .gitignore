@@ -44,6 +44,7 @@ local.properties
 .loadpath
 #intellij specific gitignore
 .idea/
+*.iml
 
 # External tool builders
 .externalToolBuilders/
