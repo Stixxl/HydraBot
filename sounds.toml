@@ -106,6 +106,9 @@ description = "Das Mädel, wenn sie dir die falsche Nummer gegeben hat."
 path = "AudioFiles/RKO.wav"
 description = "WATCH OUT WATCH OUT WATCH OUT"
 
+[running]
+path = "AudioFiles/running.wav"
+description = "Nani? Kansei Dorifto?"
 [sayan]
 path = "AudioFiles/Sayan.wav"
 description = "TYLER FUCKING ONE"
