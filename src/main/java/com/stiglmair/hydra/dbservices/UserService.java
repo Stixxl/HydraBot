@@ -48,7 +48,7 @@ public class UserService {
      */
     public void updateUser(String id, String name, String apiToken, long uptime) throws SQLException {
         PreparedStatement statement = con.prepareStatement(
-            "UPDATE " + TABLENAME
+                "UPDATE " + TABLENAME
                 + " SET uptime=?, name=?, apitoken=?"
                 + " WHERE id=?");
         //sets parameter in above statement
@@ -70,7 +70,7 @@ public class UserService {
     public User getUser(String id) throws SQLException {
         User user = null;
         PreparedStatement statement = con.prepareStatement(
-            "SELECT uptime, name, apitoken FROM " + TABLENAME + " WHERE id=?");
+                "SELECT uptime, name, apitoken FROM " + TABLENAME + " WHERE id=?");
         statement.setString(1, id);
         ResultSet result = statement.executeQuery();
         if (result.next()) {
@@ -94,8 +94,7 @@ public class UserService {
     public List<User> getUserByName(String name) throws SQLException {
         List<User> users = new ArrayList<>();
         try (PreparedStatement statement = con.prepareStatement(
-            "SELECT uptime, id, apitoken FROM " + TABLENAME + " WHERE name=?"))
-        {
+                "SELECT uptime, id, apitoken FROM " + TABLENAME + " WHERE name=?")) {
             statement.setString(1, name);
             ResultSet result = statement.executeQuery();
             while (result.next()) {
@@ -107,6 +106,22 @@ public class UserService {
             statement.close();
         }
         return users;
+    }
+
+    public User getUserByToken(String apiToken) throws SQLException {
+        User user = null;
+        PreparedStatement statement = con.prepareStatement(
+                "SELECT uptime, name, id FROM " + TABLENAME + " WHERE apitoken=?");
+        statement.setString(1, apiToken);
+        ResultSet result = statement.executeQuery();
+        if (result.next()) {
+            Long uptime = result.getBigDecimal("uptime").longValue();
+            String name = result.getString("name");
+            String id = result.getString("id");
+            user = new User(uptime, id, name, apiToken);
+            statement.close();
+        }
+        return user;
     }
 
     /**
@@ -137,18 +152,17 @@ public class UserService {
     public List<User> getRankingByUptime(int limit) throws SQLException {
         List<User> users = new ArrayList();
         try (PreparedStatement statement = con.prepareStatement(
-            "SELECT uptime, id, name, apitoken FROM " + TABLENAME
+                "SELECT uptime, id, name, apitoken FROM " + TABLENAME
                 + " ORDER BY uptime DESC"
-                + " LIMIT ?::integer"))
-{
+                + " LIMIT ?::integer")) {
             statement.setInt(1, limit);
             ResultSet result = statement.executeQuery();
             while (result.next()) {
                 User user = new User(
-                    result.getBigDecimal("uptime").longValue(),
-                    result.getString("id"),
-                    result.getString("name"),
-                    result.getString("apitoken"));
+                        result.getBigDecimal("uptime").longValue(),
+                        result.getString("id"),
+                        result.getString("name"),
+                        result.getString("apitoken"));
                 Main.logger.info("Following user was retrieved by ranking: {0}", user.toString());
                 users.add(user);
             }
