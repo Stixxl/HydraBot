@@ -22,7 +22,7 @@ public class Help {
     CommandHelp daniel = new CommandHelp("daniel", "Flamt Daniel.");
     CommandHelp pause = new CommandHelp("pause", "Unterbricht die Ausführung des Bots. Benötigt Adminrechte. Anwendungsfall: Sayan wird wieder gespammt.");
     CommandHelp unpause = new CommandHelp("unpause", "Setzt die Ausführung des Bots fort. Benötigt Adminrechte. Anwendungsfall: Sayan soll wieder gespammt werden können.");
-    CommandHelp token = new CommandHelp("token", "Generiert einen Token, um Sayan noch effizienter per REST zu spammen. Die URL lautet " + UtilityMethods.highlightBold("https://hydra.stiglmair.com/commands?command=sounds%20sayan&userId=userid&token=generated_token") + ".", new CommandHelp[]{
+    CommandHelp token = new CommandHelp("token", "Generiert einen Token, um Sayan noch effizienter per REST zu spammen. Dieser Befehl muss als Privatnachricht an den Bot gesendet werden. Die URL lautet " + UtilityMethods.highlightBold("https://hydra.stiglmair.com/commands?command=sounds%20sayan&youruserId=userid&token=generated_token") + ".", new CommandHelp[]{
 	    new CommandHelp("new", "Generiert einen neuen Token."),
 	    new CommandHelp("show", "Zeigt das bereits generierte Token an."),
 	    new CommandHelp("revoke", "Löscht das Token.")});
