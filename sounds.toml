@@ -1,3 +1,7 @@
+[bier]
+path = "AudioFiles/bier.wav"
+description = "Jeden Tag um 12"
+
 [bro]
 path = "AudioFiles/Bro.wav"
 description = "Wenn dir mal wieder keiner zuhört..."
