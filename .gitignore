@@ -60,3 +60,6 @@ target/
 build/
 !gradle-wrapper.jar
 .gradletasknamecache
+
+# IntelliJ
+.idea/
