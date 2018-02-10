@@ -24,6 +24,7 @@ public class Config {
     }
 
     public class Webapi {
+        public String listenAddress = "127.0.0.1";
         public int port = 1337;
     }
 
@@ -32,7 +33,7 @@ public class Config {
     Discord discord = new Discord();
     Webapi webapi = new Webapi();
 
-    public void read(String filename) throws IOException {;
+    public void read(String filename) throws IOException {
         Toml config = new Toml().read(new File(UtilityMethods.generatePath(filename)));
         logging.folder = config.getString("logging.folder");
         database.host = config.getString("database.host", database.host);
@@ -42,6 +43,7 @@ public class Config {
         database.user = config.getString("database.user", database.user);
         database.password = config.getString("database.password", database.password);
         discord.token = config.getString("discord.token");
+        webapi.listenAddress = config.getString("webapi.listenAddress", "127.0.0.1");
         webapi.port = Math.toIntExact(config.getLong("webapi.port", 1337l));
     }
 

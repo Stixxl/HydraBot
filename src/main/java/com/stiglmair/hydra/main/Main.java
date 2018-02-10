@@ -211,11 +211,12 @@ public class Main {
     }
 
     public static void initWebApi() throws IOException {
-        WebApiServer server = new WebApiServer(config.webapi.port);
+        WebApiServer server = new WebApiServer(config.webapi.listenAddress, config.webapi.port);
         server.addHandler("/", new WebApiIndexPageHandler());
         server.addHandler("/commands", new WebApiCommandHandler());
         server.start();
-        logger.info("Started the web server at port " + config.webapi.port + ".");
+        logger.info("Started the web server at " + config.webapi.listenAddress +
+                ":" + config.webapi.port + ".");
     }
 
 }

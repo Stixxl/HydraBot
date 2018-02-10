@@ -4,6 +4,7 @@ import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.concurrent.Executors;
 
@@ -18,11 +19,12 @@ public class WebApiServer {
     /**
      * Creates a new WebApiServer which receives commands for the bot via http.
      *
+     * @param listenAddress The address on which the WebApiServer listens.
      * @param port The port of the web server.
      * @throws IOException
      */
-    public WebApiServer(int port) throws IOException {
-        InetSocketAddress address = new InetSocketAddress(port);
+    public WebApiServer(String listenAddress, int port) throws IOException {
+        InetSocketAddress address = new InetSocketAddress(InetAddress.getByName(listenAddress), port);
         // Use the default parameters for the backlog by choosing 0.
         this.httpServer = HttpServer.create(address, 0);
     }
