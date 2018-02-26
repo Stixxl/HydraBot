@@ -48,9 +48,7 @@ public class Command {
                 return new Command(splitInput[0]);
             default:
                 String[] args = new String[splitInput.length - 1];
-                for (int i = 0; i < args.length; i++) {
-                    args[i] = splitInput[i + 1];
-                }
+                System.arraycopy(splitInput, 1, args, 0, args.length);
                 return new Command(splitInput[0], args);
         }
     }

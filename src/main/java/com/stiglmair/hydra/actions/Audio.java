@@ -1,20 +1,18 @@
 package com.stiglmair.hydra.actions;
 
-import com.stiglmair.hydra.listener.AudioListener;
 import com.stiglmair.hydra.main.Main;
 import com.stiglmair.hydra.objects.AudioObject;
-import com.stiglmair.hydra.utilities.UtilityMethods;
-import java.io.File;
-import java.io.IOException;
-import java.sql.SQLException;
-
-import javax.sound.sampled.UnsupportedAudioFileException;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IVoiceChannel;
 import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.audio.AudioPlayer;
 import sx.blah.discord.util.audio.AudioPlayer.Track;
+
+import javax.sound.sampled.UnsupportedAudioFileException;
+import java.io.File;
+import java.io.IOException;
+import java.sql.SQLException;
 
 /**
  * This class is designed to handle anything the bot wants to

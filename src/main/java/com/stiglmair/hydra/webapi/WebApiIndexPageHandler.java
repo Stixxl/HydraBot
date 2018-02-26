@@ -2,12 +2,10 @@ package com.stiglmair.hydra.webapi;
 
 import com.stiglmair.hydra.main.Main;
 import com.stiglmair.hydra.utilities.UtilityMethods;
-
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 

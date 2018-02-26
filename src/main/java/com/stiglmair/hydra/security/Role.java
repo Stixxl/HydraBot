@@ -1,9 +1,6 @@
 package com.stiglmair.hydra.security;
 
-import com.stiglmair.hydra.actions.Chat;
 import com.stiglmair.hydra.main.Main;
-
-import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IRole;
 import sx.blah.discord.handle.obj.IUser;
@@ -17,7 +14,7 @@ public class Role {
 
     public enum ROLE {
         ADMIN, MEMBER, ANY
-    };
+    }
 
     /**
      * gets the internal role for this bot derived from the roles in discord

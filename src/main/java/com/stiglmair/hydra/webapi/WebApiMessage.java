@@ -138,7 +138,7 @@ public class WebApiMessage implements IMessage {
 
     @Override
     public IGuild getGuild() {
-        LongMap<IVoiceState> voiceStates = user.getVoiceStatesLong();
+        LongMap<IVoiceState> voiceStates = user.getVoiceStates();
         Optional<IVoiceState> voiceStateOpt = voiceStates.values().stream().findFirst();
         if (voiceStates.values().size() > 1) {
             Main.logger.warn("User has more than one IVoiceState. Choosing the first one.");
