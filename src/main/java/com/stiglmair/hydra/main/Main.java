@@ -96,7 +96,7 @@ public class Main {
 
         // Read the configuration file.
         String configFile = UtilityMethods.firstNonNull(args.getOptionValue("config"), "config.toml");
-        config.read(configFile);
+        config = new Toml().read(new File(UtilityMethods.generatePath(configFile))).to(Config.class);
 
         // Determine the log folder.
         config.logging.folder = UtilityMethods.firstNonNull(args.getOptionValue("logfolder"), config.logging.folder, "logs/");
