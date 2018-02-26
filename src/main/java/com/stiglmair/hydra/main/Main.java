@@ -1,46 +1,35 @@
 package com.stiglmair.hydra.main;
 
+import com.moandjiezana.toml.Toml;
 import com.stiglmair.hydra.dbservices.DBService;
 import com.stiglmair.hydra.dbservices.GameService;
 import com.stiglmair.hydra.dbservices.SoundService;
 import com.stiglmair.hydra.dbservices.UserService;
-import com.stiglmair.hydra.objects.User;
 import com.stiglmair.hydra.listener.AudioListener;
 import com.stiglmair.hydra.listener.CommandExecutionListener;
 import com.stiglmair.hydra.listener.CommandListener;
 import com.stiglmair.hydra.listener.UserListener;
+import com.stiglmair.hydra.objects.User;
 import com.stiglmair.hydra.utilities.UtilityMethods;
 import com.stiglmair.hydra.webapi.WebApiCommandHandler;
 import com.stiglmair.hydra.webapi.WebApiIndexPageHandler;
 import com.stiglmair.hydra.webapi.WebApiServer;
-
-import com.moandjiezana.toml.Toml;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.*;
 import sx.blah.discord.api.ClientBuilder;
+import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.EventDispatcher;
 import sx.blah.discord.api.events.IListener;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
-import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IUser;
-import sx.blah.discord.util.DiscordException;
-import sx.blah.discord.util.Image;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.RateLimitException;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
-import java.util.Map;
 import java.sql.SQLException;
+import java.util.Map;
+import java.util.logging.*;
 
 /**
  *
@@ -59,7 +48,6 @@ public class Main {
     public static UserListener userListener = new UserListener();
 
     private static final int LOGGING_FILE_SIZE = 1024 * 1024;  // 1MB
-    private static String key;
 
     public static CommandLine parseCommandline(String[] argv) {
         Options options = new Options();
@@ -96,7 +84,7 @@ public class Main {
 
         // Read the configuration file.
         String configFile = UtilityMethods.firstNonNull(args.getOptionValue("config"), "config.toml");
-        config.read(configFile);
+        config = new Toml().read(new File(UtilityMethods.generatePath(configFile))).to(Config.class);
 
         // Determine the log folder.
         config.logging.folder = UtilityMethods.firstNonNull(args.getOptionValue("logfolder"), config.logging.folder, "logs/");
@@ -113,7 +101,7 @@ public class Main {
         UtilityMethods.ensureEmptyFolder(folder);
 
         FileHandler handler;
-        java.util.ArrayList<FileHandler> handlers = new java.util.ArrayList<FileHandler>();
+        java.util.ArrayList<FileHandler> handlers = new java.util.ArrayList<>();
 
         handler = new FileHandler(folder + "severe.log", LOGGING_FILE_SIZE, 1);
         handler.setLevel(Level.SEVERE);
@@ -201,7 +189,7 @@ public class Main {
 
         // Initialize users that are currently online/
         for (IGuild guild : client.getGuilds()) {
-            logger.info("bot is online on guild{0}", guild.toString());
+            logger.info("bot is online on guild {}", guild.toString());
             for (IUser user : User.getOnlineUsers(guild.getUsers())) {
                 userListener.addOnlineUser(String.valueOf(user.getLongID()), user.getName());//adds every user that is online, when the bot started, to the onlineUser list
             }

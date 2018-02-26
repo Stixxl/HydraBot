@@ -20,13 +20,24 @@ public class WebApiServer {
      * Creates a new WebApiServer which receives commands for the bot via http.
      *
      * @param listenAddress The address on which the WebApiServer listens.
-     * @param port The port of the web server.
+     * @param port The port on which the web server will listen.
+     * @throws IOException
+     */
+    public WebApiServer(InetAddress listenAddress, int port) throws IOException {
+        InetSocketAddress socketAddress = new InetSocketAddress(listenAddress, port);
+        // Use the default parameters for the backlog by choosing 0.
+        this.httpServer = HttpServer.create(socketAddress, 0);
+    }
+
+    /**
+     * Creates a new WebApiServer which receives commands for the bot via http.
+     *
+     * @param listenAddress The address on which the WebApiServer listens.
+     * @param port The port on which the web server will listen.
      * @throws IOException
      */
     public WebApiServer(String listenAddress, int port) throws IOException {
-        InetSocketAddress address = new InetSocketAddress(InetAddress.getByName(listenAddress), port);
-        // Use the default parameters for the backlog by choosing 0.
-        this.httpServer = HttpServer.create(address, 0);
+        this(InetAddress.getByName(listenAddress), port);
     }
 
     /**

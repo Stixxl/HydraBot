@@ -175,10 +175,12 @@ public class UtilityMethods {
     public static void ensureEmptyFolder(String path) throws IOException {
         File f = new File(path);
         if (!(f.exists() && f.isDirectory())) {
+            // TODO: Handle failure of mkdir.
             f.mkdir();
         } else {
             // Deletes the logging folder and creates a new one, thus wiping its content
             deleteFileOrFolder(f.toPath());
+            // TODO: Handle failure of mkdir.
             f.mkdir();
         }
     }
@@ -255,7 +257,8 @@ public class UtilityMethods {
         if (parsedEmote.isEmpty()) {
             return parsedEmote;
         } else {
-            return parsedEmote += ":";
+            parsedEmote += ":";
+            return parsedEmote;
         }
     }
 }

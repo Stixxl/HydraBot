@@ -2,16 +2,15 @@ package com.stiglmair.hydra.objects;
 
 import com.stiglmair.hydra.main.Main;
 import com.stiglmair.hydra.utilities.UtilityMethods;
+import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.handle.obj.StatusType;
+
+import java.security.MessageDigest;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import java.security.MessageDigest;
-import sx.blah.discord.handle.impl.obj.Presence;
-import sx.blah.discord.handle.obj.IUser;
-import sx.blah.discord.handle.obj.StatusType;
 
 /**
  * Identifies a user that ever was or is currently on the server.

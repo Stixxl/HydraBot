@@ -34,7 +34,7 @@ public class GameService {
     public Game createGame(String title, String id) throws SQLException {
         String sql = "INSERT INTO " + TABLENAME
                 + "(title, id, time_played, amount_played) values('" + title + "', '" + id + "', 0, 1)";
-        Main.logger.info("Create Game: {0}", sql);
+        Main.logger.info("Create Game: {}", sql);
         try (PreparedStatement statement = con.prepareStatement(sql)) {
             DBService.execute(statement);
         }

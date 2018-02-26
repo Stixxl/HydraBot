@@ -163,7 +163,7 @@ public class UserService {
                         result.getString("id"),
                         result.getString("name"),
                         result.getString("apitoken"));
-                Main.logger.info("Following user was retrieved by ranking: {0}", user.toString());
+                Main.logger.info("Following user was retrieved by ranking: {}", user.toString());
                 users.add(user);
             }
             statement.close();

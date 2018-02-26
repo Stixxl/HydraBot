@@ -1,22 +1,18 @@
 package com.stiglmair.hydra.actions;
 
+import com.stiglmair.hydra.help.Help;
 import com.stiglmair.hydra.main.Main;
 import com.stiglmair.hydra.objects.Game;
 import com.stiglmair.hydra.objects.User;
 import com.stiglmair.hydra.utilities.UtilityMethods;
-import com.stiglmair.hydra.help.Help;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-import java.util.Timer;
-
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.MessageBuilder;
 import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.RateLimitException;
+
+import java.sql.SQLException;
+import java.util.*;
 
 /**
  * This class is designed to handle anything the bot wants to
@@ -63,14 +59,6 @@ public class Chat {
         }
     }
 
-    /**
-     * tells a random memorable quote
-     *
-     * @param channel @link #sendMessage(IChannel, String) channel
-     */
-    public static void tellQuotes(IChannel channel) {
-
-    }
 
     /**
      * shows stats such as overall uptime on servers, time spent playing etc.
@@ -94,7 +82,7 @@ public class Chat {
                     } else if (userID != null) {
                         showStatsMe(channel, userID);
                     } else {
-                        Main.logger.warn("User could not be found in onlineUsers. UserID: {0}", userID);
+                        Main.logger.warn("User could not be found in onlineUsers.");
                         sendErrorMessage(channel);
                         return true;
                     }
@@ -112,7 +100,7 @@ public class Chat {
                     }
                 case "ranking":
                     if (args.length == 2 && UtilityMethods.isInteger(args[1])) {//showStatsRanking needs a parameter itself
-                        showStatsRanking(channel, (int) Integer.parseInt(args[1]));//selects the top n users by uptime
+                        showStatsRanking(channel, Integer.parseInt(args[1]));//selects the top n users by uptime
                         break;
                     } else {
                         return false;
@@ -123,7 +111,7 @@ public class Chat {
                         break;
                     } else {
                         sendErrorMessage(channel);
-                        Main.logger.warn("User could not be found in onlineUsers. UserID: {0}", userID);
+                        Main.logger.warn("User could not be found in onlineUsers. UserID: {}", userID);
                         return true;
                     }
                 default:
