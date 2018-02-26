@@ -77,7 +77,7 @@ public class UserListener {
             if (user.getUserID().equals(String.valueOf(event.getUser().getLongID())))//user on same server and same user as specified in event
             {
                 user.save();
-                Main.logger.info("Following user went offline: {0}", user.toString());
+                Main.logger.info("Following user went offline: {}", user.toString());
                 onlineUsers.remove(user);
                 break;
             }
@@ -102,7 +102,7 @@ public class UserListener {
                 if (game == null) {
                     try {
                         game = Main.gameService.createGame(gameName, user.getUserID()); // creates game, throws excepton if none could be created; either getGame or createGame should always work
-                        Main.logger.info("New game created. {0}", game.toString());
+                        Main.logger.info("New game created. {}", game.toString());
                     } catch (SQLException ex) {
                         Main.logger.error("game could not be created.", ex);
                     }
@@ -126,7 +126,7 @@ public class UserListener {
                 try {
                     //will update the game; increments the AmountPlayed and calculates new overall time as follows: current time - time of login + overall time spent online overall
                     Main.gameService.updateGame(user.getGame().getTitle(), user.getUserID(), user.getGame().getAmount_played() + 1, time - user.getGame().getStartTime() + user.getGame().getTime_played());
-                    Main.logger.info("New game created. {0}", user.getGame().toString());
+                    Main.logger.info("New game created. {}", user.getGame().toString());
                 } catch (SQLException ex) {
                     Main.logger.error("could not update game.", ex);
                 }
@@ -145,7 +145,7 @@ public class UserListener {
     public User addOnlineUser(String userID, String name) {
         for (User user : onlineUsers) {
             if (user.getUserID().equals(userID)) {
-                Main.logger.warn("User is already online; ID: {0}", user.getUserID());
+                Main.logger.warn("User is already online; ID: {}", user.getUserID());
                 return null;
             }
         }
@@ -166,7 +166,7 @@ public class UserListener {
 
         if (user != null) {
             onlineUsers.add(user);
-            Main.logger.info("Following user was added to online users: {0}", user.toString());
+            Main.logger.info("Following user was added to online users: {}", user.toString());
         } else {
             Main.logger.error("User could not be added to onlineUsers since he was not created nor retrieved.");
         }

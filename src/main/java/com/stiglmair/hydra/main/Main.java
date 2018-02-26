@@ -201,7 +201,7 @@ public class Main {
 
         // Initialize users that are currently online/
         for (IGuild guild : client.getGuilds()) {
-            logger.info("bot is online on guild{0}", guild.toString());
+            logger.info("bot is online on guild {}", guild.toString());
             for (IUser user : User.getOnlineUsers(guild.getUsers())) {
                 userListener.addOnlineUser(String.valueOf(user.getLongID()), user.getName());//adds every user that is online, when the bot started, to the onlineUser list
             }

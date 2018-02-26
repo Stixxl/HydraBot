@@ -94,7 +94,7 @@ public class Chat {
                     } else if (userID != null) {
                         showStatsMe(channel, userID);
                     } else {
-                        Main.logger.warn("User could not be found in onlineUsers. UserID: {0}", userID);
+                        Main.logger.warn("User could not be found in onlineUsers. UserID: {}", userID);
                         sendErrorMessage(channel);
                         return true;
                     }
@@ -123,7 +123,7 @@ public class Chat {
                         break;
                     } else {
                         sendErrorMessage(channel);
-                        Main.logger.warn("User could not be found in onlineUsers. UserID: {0}", userID);
+                        Main.logger.warn("User could not be found in onlineUsers. UserID: {}", userID);
                         return true;
                     }
                 default:

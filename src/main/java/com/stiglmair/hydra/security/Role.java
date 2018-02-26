@@ -51,10 +51,10 @@ public class Role {
      */
     public static boolean authorize(IUser user, IGuild guild, ROLE requiredRole) {
         if (requiredRole.equals(getRole(user, guild))) {
-            Main.logger.info("Authorized access for user with ID:{0}", user.getLongID());
+            Main.logger.info("Authorized access for user with ID: {}", user.getLongID());
             return true;
         } else {
-            Main.logger.warn("Unauthorized access for user with ID: {0}", user.getLongID());
+            Main.logger.warn("Unauthorized access for user with ID: {}", user.getLongID());
             return false;
         }
     }
