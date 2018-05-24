@@ -14,9 +14,17 @@ description = "What's his name?"
 path = "AudioFiles/chicken.wav"
 description = "A wise man once said..."
 
+[concentrate]
+path = "AudioFiles/concentrate.wav"
+description = "Focus."
+
 [cuckerino]
 path = "AudioFiles/cuckerino.wav"
 description = "Domino's Streamer of the Year Award Winner."
+
+[double-caution]
+path = "AudioFiles/double_caution.wav"
+description = "DOUBLE CAUTION; JUMP!"
 
 [faker]
 path = "AudioFiles/Faker_what_was_that.wav"
@@ -37,6 +45,11 @@ description = "Macht der Gewohnheit"
 [genji]
 path = "AudioFiles/Pro_Genji.wav"
 description = "Corbi im Tryhard Modus"
+
+[hell]
+path = "AudioFiles/fucking_hell.wav"
+description = "What ARE you doing?"
+
 
 [hello]
 path = "AudioFiles/hello.wav"
@@ -62,6 +75,13 @@ description = "It's just a prank, bro!"
 path = "AudioFiles/Laugh.wav"
 description = "HA-HA-HA. Boosted..."
 
+[listen]
+path = "AudioFiles/listen.wav"
+description = "You have to listen to my calls, Sammy!"
+
+[listen-angry]
+path = "AudioFiles/calls.wav"
+description = "Fucking listen to the calls."
 [meatballs]
 path = "AudioFiles/Meatballs.wav"
 description = "Game of the Year: Super Mario Brothers"
@@ -140,10 +160,14 @@ description = "Originalaufnahme der Uraufführung von Faust, als er Mephistophel
 [tearing]
 path = "AudioFiles/tearing.wav"
 description = "Relationship Goals"
+
 [thinking]
 path = "AudioFiles/thinking.wav"
 description = "\"You invited all my friends!\""
 
+[triple-caution]
+path = "AudioFiles/stay_center.wav"
+description = "Something dangerous is coming from the left..."
 [wow]
 path = "AudioFiles/WOW.wav"
 description = ";)"
