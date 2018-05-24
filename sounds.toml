@@ -167,7 +167,7 @@ description = "\"You invited all my friends!\""
 
 [triple-caution]
 path = "AudioFiles/stay_center.wav"
-description = "Something dangerous is coming from the left..."
+description = "Something dangerous is coming from the right..."
 [wow]
 path = "AudioFiles/WOW.wav"
 description = ";)"
