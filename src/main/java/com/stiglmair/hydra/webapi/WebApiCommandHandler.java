@@ -49,15 +49,16 @@ public class WebApiCommandHandler implements HttpHandler {
      * @throws IOException
      */
     @Override
-    public void handle(HttpExchange exchange) throws IOException {
+    public void handle(HttpExchange exchange) {
         String requestMethod = exchange.getRequestMethod();
         if (requestMethod.equalsIgnoreCase("GET")) {
             MultiMap<String> requestParams = new MultiMap<>();
             UrlEncoded.decodeTo(exchange.getRequestURI().getQuery(), requestParams, "UTF-8");
 
             // TODO: Exceptions in the method are not logged anywhere.
+            try {
+                List<String> commandStrings = requestParams.get("command");
 
-            List<String> commandStrings = requestParams.get("command");
             if (commandStrings == null || commandStrings.size() != 1) {
                 String msg = "Wrong number of values for key command. Expected exactly one value.";
                 sendResponse(exchange, msg, 400);
@@ -113,6 +114,9 @@ public class WebApiCommandHandler implements HttpHandler {
             Main.client.getDispatcher().dispatch(cmdExecutionEvent);
 
             sendResponse(exchange, "Ok.", 204);
-        }
-    }
+        }catch(IOException e) {
+                Main.logger.error("Failed to handle the request over rest for url " + exchange.getRequestURI().toString(), e);
+                }
+        } 
+}
 }
