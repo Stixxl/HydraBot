@@ -22,6 +22,10 @@ description = "Focus."
 path = "AudioFiles/cuckerino.wav"
 description = "Domino's Streamer of the Year Award Winner."
 
+[do]
+path = "AudioFiles/do_it.wav"
+description = "RIP Dooku"
+
 [double-caution]
 path = "AudioFiles/double_caution.wav"
 description = "DOUBLE CAUTION; JUMP!"
